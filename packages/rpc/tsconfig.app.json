@@ -1,0 +1,11 @@
+{
+  "include": [
+    "src/client/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "lib": [
+      "DOM"
+    ]
+  }
+}

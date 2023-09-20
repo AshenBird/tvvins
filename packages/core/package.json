@@ -10,6 +10,10 @@
     "./dev":{
       "import":"./src/index.ts",
       "types":"./src/index.ts"
+    },
+    "./dev/constant":{
+      "import":"./src/constant.ts",
+      "types":"./src/constant.ts"
     }
   },
   "keywords": [],
