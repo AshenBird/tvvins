@@ -193,6 +193,9 @@ importers:
       '@tsconfig/node18':
         specifier: ^18.2.0
         version: 18.2.0
+      '@tvvins/rollup-plugin':
+        specifier: workspace:^
+        version: link:../rollup-plugin
       '@types/node':
         specifier: ^18.17.14
         version: 18.17.14
