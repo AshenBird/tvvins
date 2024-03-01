@@ -1,10 +1,10 @@
 /**
  * 用于在 vite 中转换为 客户端可用的实现
  */
-import { pluginFac } from "../utils";
+import { pluginFac } from "./utils";
 import { parse, } from 'node:path'
-export const httpPlugin = pluginFac(
-  "@tvvins/rpc/http",
+export const rpcPlugin = pluginFac(
+  "@tvvins/rpc",
   (code: string, id: string, methodNames: string[]) => {
     let result = `
       import axios from "axios";

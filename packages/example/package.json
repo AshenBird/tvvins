@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@prisma/client": "5.2.0",
+    "@tvvins/core": "workspace:^",
+    "@tvvins/rpc": "workspace:^",
     "pinia": "^2.1.6",
     "prisma": "^5.2.0",
     "vue": "^3.3.4",

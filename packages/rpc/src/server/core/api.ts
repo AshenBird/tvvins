@@ -5,7 +5,7 @@
 import { nanoid } from "nanoid"
 import type { ZodType } from "zod"
 import type { z } from "zod"
-import {ID,IDENTITY} from "@tvvins/core/dev/constant"
+import {ID,IDENTITY} from "@tvvins/core"
 export interface ApiHandle<Payload, Result, _Headers, Context = unknown> {
   (this: Context, payload?: Payload, headers?: _Headers): Promise<Result> | Result
 }

@@ -1,5 +1,5 @@
 import { relative } from 'node:path'
-import { isAPI } from './api'
+import { isAPI } from '../core/api'
 import { createUnplugin } from 'unplugin'
 export const pluginFac = (
   name:string,

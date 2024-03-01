@@ -12,3 +12,8 @@ type TvvinsConfig = {
   base:string,
   apiDir:string
 }
+
+export type Server = any
+
+export const createServer = ()=>{}
+

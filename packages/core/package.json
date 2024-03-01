@@ -2,19 +2,23 @@
   "name": "@tvvins/core",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "lib/index.js",
+  "type": "module",
+  "types": "types/index.d.ts",
   "exports":{
-    "./dev":{
-      "import":"./src/index.ts",
-      "types":"./src/index.ts"
+    ".":{
+      "types":"./types/index.d.ts",
+      "import":"./lib/index.js",
+      "default":"./lib/index.js"
     },
-    "./dev/constant":{
-      "import":"./src/constant.ts",
-      "types":"./src/constant.ts"
+    "./dev": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default":"./src/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts"
   },
   "keywords": [],
   "author": "",
@@ -44,6 +48,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@mcswift/cli-utils": "^0.0.2",
     "@types/connect": "^3.4.36",
     "@types/fs-extra": "^11.0.1",
     "@types/koa": "^2.13.9",

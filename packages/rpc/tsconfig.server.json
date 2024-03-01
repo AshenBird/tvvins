@@ -1,11 +1,9 @@
 {
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/client/**/*"
+    "src/server/**/*"
   ],
   "compilerOptions": {
     "composite": true
-  }
+  },
+  "extends": "./tsconfig.json"
 }
