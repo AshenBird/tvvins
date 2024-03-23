@@ -8,16 +8,18 @@
     "moduleResolution": "bundler",
     "ignoreDeprecations": "5.0",
     "composite": true,
+    "outDir": "./lib",
     "lib": ["ESNext"],
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "newLine": "lf"
   },
   "references": [
     {
-      "path": "./tsconfig.node.json"
+      "path": "./tsconfig.client.json"
     },
     {
-      "path": "./tsconfig.app.json"
-    }
+      "path": "./tsconfig.server.json"
+    },
   ]
 }
