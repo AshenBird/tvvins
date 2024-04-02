@@ -16,8 +16,11 @@
   },
   "dependencies": {
     "@tvvins/koa-view-middleware": "workspace:^",
+    "@types/connect": "^3.4.38",
     "@types/koa": "^2.15.0",
+    "connect": "^3.7.0",
     "koa": "^2.15.2",
+    "koa-compose": "^4.1.0",
     "koa-connect": "^2.1.0",
     "vite": "^4.5.3"
   }

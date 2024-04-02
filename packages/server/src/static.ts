@@ -1,24 +1,21 @@
-import { Middleware } from "koa"
-import c2k from "koa-connect"
 import { createServer,resolveConfig } from "vite"
 import {isAbsolute, join} from "node:path";
 import { cwd } from "node:process";
 import { existsSync, readFileSync,  statSync } from "node:fs";
-
-const createViteServer = async ()=>{
-  const server = await createServer({
+import { Middleware } from "./type";
+import { transformConnectToTvvins } from "./utils";
+import { IncomingMessage, NextHandleFunction } from "connect";
+import { ServerResponse } from "node:http";
+export const createDevMiddleware = ()=>{
+  const createServerJob = createServer({
     server:{middlewareMode:true},
-    appType:"spa"
   })
-  return c2k(server.middlewares)
-}
-
-const createDevMiddleware = ( createTask:Promise<Middleware> ):Middleware=>{
-  return async (ctx,next)=>{
-    const viteMiddleware =  await createTask
-    await viteMiddleware(ctx,next)
+  return async (req:IncomingMessage,res:ServerResponse,next:Function)=>{
+    const server = await createServerJob
+    return server.middlewares(req,res,next)
   }
 }
+export const _createViteServer=createServer
 
 const fideViteConfig = (configFile?:string)=>{
   const c = cwd()
@@ -43,18 +40,19 @@ const matchContentType = (path:string)=>{
   return "text/plain"
 }
 
-const createProdMiddleware = (configFile?:string):Middleware=>{
+const createProdMiddleware = (configFile?:string):NextHandleFunction=>{
   const viteConfigFile = fideViteConfig(configFile)
   if(!viteConfigFile){
-    throw new Error("[@tvvins/koa-middleware] can't find vite config file.")
+    throw new Error("[@tvvins/static-middleware] can't find vite config file.")
   }
   const resolveConfigTask = resolveConfig({
     configFile:viteConfigFile
   },"build")
   
-  return async (ctx,next)=>{
+  return async (req,res,next)=>{
     const { outDir }  = (await resolveConfigTask).build
-    const {url} = ctx.request
+    const {url} = req
+    if(!url)return next()
     let path =join(outDir,url)
     if(!existsSync(path)){
       return
@@ -71,23 +69,22 @@ const createProdMiddleware = (configFile?:string):Middleware=>{
       return
     }
     const contentType = matchContentType(path)
-    console.debug(contentType,path)
     next()
-    ctx.type = contentType
     const buffer = readFileSync(path)
-    ctx.response.body = buffer
+    res.writeHead(200,{
+      "content-type":contentType
+    }).end(buffer)
   }
 }
 
 
 // @todo 动态加载 node 的变化
-export const createMiddleware = (options:{
-  isDevelopment?:boolean,
+export const createStaticMiddleware = (options:{
   configFile?:string
 })=>{
-  const { isDevelopment = false,configFile }  = options
-  if(!isDevelopment) return createProdMiddleware(configFile)
-  const createTask =  createViteServer()
-  return createDevMiddleware(createTask)
+  const isDev = process.env.TVVINS_MODE==="development"
+  const { configFile }  = options
+  if(!isDev) return createProdMiddleware(configFile)
+  return createDevMiddleware()
 }
 

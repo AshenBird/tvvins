@@ -1,38 +1,20 @@
-import { createServer} from "http"
-import Koa from "koa"
-import type { Middleware } from "Koa"
-import { createMiddleware } from "@tvvins/koa-view-middleware"
+import { Server } from "./Server"
+import { createStaticMiddleware } from "./static"
+import { loadConfig } from "./utils"
+export * from "./utils"
 
-export const createApp = (isDevelopment=false)=>{
-  const middlewares:Middleware[] = []
-  const app = new Koa()
-  const httpServer = createServer(app.callback())
-  type Listen = typeof httpServer.listen
-  const viewMiddleware = createMiddleware({
-    isDevelopment
-  }) 
-  const listen:Listen = (...args)=>{
-    for(const middleware of middlewares){
-      app.use(middleware)
-    }
-    app.use(viewMiddleware)
-    // @ts-ignore
-    return httpServer.listen(...args)
-  } 
-  Object.defineProperty(app.context,"httpServer",{
-    value:httpServer,
-  })
-  Object.defineProperty(app.context,"isDevelopment",{
-    value:isDevelopment
-  })
-  const use = (middleware:Middleware)=>{
-    middlewares.push(middleware)
-    return result
+export const createApp = async (
+)=>{
+  const isDev = process.env.TVVINS_MODE==="development"
+  const config = await loadConfig(isDev)
+  const server = new Server(config);
+  if(config.useDefaultStatic??true){
+    const staticMiddleware = await createStaticMiddleware({
+      configFile:config.viteConfigFile
+    })
+    server.on("pre-mount",()=>{
+      server.useConnectMiddleWare(staticMiddleware,"official static")
+    })
   }
-  const result ={
-    use,
-    app,
-    listen
-  }
-  return result 
+  return server
 }

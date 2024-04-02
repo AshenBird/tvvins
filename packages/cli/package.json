@@ -2,28 +2,36 @@
   "name": "@tvvins/cli",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "dev": "tsx src/index",
-    "build":"tsx scripts/build"
+    "build": "tsx scripts/build"
   },
   "bin": {
-    "tvvins":"bin/index.mjs"
+    "tvvins": "bin/index.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/fs-extra": "^11.0.1",
+    "@tvvins/server": "workspace:^",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.11.30",
-    "fs-extra": "^11.1.1",
+    "fs-extra": "^11.2.0",
     "tsx": "^4.7.1",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6"
   },
   "dependencies": {
-    "@mcswift/utils": "^0.0.22",
+    "@mcswift/base-utils": "^1.0.3",
+    "@mcswift/cli": "^1.0.3",
+    "@mcswift/node": "^1.0.3",
+    "chalk": "^5.2.0",
+    "dotenv": "^16.4.5",
+    "esbuild": "^0.17.19"
+  },
+  "peerDependencies": {
     "@tvvins/server": "workspace:^",
-    "esbuild": "^0.17.18"
+    "vite": "^5.2.6"
   }
 }

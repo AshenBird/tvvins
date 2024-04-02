@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx src/main.ts dev",
+    "test": "tvvins test",
+    "dev": "tvvins dev",
     "build": "run-p build-only",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -15,10 +16,8 @@
     "@tvvins/cli": "workspace:^",
     "@tvvins/rpc": "workspace:^",
     "@tvvins/server": "workspace:^",
-    "koa": "^2.15.2",
     "pinia": "^2.1.7",
     "prisma": "^5.11.0",
-    "tsx": "^3.14.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
