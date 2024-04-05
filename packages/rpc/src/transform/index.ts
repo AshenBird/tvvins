@@ -1,5 +1,6 @@
-import { httpPlugin } from "./http"
+
 import type { Plugin } from "vite"
+import { rpcPlugin } from "../server/plugin/http"
 export const tvvinsRPC = {
-  http:httpPlugin.vite as (options?: unknown) => Plugin | Plugin[]
+  rpc:rpcPlugin.vite as (options?: unknown) => Plugin | Plugin[]
 }

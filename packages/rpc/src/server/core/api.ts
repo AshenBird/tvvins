@@ -1,97 +1,69 @@
 /**
  * 用于在服务端定义 api
  */
-
-import { nanoid } from "nanoid"
-import type { ZodType } from "zod"
-import type { z } from "zod"
-import {ID,IDENTITY} from "@tvvins/core"
-export interface ApiHandle<Payload, Result, _Headers, Context = unknown> {
-  (this: Context, payload?: Payload, headers?: _Headers): Promise<Result> | Result
-}
-
-export interface API<Payload, Result, _Headers> extends ApiHandle<Payload, Result, _Headers> {
-  [ID]: string
-  [IDENTITY]: "api"
-  // use: (middleware: Middleware<Payload, _Headers>) => void
-}
-export interface ApiWithValidate<Payload, Result, _Headers,Context = unknown> {
-  (this: Context, payload: Payload, headers?: _Headers): Promise<Result> | Result
-  [ID]: string
-  [IDENTITY]: "api"
-
-  // use: (middleware: Middleware<Payload, _Headers>) => void
-}
-
-interface Middleware<Payload, _Headers> {
-  (payload: Payload, headers: _Headers): Promise<boolean> | boolean
-}
-
-export const zod2ValidateResult = () => {
-
-}
+import { nanoid } from "nanoid";
+import { type ZodType } from "zod";
+import type { z } from "zod";
+import { ID, IDENTITY, NAME } from "./const";
+import { API, ApiHandle } from "../type";
+export const isAPI = <T = unknown, Q = unknown>(
+  val: unknown
+): val is API<T,Q> => {
+  return (val as API<T, Q>)[IDENTITY] === "api";
+};
 
 
-interface ValidateResult {
-  success: boolean
-  info?: {
-    "expected": string,
-    "received": string,
-    "path": string[],
-    "message": string
-  }
-}
-interface Validator {
-  (val: unknown): ValidateResult
-}
 
-
-export const isAPI = <T = unknown, S = unknown, Q = unknown>(val: unknown): val is API<T, S, Q> => {
-  return (val as API<T, S, Q>)[IDENTITY] === "api"
-}
-
-export const defineAPI = <Payload, Result, _Headers, Schema extends ZodType,Context=unknown>(
-  handle: ApiHandle<Payload, Result, _Headers>,
+export const _defineAPI = <
+  Payload,
+  Result,
+  Schema extends ZodType
+>(
+  store:Map<string,API>,
+  handle: ApiHandle<Payload, Result>,
   schema?: Schema
 ) => {
-  const middlewareStore = new Set<Middleware<Payload, _Headers>>();
-  const id = nanoid();
+  const genId = ():string=>{
+    const id = nanoid()
+    // 防碰撞
+    if(!store.has(id))return id
+    return genId();
+  }
+  const id = genId();
+  
+  const christen = (name:string)=>{
+    Reflect.set(handle,NAME,name)
+    Reflect.defineProperty(handle,NAME,{
+      writable:false,
+      value:name,
+      enumerable:false,
+      configurable:false,
+    })
+    return shadow  
+  }
   const shadow = new Proxy(handle, {
     get(target, p) {
       if (p === IDENTITY) {
-        return "api"
+        return "api";
       }
       if (p === ID) {
         return id;
       }
-      // if (p === "use") {
-      //   return (middleware: Middleware<Payload, _Headers>) => {
-      //     middlewareStore.add(middleware)
-      //     return () => {
-      //       middlewareStore.delete(middleware)
-      //     }
-      //   }
-      // }
+      if(p==="christen"){
+        return christen
+      }
+      if(p==="name"){
+        return Reflect.get(handle,NAME)||id
+      }
       // @ts-ignore
-      return target[p]
+      return target[p];
     },
-    apply: async (target, t:Context, args) => {
-      // for(const middleware  of middlewareStore){
-      //   const mr = middleware(args[0],args[1])
-      //   if(!mr){
-      //     return {
-      //       // error info
-      //     }
-      //   }
-      // }
+    apply: async (target, t, args) => {
       // 应该在公共方法里去定义返回方式，要考虑是流式返回还是什么，重要的是如何判断返回的东西
-      return target.call(t,args[0], args[1])
-    }
-  })
-
-  return shadow as (
-    Schema extends undefined
-    ? API<Payload, Result, _Headers>
-    : ApiWithValidate<z.infer<Schema>, Result, _Headers>
-  )
-}
+      return target.call(t, args[0]);
+    },
+  })  as API<Payload, Result>
+  // @ts-ignore
+  store.set(id,shadow)
+  return shadow
+};

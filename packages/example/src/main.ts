@@ -1,8 +1,13 @@
-import { createApp } from "@tvvins/server"
+import { useTvvins } from "@tvvins/core"
+import { useRPC } from "@tvvins/rpc"
 
-const app =await createApp()
-app.use((ctx,next)=>{
-  next()
-  return
+export const {defineAPI, middleware:rpc} = useRPC()
+
+const tvvins = useTvvins({
+  middlewares:[
+    rpc
+  ]
 })
-app.listen()
+
+tvvins.listen();
+

@@ -3,7 +3,7 @@
     "src/server/**/*"
   ],
   "compilerOptions": {
-    "composite": true
+    "composite": true,
   },
   "extends": "./tsconfig.json"
 }

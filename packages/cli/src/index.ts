@@ -29,7 +29,7 @@ const start = async (isDev:boolean)=>{
   spawn(command,args,{
     stdio:"inherit",
     shell:true,
-    env:Object.assign({TVVINS_MODE:"development"},process.env)
+    env:Object.assign({TVVINS_MODE:"development",TVVINS_HOST:config.host},process.env)
   })
 }
 

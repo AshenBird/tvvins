@@ -1,13 +1,16 @@
-import { relative } from 'node:path'
+import { relative, resolve } from 'node:path'
 import { isAPI } from '../core/api'
 import { createUnplugin } from 'unplugin'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 export const pluginFac = (
   name:string,
   codeGen: (code: string, id: string, methodNames: string[]) => string,
 ) => {
   const transform = async (code: string, id: string) => {
-    const path = relative(__dirname, id)
-    const apiList = await import(path);
+    const dirname = resolve(fileURLToPath(import.meta.url),"../")
+    const url = pathToFileURL(id)//relative(dirname, id)
+    console.debug(url.toString())
+    const apiList = await import(url.toString());
     const result = []
     for (const [k, API] of Object.entries(apiList)) {
       if (!isAPI(API)) continue;

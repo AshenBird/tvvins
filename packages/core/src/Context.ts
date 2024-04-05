@@ -1,7 +1,8 @@
 import {Server as  HttpServer} from "node:http"
 import { IncomingMessage, ServerResponse } from "node:http";
 import { URL } from "node:url"
-import type {Server} from "./Server"
+import type {App} from "./Server"
+import { Config } from "./type";
 export class Context {
   get $(){
     return {
@@ -14,7 +15,9 @@ export class Context {
     return this._server
   }
   get request(){
-    const { host,hash,hostname,href } = new URL(this.req.url||"/")
+    const config  = this.server.config as Config
+    const url = `http://${config.host}:${config.port}${this.req.url}`
+    const {host, hash,hostname,href } = new URL(url)
     return {
       headers:this.req.headers,
       url:this.req.url||"/",
@@ -23,8 +26,8 @@ export class Context {
   }
   private req:IncomingMessage
   private res:ServerResponse
-  private _server:Server
-  constructor(req:IncomingMessage,res:ServerResponse,server:Server){
+  private _server:App
+  constructor(req:IncomingMessage,res:ServerResponse,server:App){
     this.req =req
     this.res =res
     this._server = server

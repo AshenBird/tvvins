@@ -2,18 +2,20 @@ import { createServer,resolveConfig } from "vite"
 import {isAbsolute, join} from "node:path";
 import { cwd } from "node:process";
 import { existsSync, readFileSync,  statSync } from "node:fs";
-import { Middleware } from "./type";
-import { transformConnectToTvvins } from "./utils";
 import { IncomingMessage, NextHandleFunction } from "connect";
 import { ServerResponse } from "node:http";
+import { loadConfig } from "./utils";
+import { defineMiddleWare } from "./Middleware";
+import { Middleware } from "./type";
 export const createDevMiddleware = ()=>{
   const createServerJob = createServer({
     server:{middlewareMode:true},
   })
-  return async (req:IncomingMessage,res:ServerResponse,next:Function)=>{
+  const handle = async (req:IncomingMessage,res:ServerResponse,next:Function)=>{
     const server = await createServerJob
     return server.middlewares(req,res,next)
   }
+  return defineMiddleWare(handle,"official-view",true)
 }
 export const _createViteServer=createServer
 
@@ -40,17 +42,22 @@ const matchContentType = (path:string)=>{
   return "text/plain"
 }
 
-const createProdMiddleware = (configFile?:string):NextHandleFunction=>{
-  const viteConfigFile = fideViteConfig(configFile)
+const loadViteConfig = async (isDev:boolean)=>{
+  const config = await loadConfig(isDev)
+  const viteConfigFile = fideViteConfig(config.viteConfigFile)
   if(!viteConfigFile){
     throw new Error("[@tvvins/static-middleware] can't find vite config file.")
   }
-  const resolveConfigTask = resolveConfig({
+  const result = await resolveConfig({
     configFile:viteConfigFile
   },"build")
-  
-  return async (req,res,next)=>{
-    const { outDir }  = (await resolveConfigTask).build
+  return result
+}
+
+const createProdMiddleware = ():Middleware=>{
+  const loadConfigTask = loadViteConfig(false)
+  const handle:NextHandleFunction = async (req,res,next)=>{
+    const { outDir }  = (await loadConfigTask).build
     const {url} = req
     if(!url)return next()
     let path =join(outDir,url)
@@ -75,16 +82,14 @@ const createProdMiddleware = (configFile?:string):NextHandleFunction=>{
       "content-type":contentType
     }).end(buffer)
   }
+  return defineMiddleWare(handle,"official-view",true)
 }
 
 
 // @todo 动态加载 node 的变化
-export const createStaticMiddleware = (options:{
-  configFile?:string
-})=>{
+export const createStaticMiddleware = ()=>{
   const isDev = process.env.TVVINS_MODE==="development"
-  const { configFile }  = options
-  if(!isDev) return createProdMiddleware(configFile)
+  if(!isDev) return createProdMiddleware()
   return createDevMiddleware()
 }
 

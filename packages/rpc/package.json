@@ -3,27 +3,31 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/index.ts",
+  "type": "module",
   "scripts": {
-    "build": "tsx scripts/build.ts"
+    "build": "tsx scripts/build.ts",
+    "demo": "tsx --no-warnings src/demo.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "^11.1.1",
+    "@mcswift/types": "^1.0.7",
+    "@mcswift/utils": "^1.0.7",
+    "@tvvins/core": "workspace:^",
+    "fs-extra": "^11.2.0",
     "nanoid": "^4.0.2",
-    "unplugin": "^1.4.0"
+    "unplugin": "^1.10.1"
   },
   "devDependencies": {
-    "@mcswift/cli-utils": "^0.0.2",
-    "@types/fs-extra": "^11.0.1",
-    "@types/node": "^20.6.3",
-    "chalk": "^5.2.0",
-    "esbuild": "^0.17.18",
-    "tsx": "^3.12.7",
-    "typescript": "^5.2.2",
-    "vite": "^4.4.9",
-    "zod": "^3.22.2"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.12.4",
+    "chalk": "^5.3.0",
+    "esbuild": "^0.20.2",
+    "tsx": "^3.14.0",
+    "typescript": "^5.4.4",
+    "vite": "^5.2.8",
+    "zod": "^3.22.4"
   },
   "peerDependencies": {
     "vite": "^4.4.9",
