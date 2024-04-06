@@ -3,7 +3,7 @@ import { createStaticMiddleware } from "./static";
 import { ServerInitOptions } from "./type";
 export * from "./type";
 export type { Context } from "./Context";
-export { defineConfig } from "./utils"
+export { defineConfig,loadConfig } from "./utils"
 export const useTvvins = (options: ServerInitOptions) => {
   const {
     plugins = [],

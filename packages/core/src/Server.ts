@@ -8,13 +8,17 @@ import connect from "connect"
 import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap, loadConfig } from "./utils";
 import { Bellman } from "@mcswift/bellman"
-
+const LISTEN  =Symbol.for("aaa")
 export class App extends EventEmitter {
   private middleWares: Middleware[] = [];
   private _config: Config|null = null;
   private _httpServer: HttpServer|undefined;
   private _connect: ConnectServer
   private bellman = new Bellman()
+  static beActive(app:App){
+    const listen = Reflect.get(app,LISTEN)
+    listen();
+  }
   get isDevelopment() {
     return process.env.TVVINS_MODE==="development";
   }
@@ -29,6 +33,7 @@ export class App extends EventEmitter {
     this.init()
     this._connect = connect()
     this._httpServer = createServer(this._connect);
+    Reflect.set(this,LISTEN,this.listen.bind(this))
   }
   private async init(){
     const config = await loadConfig(this.isDevelopment)
@@ -36,7 +41,7 @@ export class App extends EventEmitter {
     Object.freeze(this._config);
     this.bellman.resolve();
   }
-  async listen(...args: ListenArgs|[]): Promise<ListenReturn> {
+  private async listen(...args: ListenArgs|[]): Promise<ListenReturn> {
     await this.bellman.signal
     this.emit("pre-mount")
     

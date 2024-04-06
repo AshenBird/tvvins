@@ -28,7 +28,8 @@
     "@mcswift/node": "^1.0.3",
     "chalk": "^5.2.0",
     "dotenv": "^16.4.5",
-    "esbuild": "^0.17.19"
+    "esbuild": "^0.20.2",
+    "nanoid": "^4.0.2"
   },
   "peerDependencies": {
     "@tvvins/core": "workspace:^",
