@@ -1,4 +1,4 @@
-import { Stream, Readable, Duplex, Transform } from "node:stream";
+import { Readable, Duplex, Transform } from "node:stream";
 
 import { ServerResponse } from "http";
 import { DATA, FILENAME, IDENTITY, TYPE } from "./const";
@@ -11,6 +11,7 @@ export const isReadableStream = (
 };
 
 export const resHandle = (res: ServerResponse, result: unknown) => {
+  
   // 可写流操作，可读流就过分了吧
   if (isReadableStream(result)) {
     res.setHeader("Content-Type", "application/octet-stream");
@@ -24,9 +25,15 @@ export const resHandle = (res: ServerResponse, result: unknown) => {
     refHandle(res,result)
     return
   }
-  // 大部分的值都用 json 返回
-  res.setHeader("Content-Type", "application/json");
-  res.write(JSON.stringify(commonHandle(result)));
+  if(typeof result === "string"){
+    res.setHeader("Content-Type", "text/plain");
+    res.write(commonHandle(result));
+  }else{
+    // 大部分的值都用 json 返回
+    res.setHeader("Content-Type", "application/json");
+    res.write(JSON.stringify(commonHandle(result)));
+  }
+  res.end()
 };
 
 const toRecord = (val: object) => {

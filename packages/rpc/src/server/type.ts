@@ -15,7 +15,7 @@ export interface API<Payload = any, Result = any> {
   (payload: Payload): Promise<Result>;
   [ID]: string;
   [IDENTITY]: "api";
-  christen: Christen<Payload, Result>;
+  // christen: Christen<Payload, Result>;
 }
 
 export interface ValidateResult {

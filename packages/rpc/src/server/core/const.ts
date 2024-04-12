@@ -1,4 +1,3 @@
-export const ID = Symbol("id");
 export const IDENTITY = Symbol("identity");
 export const NAME = Symbol("name");
 export const FILENAME = Symbol("file-name");

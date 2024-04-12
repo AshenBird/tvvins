@@ -1,27 +1,15 @@
-import { App } from "./Server";
-import { createStaticMiddleware } from "./static";
-import { ServerInitOptions } from "./type";
+import { env } from "node:process";
+import { App } from "./App";
+import { resolveOptions } from "./options";
+import { Tvvins } from "./type";
 export * from "./type";
 export type { Context } from "./Context";
-export { defineConfig,loadConfig } from "./utils"
-export const useTvvins = (options: ServerInitOptions) => {
-  const {
-    plugins = [],
-    middlewares = [],
-    useOfficialView = true,
-    autoBoot = false,
-  } = options;
-  const app = new App();
-  // 注册中间件
-  for (const middleware of middlewares) {
-    app.use(middleware);
+export * from "./Middleware";
+export const useTvvins = (options: Tvvins.InitOptions) => {
+  const mode = env["TVVINS_MODE"] as Tvvins.Mode
+  const resolved = resolveOptions(options,mode)
+  if(mode === "runtime"|| mode==="dev"){
+    const app = new App(resolved);
+    return app;
   }
-  // 注册视图中间件
-  if (useOfficialView) {
-    app.use(createStaticMiddleware());
-  }
-  if (autoBoot) {
-    app.listen();
-  }
-  return app;
 };

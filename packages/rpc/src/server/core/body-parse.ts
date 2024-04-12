@@ -2,6 +2,7 @@ import { IncomingMessage } from "http"
 import { createErrorResult } from "./error"
 import { BodyParseResult, type BodyParser } from "../type"
 import { JSONValue } from "@mcswift/types"
+
 /**
  * body 中接受的数据类型
  * 1. application/json 进行解析，并返回解析后的数据
@@ -11,9 +12,15 @@ import { JSONValue } from "@mcswift/types"
  */
 export const bodyParse = async (req:IncomingMessage)=>{
   const type = req.headers['content-type']
-  if(!type)return req
+  if(!type)return {
+    error:false,
+    data:req
+  }
   const parser = handleTypes[type]
-  if(!parser)return req
+  if(!parser)return {
+    error:false,
+    data:req
+  }
   return parser(req)
 }
 

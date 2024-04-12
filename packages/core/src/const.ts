@@ -1,2 +1,1 @@
-
-export const KEY = Symbol("key")
+export const KEY = Symbol("key");

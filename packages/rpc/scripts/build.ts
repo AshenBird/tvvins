@@ -1,44 +1,83 @@
-import * as Path from "node:path";
+import { getFilePaths } from "@mcswift/node"
+import { mandatoryFileExtensionsPlugin } from "@mcswift/esbuild"
+import { resolve } from "path";
+import { generatorDeclare } from "@mcswift/tsc";
+import { BuildOptions, build } from "esbuild"
+import { emptyDirSync, ensureDirSync } from "fs-extra";
+import { join } from "node:path";
 import { cwd } from "node:process";
-import * as FileSystem from "fs-extra";
-import { BuildOptions, build as _build } from "esbuild";
-import {
-  getFileList,
-  log,
-  generatorDeclare,
-} from "@mcswift/cli-utils";
-import * as FS from "node:fs"
-const root = cwd();
-const baseLib = Path.join(root, `lib`);
-FileSystem.ensureDirSync(baseLib);
-FileSystem.emptyDirSync(baseLib);
-const build = async (name:string,type:BuildOptions["platform"]) => {
-  const src = Path.join(root, `src/${name}`);
-  const lib = Path.join(root, `lib/${name}`);
-  const fileList = getFileList(src);
-  FileSystem.ensureDirSync(lib)
-  const tasks:Promise<unknown>[] = []
-  const buildTask = _build({
-    entryPoints: fileList,
-    platform: type,
-    drop: ["debugger"],
-    target: ["es2015"],
-    bundle: false,
-    outdir: lib,
-    format: "esm",
-  });
-  const declareTask= generatorDeclare(`./src/${name}`, `./types/${name}`, cwd(), `./tsconfig.${name}.json`);
-  tasks.push(buildTask,declareTask)
-  await Promise.all(tasks)
-  // await FS.promises.rm(Path.join(cwd(),`tsconfig.${name}.tsbuildinfo`))
-};
+import { existsSync, rmSync } from "fs";
+const out = resolve(__dirname,"../lib")
+const src = resolve(__dirname,"../src")
 
-const main = async ()=>{
-  const tasks= [
-    build("client","browser"),
-    build("server","node"),
-  ]
-  await Promise.all(tasks);
-  log("build finish");
+const esbuildOptions:BuildOptions = {
+  target:"node20",
+  platform:"node",
+  packages:"external",
+}
+export const main = async ()=>{
+  buildModule("client")
+  buildModule("server")
+  buildModule("plugin")
+  genTypes()
+}
+
+
+const buildModule =async (path:string)=>{
+  buildCJS(path)
+  buildESM(path)
+}
+
+
+const buildCJS = async(path:string)=>{
+  const outdir = join(out,"cjs",path)
+  const entryPoints = getFilePaths(join(src,path))
+  ensureDirSync(outdir)
+  emptyDirSync(outdir)
+  await build({
+    ...esbuildOptions,
+    entryPoints,
+    outdir,
+    format:"cjs",
+    outExtension:{
+      ".js":".cjs"
+    },
+    plugins: [
+      mandatoryFileExtensionsPlugin({
+        cjsExtension: "cjs",
+        esm: false,
+      }),
+    ],
+  })
+}
+const buildESM = async(path:string)=>{
+  const outdir = join(out,"esm",path)
+  const entryPoints = getFilePaths(join(src,path))
+  ensureDirSync(outdir)
+  emptyDirSync(outdir)
+  await build({
+    ...esbuildOptions,
+    entryPoints,
+    outdir,
+    format:"esm",
+    outExtension:{
+      ".js":".mjs"
+    },
+    plugins: [
+      mandatoryFileExtensionsPlugin({
+        esmExtension: "mjs",
+        esm: true,
+      }),
+    ],
+  })
+}
+const genTypes = async ()=>{
+  const outdir = join(out,"types")
+  ensureDirSync(outdir)
+  emptyDirSync(outdir)
+  await generatorDeclare(`./src`, outdir, cwd(), `tsconfig.lib.json`);
+  const tsbuildinfo = join(out,"tsconfig.lib.tsbuildinfo")
+  console.debug(tsbuildinfo)
+  if(existsSync(tsbuildinfo))rmSync(tsbuildinfo);
 }
 main()

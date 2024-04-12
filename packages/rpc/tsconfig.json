@@ -1,25 +1,11 @@
 {
-  "include": [
-    "src/**/*"
-   ],
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ES2022",
-    "moduleResolution": "bundler",
-    "ignoreDeprecations": "5.0",
-    "composite": true,
-    "outDir": "./lib",
-    "lib": ["ESNext"],
-    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "newLine": "lf"
-  },
-  "references": [
-    {
-      "path": "./tsconfig.client.json"
-    },
-    {
-      "path": "./tsconfig.server.json"
-    },
-  ]
+    "skipLibCheck": true
+  }
 }

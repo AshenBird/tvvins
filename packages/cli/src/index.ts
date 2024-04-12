@@ -1,48 +1,41 @@
 import { Logger } from "@mcswift/base-utils";
 import { Cli } from "@mcswift/cli"
 import { getCommandFile } from "@mcswift/node"
-import {  join, resolve } from "path";
-import { cwd, stdin } from "process";
-import { pathToFileURL } from "node:url";
+import {  resolve } from "path";
+import { cwd} from "node:process";
 import { spawn } from "child_process";
 import dotenv from "dotenv"
+// import  from "@tvvins/core";
+import { build } from "./build";
 dotenv.config()
 const tvvins = new Cli("tvvins");
 
-const loadConfig = async ()=>{
-  const configRawPath = join(cwd(),"tvvins.config.ts")
-  const {default :config} = await import(pathToFileURL(configRawPath).toString())
-  Logger.debug(config)
-  return config
-}
-
-const start = async (isDev:boolean)=>{
-  const config = await loadConfig()
-  const {source,entry} = config
+const start = async (isDev:boolean,entry:string)=>{
   const command = await getCommandFile("tsx",import.meta.dirname)
   if(!command)return;
-  const sourcePath = resolve(cwd(),source);
-  const entryPath = resolve(sourcePath,entry+".ts")
+  // const sourcePath = resolve(cwd(),source);
+  const entryPath = resolve(cwd(),entry+".ts")
   const args = []
   if(isDev)args.push("watch");
   args.push('--no-warnings',"--ignore","./vite.config.ts.timestamp-*",entryPath)
+  Logger.debug("run dev server")
   spawn(command,args,{
     stdio:"inherit",
     shell:true,
-    env:Object.assign({TVVINS_MODE:"development",TVVINS_HOST:config.host},process.env)
+    env:Object.assign({TVVINS_MODE:"development"},process.env)
   })
 }
 
-tvvins.use("start",async ()=>{
-  start(false)
+tvvins.use("start",async (options)=>{
+  start(false,options.entry as string)
 })
 
-tvvins.use("dev",async ()=>{
-  start(true)
+tvvins.use("dev",async (options)=>{
+  start(true,options.entry as string)
 })
 
 tvvins.use("build",()=>{
-  // start(true)
+  // build()
 })
 
 tvvins.start()

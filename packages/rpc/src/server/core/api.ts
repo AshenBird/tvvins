@@ -30,7 +30,6 @@ export const _defineAPI = <
     return genId();
   }
   const id = genId();
-  
   const christen = (name:string)=>{
     Reflect.set(handle,NAME,name)
     Reflect.defineProperty(handle,NAME,{
@@ -41,13 +40,14 @@ export const _defineAPI = <
     })
     return shadow  
   }
+  Reflect.set(handle,ID,id)
   const shadow = new Proxy(handle, {
     get(target, p) {
       if (p === IDENTITY) {
         return "api";
       }
       if (p === ID) {
-        return id;
+        return Reflect.get(handle,ID)
       }
       if(p==="christen"){
         return christen
@@ -58,11 +58,18 @@ export const _defineAPI = <
       // @ts-ignore
       return target[p];
     },
+    set(target,p,nv){
+      if(p===ID){
+        Reflect.set(handle,ID,nv)
+        return true
+      }
+      return false
+    },
     apply: async (target, t, args) => {
-      // 应该在公共方法里去定义返回方式，要考虑是流式返回还是什么，重要的是如何判断返回的东西
       return target.call(t, args[0]);
     },
   })  as API<Payload, Result>
+  
   // @ts-ignore
   store.set(id,shadow)
   return shadow

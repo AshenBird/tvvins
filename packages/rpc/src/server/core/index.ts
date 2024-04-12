@@ -6,7 +6,7 @@ import { bodyParse } from "./body-parse";
 import { ZodType } from "zod";
 import { _defineAPI } from "./api";
 import { resHandle } from "./response";
-import { defineMiddleWare } from "@tvvins/core/src/Middleware";
+import { defineMiddleWare } from "@tvvins/core";
 
 export { BodyParserManager } from "./body-parse"
 export const useRPC = (options: Partial<RPCOptions> ={}) => {
@@ -22,7 +22,7 @@ export const useRPC = (options: Partial<RPCOptions> ={}) => {
     if (!h) return next();
     const payload = await bodyParse(ctx.$.req);
     // 用户处理逻辑
-    const result = await h(payload);
+    const result = await h(payload.data);
     resHandle(ctx.$.res,result)
   };
   const middleware = defineMiddleWare(handle,"tvvins-rpc")

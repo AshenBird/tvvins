@@ -1,41 +1,65 @@
-import { NextHandleFunction, Server as ConnectServer, SimpleHandleFunction } from "connect";
-import { Config, Middleware, RequestHandle, UserConfig } from "./type";
-import { Context } from "./Context";
-import { join } from "node:path";
-import { cwd } from "node:process";
-import { pathToFileURL } from "node:url";
-import { IncomingMessage, ServerResponse } from "node:http";
-import type { App } from "./Server";
+const valueType = ["string", "number", "boolean", "symbol"];
 
-const DEFAULT_CONFIG:Config = {
-  port: 8000,
-  entry: "main",
-  source: "./src",
-  viteConfigFile: cwd(),
-  useDefaultStatic: true,
-  host: "localhost"
-}
-
-export const defineConfig = (userConfig:UserConfig)=>{
-  return Object.assign({},DEFAULT_CONFIG,userConfig)
-}
-
-export const transformConnectToTvvins = (raw:ConnectServer|SimpleHandleFunction|NextHandleFunction)=>{
-  return async (ctx:Context,next:()=>Promise<unknown>)=>{
-    const { req,res } = ctx.$
-    await raw(req,res,next)
+// 暂时没支持 map 和 set
+export const mergeRecord = <
+  T extends Record<string, unknown>,
+  S extends Record<string, unknown>
+>(
+  a: T,
+  b: S
+) => {
+  const r: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(a)) {
+    r[k] = v;
   }
-}
-
-export const connectMiddlewareWrap = (handle:RequestHandle,app:App):ConnectServer|SimpleHandleFunction|NextHandleFunction=>{
-  return (req:IncomingMessage,res:ServerResponse,next:Function)=>{
-    const ctx = new Context(req,res,app)
-    return handle(ctx,()=>next())
+  for (const [k, v] of Object.entries(b)) {
+    // 后序非值直接跳过
+    if (!v) continue;
+    // 前序非值直接覆盖
+    if (!r[k]) {
+      r[k] = v;
+      continue;
+    }
+    const typeA = typeof r[k];
+    const typeB = typeof v;
+    // 类型不一致直接覆盖
+    if (typeA !== typeB) {
+      r[k] = v;
+      continue;
+    }
+    // 基础类型的直接覆盖
+    if (valueType.includes(typeA)) {
+      r[k] = v;
+      continue;
+    }
+    // 函数
+    if (typeof r[k] === "function") {
+      r[k] = v;
+      continue;
+    }
+    if (typeof r[k] === "object") {
+      // 都是数组
+      if (Array.isArray(r[k]) && Array.isArray(v)) {
+        r[k] = mergeArray(r[k] as unknown[], v);
+        continue;
+      }
+      // 只有一个是数组
+      if (Array.isArray(r[k]) || Array.isArray(v)) {
+        r[k] = v;
+        continue;
+      }
+      try {
+        r[k] = mergeRecord(
+          r[k] as Record<string, unknown>,
+          v as Record<string, unknown>
+        );
+      } catch {
+        r[k] = v;
+      }
+    }
   }
-}
-  
-export const loadConfig = async (isDev:boolean)=>{
-  const configRawPath = join(cwd(),"tvvins.config."+(isDev?"ts":"js"))
-  const {default :config} = await import(pathToFileURL(configRawPath).toString())
-  return config as Config
-}
+  return r as T & S;
+};
+export const mergeArray = <T>(a: T[], b: T[]) => {
+  return [...a, ...b] as T[];
+};

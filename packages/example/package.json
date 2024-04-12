@@ -6,7 +6,7 @@
   "scripts": {
     "test": "tvvins test",
     "dev": "tvvins dev",
-    "build": "run-p build-only",
+    "build": "tvvins build",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
