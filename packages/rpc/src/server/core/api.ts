@@ -4,8 +4,9 @@
 import { nanoid } from "nanoid";
 import { type ZodType } from "zod";
 import type { z } from "zod";
-import { ID, IDENTITY, NAME } from "./const";
-import { API, ApiHandle } from "../type";
+import { IDENTITY, NAME } from "./const";
+import { API, ApiHandle, IDStore } from "../type";
+import { Store } from "./store";
 export const isAPI = <T = unknown, Q = unknown>(
   val: unknown
 ): val is API<T,Q> => {
@@ -17,12 +18,14 @@ export const isAPI = <T = unknown, Q = unknown>(
 export const _defineAPI = <
   Payload,
   Result,
-  Schema extends ZodType
+  // Schema extends ZodType
 >(
   store:Map<string,API>,
   handle: ApiHandle<Payload, Result>,
-  schema?: Schema
+  idStore:Store
+  // schema?: Schema
 ) => {
+  const ID = Symbol.for(idStore.key);
   const genId = ():string=>{
     const id = nanoid()
     // 防碰撞

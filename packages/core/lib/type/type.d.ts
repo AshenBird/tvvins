@@ -21,9 +21,11 @@ export declare namespace Tvvins {
     type InitBuildOptions = {
         source?: string;
         output?: string;
+        vite?: UserConfigExport;
     };
     type Mode = "build" | "dev" | "runtime";
-    type MergedInitOptions = Required<InitOptions> & {
+    type MergedInitOptions = Omit<Required<InitOptions>, "build"> & {
+        build: Required<InitBuildOptions>;
         mode: Mode;
     };
     interface ResolvedInitBuildOptions extends Required<InitBuildOptions> {
@@ -52,10 +54,13 @@ export declare namespace Tvvins {
     interface PluginObj {
         name: string;
         middlewares?: Middleware[];
-        build?: EsbuildPlugin;
+        build?: {
+            plugins?: EsbuildPlugin[];
+            vite?: UserConfigExport;
+        };
     }
     interface Plugin {
-        (option: Required<InitOptions>): PluginObj;
+        (option: MergedInitOptions): PluginObj;
     }
     interface ResolvedPlugin {
     }

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "tvvins test",
-    "dev": "tvvins dev",
-    "build": "tvvins build",
+    "dev": "tvvins dev --entry=./src/main.ts",
+    "build": "tvvins build --entry=./src/main.ts",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"

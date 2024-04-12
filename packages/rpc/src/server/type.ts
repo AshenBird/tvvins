@@ -1,8 +1,20 @@
-import { ID, IDENTITY } from "./core/const";
+import { IDENTITY } from "./core/const";
 import { IncomingMessage } from "node:http";
+
+export type IDStore = {
+  key:string,
+  files:{
+    filename:string
+      apis:{
+        id:string
+        name:string
+      }[]
+    }[]
+}
 
 export type RPCOptions = {
   base?: string;
+  dirs?:string|string[]
 };
 
 export interface ApiHandle<Payload, Result> {
@@ -13,7 +25,6 @@ export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
 
 export interface API<Payload = any, Result = any> {
   (payload: Payload): Promise<Result>;
-  [ID]: string;
   [IDENTITY]: "api";
   // christen: Christen<Payload, Result>;
 }

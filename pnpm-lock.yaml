@@ -234,15 +234,36 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8(@types/node@20.12.7)
     devDependencies:
+      '@mcswift/esbuild':
+        specifier: ^1.0.7
+        version: 1.0.7(esbuild@0.20.2)
+      '@mcswift/node':
+        specifier: ^1.0.3
+        version: 1.0.7
+      '@mcswift/tsc':
+        specifier: ^1.0.7
+        version: 1.0.7
       '@tvvins/core':
         specifier: workspace:^
         version: link:../core
       '@types/connect':
         specifier: ^3.4.38
         version: 3.4.38
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
+      esbuild:
+        specifier: ^0.20.2
+        version: 0.20.2
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
+      tsx:
+        specifier: ^4.7.2
+        version: 4.7.2
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
@@ -1645,7 +1666,7 @@ packages:
     resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
     dependencies:
       '@types/jsonfile': 6.1.4
-      '@types/node': 20.12.4
+      '@types/node': 20.12.7
     dev: true
 
   /@types/http-assert@1.5.5:

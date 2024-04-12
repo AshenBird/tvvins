@@ -1,9 +1,11 @@
-import {  ConfigEnv, UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
+import {  UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
 import { join} from "node:path";
 import { existsSync, readFileSync,  statSync } from "node:fs";
 import type { IncomingMessage, NextHandleFunction } from "connect";
 import { ServerResponse } from "node:http";
-import { Tvvins, defineMiddleWare } from "@tvvins/core";
+import { defineMiddleWare } from "../../Middleware";
+import { Tvvins } from "../../type";
+import { unwrapViteConfig } from "../../options";
 
 const createViteDevServer = async (viteOptions:UserConfigExport)=>{
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions),{
@@ -64,20 +66,9 @@ const createProdMiddleware = (viteOptions:UserConfigExport):Tvvins.Middleware=>{
 
 
 // @todo 动态加载 node 的变化
-export const createStaticMiddleware = (options:Tvvins.InitOptions,viteOptions:UserConfigExport)=>{
+export const createStaticMiddleware = (viteOptions:UserConfigExport)=>{
   const isDev = process.env.TVVINS_MODE==="dev"
   if(!isDev) return createProdMiddleware(viteOptions)
   return createDevMiddleware(viteOptions)
 }
 
-export const unwrapViteConfig = async (userConfig: UserConfigExport) => {
-  const configEnv: ConfigEnv = {
-    command: "serve",
-    mode: "development",
-  };
-  const config = await (typeof userConfig === "function"
-    ? userConfig(configEnv)
-    : userConfig);
-
-  return config;
-};

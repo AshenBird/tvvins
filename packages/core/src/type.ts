@@ -24,9 +24,11 @@ export type AppEventMap = {
   export type InitBuildOptions = {
     source?: string; // @default "./src"
     output?: string; // @default "./dist"
+    vite?:UserConfigExport
   };
   export type Mode = "build"|"dev"|"runtime"
-  export type MergedInitOptions= Required<InitOptions>&{
+  export type MergedInitOptions= Omit<Required<InitOptions>,"build">&{
+    build:Required<InitBuildOptions>
     mode:Mode
   }
   export interface ResolvedInitBuildOptions extends Required<InitBuildOptions>{
@@ -61,13 +63,13 @@ export type AppEventMap = {
   export interface PluginObj{
     name: string;
     middlewares?: Middleware[];
-    build?: EsbuildPlugin; 
+    build?: {
+      plugins?:EsbuildPlugin[]
+      vite?:UserConfigExport
+    }; 
   }
-  // export interface PluginBuildOptions extends InitBuildOptions {
-  //   plugin: EsbuildPlugin[];
-  // }
   export interface Plugin {
-    (option: Required<InitOptions>): PluginObj;
+    (option: MergedInitOptions): PluginObj;
   }
   export interface ResolvedPlugin {}
 
