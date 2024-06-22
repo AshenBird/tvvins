@@ -9,14 +9,37 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+
+// 任务
+model Task {
+  id         Int      @id @default(autoincrement())
+  pid        Int
+  parent     Task?    @relation("parent", fields: [pid], references: [id])
+  title      String
+  detail     String?
+  importance Int      @default(5)
+  urgency    Int      @default(5)
+  preId      Int
+  pre        Task?    @relation("dependency", fields: [preId], references: [id])
+  posts      Task[]   @relation("dependency")
+  children   Task[]   @relation("parent")
+  logs       Log[]
+  stauts     String
+  createdat  DateTime @default(now())
+  updatedat  DateTime
 }
 
-model User2 {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+// enum TaskStatus {
+//   todo
+//   finish
+// }
+
+// 变更日志
+model Log {
+  id        Int      @id @default(autoincrement())
+  task      Task     @relation(fields: [taskId], references: [id])
+  taskId    Int
+  from      String?
+  to        String
+  createdat DateTime @default(now())
 }

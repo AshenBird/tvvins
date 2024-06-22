@@ -5,7 +5,7 @@ var isAPI = (val) => {
   return val[IDENTITY] === "api";
 };
 var _defineAPI = (store, handle, schema) => {
-  console.debug(new Error().stack);
+  // console.debug(new Error().stack);
   const genId = () => {
     const id2 = nanoid();
     if (!store.has(id2))

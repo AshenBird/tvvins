@@ -1,8 +1,15 @@
+/**
+ * @module
+ * 命令:
+ * - start 运行编译后的代码 mode: server stage: production
+ * - dev 运行开发服务 mode: server stage: development
+ * - build 运行构建命令 mode: build stage: production
+ */
 import { Logger } from "@mcswift/base-utils";
 import { Cli } from "@mcswift/cli"
 import { getCommandFile } from "@mcswift/node"
-import {  resolve } from "path";
-import { cwd} from "node:process";
+import { resolve } from "path";
+import { cwd } from "node:process";
 import { spawn } from "child_process";
 import dotenv from "dotenv"
 dotenv.config()
@@ -20,7 +27,10 @@ const start = async (isDev:boolean,entry:string)=>{
   spawn(command,args,{
     stdio:"inherit",
     shell:true,
-    env:Object.assign({TVVINS_MODE:"development"},process.env)
+    env:Object.assign({
+      TVVINS_STAGE:"development",
+      TVVINS_MODE:"server",
+    },process.env)
   })
 }
 
