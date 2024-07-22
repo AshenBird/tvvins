@@ -1,4 +1,3 @@
-export declare const ID: unique symbol;
 export declare const IDENTITY: unique symbol;
 export declare const NAME: unique symbol;
 export declare const FILENAME: unique symbol;

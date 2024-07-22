@@ -20,11 +20,86 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/server/core/store.ts
 var store_exports = {};
 __export(store_exports, {
-  store: () => store
+  Store: () => Store
 });
 module.exports = __toCommonJS(store_exports);
-var store = /* @__PURE__ */ new Map();
+var import_fs_extra = require("fs-extra");
+var import_node_fs = require("node:fs");
+var import_node_path = require("node:path");
+var import_node_process = require("node:process");
+var import_nanoid = require("nanoid");
+var Store = class {
+  data = /* @__PURE__ */ new Map();
+  _key;
+  get key() {
+    return this._key;
+  }
+  path = (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
+  constructor() {
+    const raw = (0, import_node_fs.existsSync)(this.path) ? (0, import_fs_extra.readJSONSync)(this.path) : {
+      key: (0, import_nanoid.nanoid)(),
+      files: []
+    };
+    this._key = raw.key;
+    for (const file of raw.files) {
+      const { filename, apis } = file;
+      const map = this.createApiMap();
+      for (const { id, name } of apis) {
+        map.set(name, { id, name });
+      }
+      this.data.set(filename, map);
+    }
+  }
+  get(filename, name) {
+    const file = this.data.get(filename);
+    if (!file) {
+      const map = this.createApiMap();
+      const id = (0, import_nanoid.nanoid)();
+      map.set(name, { name, id });
+      this.data.set(filename, /* @__PURE__ */ new Map());
+      return id;
+    }
+    const api = file.get(name);
+    if (!api) {
+      const id = (0, import_nanoid.nanoid)();
+      file.set(name, { id, name });
+      return;
+    }
+  }
+  empty() {
+    this.data = /* @__PURE__ */ new Map();
+    this._key = (0, import_nanoid.nanoid)();
+    const raw = {
+      key: (0, import_nanoid.nanoid)(),
+      files: []
+    };
+    this._save(raw);
+  }
+  _save(raw) {
+    (0, import_fs_extra.ensureFileSync)(this.path);
+    (0, import_node_fs.writeFileSync)(this.path, JSON.stringify(raw), {
+      encoding: "utf-8"
+    });
+  }
+  save() {
+    const raw = {
+      key: (0, import_nanoid.nanoid)(),
+      files: []
+    };
+    for (const [filename, map] of this.data) {
+      const file = {
+        filename,
+        apis: [...map.values()]
+      };
+      raw.files.push(file);
+    }
+    this._save(raw);
+  }
+  createApiMap() {
+    return /* @__PURE__ */ new Map();
+  }
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  store
+  Store
 });

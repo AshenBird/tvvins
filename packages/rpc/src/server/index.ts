@@ -5,11 +5,11 @@ import { resHandle } from "./core/response";
 import { _defineAPI } from "./core/api";
 import { join, normalize, relative, resolve, sep } from "node:path";
 import { vitePlugin } from "./build";
-import { nanoid } from "nanoid";
-import { readJSONSync } from "fs-extra";
+// import { nanoid } from "nanoid";
+// import { readJSONSync } from "fs-extra";
 import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-import { cwd } from "node:process";
+// import { cwd } from "node:process";
 import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
 export const useRPC = (options: Partial<RPCOptions> = {}) => {

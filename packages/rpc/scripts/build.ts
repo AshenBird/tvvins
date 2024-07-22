@@ -18,7 +18,7 @@ const esbuildOptions:BuildOptions = {
 export const main = async ()=>{
   buildModule("client")
   buildModule("server")
-  buildModule("plugin")
+  // buildModule("plugin")
   genTypes()
 }
 

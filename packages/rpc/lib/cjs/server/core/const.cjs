@@ -22,13 +22,11 @@ var const_exports = {};
 __export(const_exports, {
   DATA: () => DATA,
   FILENAME: () => FILENAME,
-  ID: () => ID,
   IDENTITY: () => IDENTITY,
   NAME: () => NAME,
   TYPE: () => TYPE
 });
 module.exports = __toCommonJS(const_exports);
-var ID = Symbol("id");
 var IDENTITY = Symbol("identity");
 var NAME = Symbol("name");
 var FILENAME = Symbol("file-name");
@@ -38,7 +36,6 @@ var TYPE = Symbol("type");
 0 && (module.exports = {
   DATA,
   FILENAME,
-  ID,
   IDENTITY,
   NAME,
   TYPE

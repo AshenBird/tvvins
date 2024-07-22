@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/rpc",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta3",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"
@@ -15,11 +15,6 @@
       "import": "./lib/esm/client/index.mjs",
       "require": "./lib/cjs/client/index.cjs",
       "types": "./lib/types/client/index.d.ts"
-    },
-    "./plugin": {
-      "import": "./lib/esm/plugin/index.mjs",
-      "require": "./lib/cjs/plugin/index.cjs",
-      "types": "./lib/types/plugin/index.d.ts"
     }
   },
   "keywords": [],
