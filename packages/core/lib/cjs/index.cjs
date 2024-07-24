@@ -27,15 +27,20 @@ module.exports = __toCommonJS(src_exports);
 var import_node_process = require("node:process");
 var import_App = require("./App.cjs");
 var import_options = require("./options.cjs");
+var import_build = require("./build.cjs");
+var import_static = require("./plugins/view/static.cjs");
 __reExport(src_exports, require("./type.cjs"), module.exports);
 __reExport(src_exports, require("./Middleware.cjs"), module.exports);
 var useTvvins = (options) => {
   const mode = import_node_process.env["TVVINS_MODE"];
+  console.debug(mode);
   const resolved = (0, import_options.resolveOptions)(options, mode);
-  if (mode === "runtime" || mode === "dev") {
+  if (mode === "server") {
     const app = new import_App.App(resolved);
+    app.use((0, import_static.createStaticMiddleware)(resolved.build.vite));
     return app;
   }
+  (0, import_build.build)(resolved);
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

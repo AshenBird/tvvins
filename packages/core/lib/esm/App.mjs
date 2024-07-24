@@ -9,7 +9,7 @@ var App = class extends EventEmitter {
   _httpServer;
   _connect;
   get isDevelopment() {
-    return process.env.TVVINS_MODE === "development";
+    return process.env.TVVINS_STAGE === "development";
   }
   get httpServer() {
     return this._httpServer;
@@ -21,9 +21,9 @@ var App = class extends EventEmitter {
     super();
     this._options = options;
     Object.freeze(this._options);
-    this.init();
     this._connect = connect();
     this._httpServer = createServer(this._connect);
+    this.init();
   }
   async init() {
     for (const middleware of this._options.middlewares) {
@@ -32,11 +32,14 @@ var App = class extends EventEmitter {
     this.listen();
   }
   async listen() {
-    if (process.env["TVVINS_RUNTIME"] === "builder") {
+    if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
+      if (!middleware) {
+        continue;
+      }
       if (middleware.isConnect) {
         this._connect.use(middleware.handle);
         continue;
@@ -49,6 +52,7 @@ var App = class extends EventEmitter {
       return null;
     if (!this.options)
       return null;
+    console.debug(this.options.port);
     this._httpServer.listen(this.options.port);
   }
   use(middleware, name) {

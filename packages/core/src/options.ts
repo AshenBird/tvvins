@@ -1,10 +1,10 @@
-import { resolve } from "path";
+import { join, resolve } from "path";
 import { Tvvins } from "./type";
 import { mergeArray, mergeRecord } from "./utils";
 import { cwd } from "process";
 import { viewPlugin } from "./plugins/view";
 import type { ConfigEnv, UserConfigExport } from "vite";
-import { mergeConfig } from "vite"
+import { mergeConfig,resolveConfig } from "vite"
 
 const DEFAULT_OPTION: Required<Tvvins.InitOptions>&{
   build:Required<Tvvins.InitBuildOptions>
@@ -17,10 +17,10 @@ const DEFAULT_OPTION: Required<Tvvins.InitOptions>&{
   build: {
     source: "./src",
     output: "./dist",
-    vite:{
-      publicDir:resolve(cwd(), "./public")
-    }
-  },
+  },  
+  vite:{
+    publicDir:resolve(cwd(), "./public")
+  }
 };
 
 export const mergeOptions = <
@@ -36,27 +36,26 @@ export const mergeOptions = <
 export const resolveOptions = <T extends Tvvins.Mode>(
   raw: Tvvins.InitOptions,
   mode: T
-): T extends "runtime"
-  ? Tvvins.ResolvedRunTimeInitOptions
-  : Tvvins.ResolvedInitOptions => {
+): T extends "server" ? Tvvins.ResolvedRunTimeInitOptions : Tvvins.ResolvedInitOptions => {
   const merged = mergeOptions(DEFAULT_OPTION, raw);
-  // const mode = env["TVVINS_MODE"] as Tvvins.Mode
   Reflect.set(merged, "mode", mode);
   const buildPlugins: Tvvins.ResolvedInitBuildOptions["plugins"] = [];
-  let vite : Tvvins.ResolvedInitBuildOptions["vite"] ={}
+  let  vite  = mergeConfig(resolveConfig({
+    configFile:join(process.cwd(),"vite.config.ts")
+  },"serve"),unwrapViteConfig(merged?.vite||{}))
   for (const plugin of merged.plugins) {
-    const { middlewares = [], build } = plugin(
+    const { middlewares = [], build,vite:pVite={} } = plugin(
       merged as Tvvins.MergedInitOptions
     );
     merged.middlewares = mergeArray(merged.middlewares, middlewares);
     if (build) {
       buildPlugins.push(...(build.plugins||[]));
-      vite = mergeConfig(vite,unwrapViteConfig(build.vite||{}))
+      vite = mergeConfig(vite,unwrapViteConfig(pVite))
     }
   }
-  if (mode === "runtime") {
+  if (mode === "server") {
     Reflect.deleteProperty(merged, "build");
-    return merged as unknown as T extends "runtime"
+    return merged as unknown as T extends "server"
     ? Tvvins.ResolvedRunTimeInitOptions
     : Tvvins.ResolvedInitOptions
   }

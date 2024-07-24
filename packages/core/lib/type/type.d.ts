@@ -23,10 +23,12 @@ export declare namespace Tvvins {
         output?: string;
         vite?: UserConfigExport;
     };
-    type Mode = "build" | "dev" | "runtime";
+    type Mode = "build" | "server";
+    type Stage = "development" | "production" | "test";
     type MergedInitOptions = Omit<Required<InitOptions>, "build"> & {
         build: Required<InitBuildOptions>;
         mode: Mode;
+        stage: Stage;
     };
     interface ResolvedInitBuildOptions extends Required<InitBuildOptions> {
         plugins: EsbuildPlugin[];

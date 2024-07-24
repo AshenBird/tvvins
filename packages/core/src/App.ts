@@ -11,7 +11,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
   private _httpServer: HttpServer | undefined;
   private _connect: ConnectServer;
   get isDevelopment() {
-    return process.env.TVVINS_MODE === "development";
+    return process.env.TVVINS_STAGE === "development";
   }
   get httpServer() {
     return this._httpServer;
@@ -23,9 +23,9 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     super();
     this._options = options
     Object.freeze(this._options);
-    this.init();
     this._connect = connect();
     this._httpServer = createServer(this._connect);
+    this.init();
   }
   private async init() {
     // 注册中间件
@@ -35,11 +35,14 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     this.listen();
   }
   private async listen() {
-    if (process.env["TVVINS_RUNTIME"] === "builder") {
+    if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
+      if(!middleware){
+        continue
+      }
       if (middleware.isConnect) {
         this._connect.use(middleware.handle);
         continue;
@@ -50,6 +53,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     this.emit("listen");
     if (!this._httpServer) return null as never;
     if (!this.options) return null as never;
+    console.debug(this.options.port)
     this._httpServer.listen(this.options.port);
   }
   use(middleware: Tvvins.Middleware, name?: string | symbol) {

@@ -4,6 +4,15 @@
  * - start 运行编译后的代码 mode: server stage: production
  * - dev 运行开发服务 mode: server stage: development
  * - build 运行构建命令 mode: build stage: production
+ * 
+ * TVVINS_MODE:
+ * - server
+ * - build
+ * 
+ * TVVINS_STAGE:
+ * - development
+ * - production
+ * - test
  */
 import { Logger } from "@mcswift/base-utils";
 import { Cli } from "@mcswift/cli"

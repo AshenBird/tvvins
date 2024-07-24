@@ -1,4 +1,4 @@
-import {  UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
+import {  ResolvedConfig, UserConfig, UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
 import { join} from "node:path";
 import { existsSync, readFileSync,  statSync } from "node:fs";
 import type { IncomingMessage, NextHandleFunction } from "connect";
@@ -34,7 +34,7 @@ const matchContentType = (path:string)=>{
   return "text/plain"
 }
 
-const createProdMiddleware = (viteOptions:UserConfigExport):Tvvins.Middleware=>{
+const createProdMiddleware = (viteOptions:UserConfig):Tvvins.Middleware=>{
   const handle:NextHandleFunction = async (req,res,next)=>{
     const { outDir }  = (await resolveViteConfig(await unwrapViteConfig(viteOptions),"build")).build
     const {url} = req
@@ -66,7 +66,7 @@ const createProdMiddleware = (viteOptions:UserConfigExport):Tvvins.Middleware=>{
 
 
 // @todo 动态加载 node 的变化
-export const createStaticMiddleware = (viteOptions:UserConfigExport)=>{
+export const createStaticMiddleware = (viteOptions:UserConfig)=>{
   const isDev = process.env.TVVINS_MODE==="dev"
   if(!isDev) return createProdMiddleware(viteOptions)
   return createDevMiddleware(viteOptions)

@@ -36,7 +36,7 @@ var resolveOptions = (raw, mode) => {
       vite = mergeConfig(vite, unwrapViteConfig(build.vite || {}));
     }
   }
-  if (mode === "runtime") {
+  if (mode === "server") {
     Reflect.deleteProperty(merged, "build");
     return merged;
   }

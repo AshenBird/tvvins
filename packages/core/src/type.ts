@@ -1,6 +1,6 @@
 import type { Context } from "./Context";
 import type { Server as ConnectServer, HandleFunction } from "connect";
-import type { UserConfigExport } from "vite";
+import type { ResolvedConfig, UserConfigExport } from "vite";
 import type { Plugin as EsbuildPlugin } from "esbuild";
 import type { App as A } from "./App"
 import type { Context as C } from "./Context"
@@ -13,32 +13,34 @@ export declare namespace Tvvins {
     plugins?: Tvvins.Plugin[]; // @default []
     modules?: Module[]; // @default []
     middlewares?: Middleware[]; // @default []
-    build?: InitBuildOptions; // @default {}
+    build?: InitBuildOptions; // @default {},
+    vite?: UserConfigExport
   };
-  
-export type AppEventMap = {
-  "pre-mount": [];
-  listen: [];
-};
+
+  export type AppEventMap = {
+    "pre-mount": [];
+    listen: [];
+  };
 
   export type InitBuildOptions = {
     source?: string; // @default "./src"
     output?: string; // @default "./dist"
-    vite?:UserConfigExport
   };
-  export type Mode = "build"|"dev"|"runtime"
-  export type MergedInitOptions= Omit<Required<InitOptions>,"build">&{
-    build:Required<InitBuildOptions>
-    mode:Mode
+  export type Mode = "build" | "server"
+  export type Stage = "development" | "production" | "test"
+  export type MergedInitOptions = Omit<Required<InitOptions>, "build"> & {
+    build: Required<InitBuildOptions>
+    mode: Mode
+    stage: Stage
   }
-  export interface ResolvedInitBuildOptions extends Required<InitBuildOptions>{
-    plugins:EsbuildPlugin[]
+  export interface ResolvedInitBuildOptions extends Required<InitBuildOptions> {
+    plugins: EsbuildPlugin[]
   }
-  export interface ResolvedInitOptions extends Omit<MergedInitOptions,"plugins"|"build">{
-    plugins:PluginObj[]
-    build:ResolvedInitBuildOptions
+  export interface ResolvedInitOptions extends Omit<MergedInitOptions, "plugins" | "build"> {
+    plugins: PluginObj[]
+    build: ResolvedInitBuildOptions
   }
-  export type ResolvedRunTimeInitOptions = Omit<ResolvedInitOptions,"build">
+  export type ResolvedRunTimeInitOptions = Omit<ResolvedInitOptions, "build">
 
 
   export type Middleware = ConnectMiddleware | TvvinsMiddleware;
@@ -60,21 +62,21 @@ export type AppEventMap = {
   export type RequestHandle = (ctx: Context, next: () => any) => any;
 
   /*--- Plugin -----*/
-  export interface PluginObj{
+  export interface PluginObj {
     name: string;
     middlewares?: Middleware[];
     build?: {
-      plugins?:EsbuildPlugin[]
-      vite?:UserConfigExport
-    }; 
+      plugins?: EsbuildPlugin[]
+    };
+    vite?:UserConfigExport
   }
   export interface Plugin {
     (option: MergedInitOptions): PluginObj;
   }
-  export interface ResolvedPlugin {}
+  export interface ResolvedPlugin { }
 
   /*--- Module -----*/
-  export interface Module {}
+  export interface Module { }
 }
 
 /*--------------------------------------------------*/
