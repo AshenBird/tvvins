@@ -25,8 +25,11 @@ var transform = async (code, id, idKey) => {
     result[Reflect.get(API, ID)] = k;
   }
   if (!Object.keys(result).length)
-    return code;
-  return codeGen(id, result);
+    return { code, map: null };
+  return {
+    code: codeGen(id, result),
+    map: null
+  };
 };
 export {
   transform

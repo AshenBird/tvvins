@@ -18,13 +18,13 @@ export type RPCOptions = {
 };
 
 export interface ApiHandle<Payload, Result> {
-  (payload: Payload): Promise<Result> | Result;
+  (payload: Payload|undefined): Promise<Result> | Result;
 }
 
 export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
 
 export interface API<Payload = any, Result = any> {
-  (payload: Payload): Promise<Result>;
+  (payload?: Payload): Promise<Result>;
   [IDENTITY]: "api";
   // christen: Christen<Payload, Result>;
 }

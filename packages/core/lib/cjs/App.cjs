@@ -39,7 +39,7 @@ var import_node_events = require("node:events");
 var import_Middleware = require("./Middleware.cjs");
 var App = class extends import_node_events.EventEmitter {
   middleWares = [];
-  _options;
+  _options = null;
   _httpServer;
   _connect;
   get isDevelopment() {
@@ -51,15 +51,14 @@ var App = class extends import_node_events.EventEmitter {
   get options() {
     return this._options;
   }
-  constructor(options) {
+  constructor() {
     super();
+    this._connect = (0, import_connect.default)();
+  }
+  async start(options) {
     this._options = options;
     Object.freeze(this._options);
-    this._connect = (0, import_connect.default)();
     this._httpServer = (0, import_node_http.createServer)(this._connect);
-    this.init();
-  }
-  async init() {
     for (const middleware of this._options.middlewares) {
       this.use(middleware);
     }
@@ -86,7 +85,6 @@ var App = class extends import_node_events.EventEmitter {
       return null;
     if (!this.options)
       return null;
-    console.debug(this.options.port);
     this._httpServer.listen(this.options.port);
   }
   use(middleware, name) {

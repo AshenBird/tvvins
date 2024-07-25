@@ -7,7 +7,7 @@ import { connectMiddlewareWrap } from "./Middleware";
 
 export class App extends EventEmitter<Tvvins.AppEventMap> {
   private middleWares: Tvvins.Middleware[] = [];
-  private _options: Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions
+  private _options: Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions|null =null
   private _httpServer: HttpServer | undefined;
   private _connect: ConnectServer;
   get isDevelopment() {
@@ -19,15 +19,14 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
   get options() {
     return this._options;
   }
-  constructor(options:Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions) {
+  constructor() {
     super();
+    this._connect = connect();
+  }
+  public async start(options:Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions) {
     this._options = options
     Object.freeze(this._options);
-    this._connect = connect();
     this._httpServer = createServer(this._connect);
-    this.init();
-  }
-  private async init() {
     // 注册中间件
     for (const middleware of this._options.middlewares) {
       this.use(middleware);
@@ -35,6 +34,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     this.listen();
   }
   private async listen() {
+    // 构建模式直接退出
     if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
@@ -53,7 +53,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     this.emit("listen");
     if (!this._httpServer) return null as never;
     if (!this.options) return null as never;
-    console.debug(this.options.port)
+    // @todo 监听信息输出
     this._httpServer.listen(this.options.port);
   }
   use(middleware: Tvvins.Middleware, name?: string | symbol) {

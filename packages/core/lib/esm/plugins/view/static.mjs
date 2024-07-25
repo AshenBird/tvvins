@@ -63,7 +63,7 @@ var createProdMiddleware = (viteOptions) => {
   return defineMiddleWare(handle, "official-view", true);
 };
 var createStaticMiddleware = (viteOptions) => {
-  const isDev = process.env.TVVINS_MODE === "dev";
+  const isDev = process.env.TVVINS_STAGE === "development";
   if (!isDev)
     return createProdMiddleware(viteOptions);
   return createDevMiddleware(viteOptions);

@@ -1,4 +1,4 @@
-import {  ResolvedConfig, UserConfig, UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
+import {  InlineConfig, type UserConfig, UserConfigExport, createServer, mergeConfig,resolveConfig as resolveViteConfig } from "vite"
 import { join} from "node:path";
 import { existsSync, readFileSync,  statSync } from "node:fs";
 import type { IncomingMessage, NextHandleFunction } from "connect";
@@ -7,14 +7,15 @@ import { defineMiddleWare } from "../../Middleware";
 import { Tvvins } from "../../type";
 import { unwrapViteConfig } from "../../options";
 
-const createViteDevServer = async (viteOptions:UserConfigExport)=>{
+const createViteDevServer = async (viteOptions:InlineConfig)=>{
+  
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions),{
     server:{middlewareMode:true}
   })
   return createServer(viteConfig)
 }
 
-export const createDevMiddleware = (viteOptions:UserConfigExport)=>{
+export const createDevMiddleware = (viteOptions:InlineConfig)=>{
   const createServerJob= createViteDevServer(viteOptions)
   const handle = async (req:IncomingMessage,res:ServerResponse,next:Function)=>{
     const server = await createServerJob
@@ -67,7 +68,7 @@ const createProdMiddleware = (viteOptions:UserConfig):Tvvins.Middleware=>{
 
 // @todo 动态加载 node 的变化
 export const createStaticMiddleware = (viteOptions:UserConfig)=>{
-  const isDev = process.env.TVVINS_MODE==="dev"
+  const isDev = process.env.TVVINS_STAGE==="development"
   if(!isDev) return createProdMiddleware(viteOptions)
   return createDevMiddleware(viteOptions)
 }

@@ -78,9 +78,12 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
             },
           },
         ],
-        vite: {
-          plugins: [vitePlugin(apiDir, idStore)]
-        }
+      },
+      vite: {
+        plugins: [
+          // @ts-ignore
+          vitePlugin(apiDir, idStore)
+        ]
       }
     };
     return result

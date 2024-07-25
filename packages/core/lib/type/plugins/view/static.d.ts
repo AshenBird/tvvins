@@ -1,5 +1,5 @@
-import { UserConfigExport, createServer } from "vite";
+import { InlineConfig, type UserConfig, createServer } from "vite";
 import { Tvvins } from "../../type";
-export declare const createDevMiddleware: (viteOptions: UserConfigExport) => Tvvins.ConnectMiddleware;
+export declare const createDevMiddleware: (viteOptions: InlineConfig) => Tvvins.ConnectMiddleware;
 export declare const _createViteServer: typeof createServer;
-export declare const createStaticMiddleware: (viteOptions: UserConfigExport) => Tvvins.Middleware;
+export declare const createStaticMiddleware: (viteOptions: UserConfig) => Tvvins.Middleware;

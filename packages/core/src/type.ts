@@ -1,6 +1,6 @@
 import type { Context } from "./Context";
 import type { Server as ConnectServer, HandleFunction } from "connect";
-import type { ResolvedConfig, UserConfigExport } from "vite";
+import type { UserConfig as ViteUserConfig, UserConfigExport } from "vite";
 import type { Plugin as EsbuildPlugin } from "esbuild";
 import type { App as A } from "./App"
 import type { Context as C } from "./Context"
@@ -28,17 +28,19 @@ export declare namespace Tvvins {
   };
   export type Mode = "build" | "server"
   export type Stage = "development" | "production" | "test"
-  export type MergedInitOptions = Omit<Required<InitOptions>, "build"> & {
+  export type MergedInitOptions = Omit<Required<InitOptions>, "build"|"vite"> & {
     build: Required<InitBuildOptions>
     mode: Mode
     stage: Stage
+    vite:ViteUserConfig
   }
   export interface ResolvedInitBuildOptions extends Required<InitBuildOptions> {
     plugins: EsbuildPlugin[]
   }
-  export interface ResolvedInitOptions extends Omit<MergedInitOptions, "plugins" | "build"> {
+  export interface ResolvedInitOptions extends Omit<MergedInitOptions, "plugins" | "build"|"vite"> {
     plugins: PluginObj[]
     build: ResolvedInitBuildOptions
+    vite:ViteUserConfig
   }
   export type ResolvedRunTimeInitOptions = Omit<ResolvedInitOptions, "build">
 

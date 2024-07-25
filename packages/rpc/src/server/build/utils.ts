@@ -1,4 +1,5 @@
 
+import { TransformResult } from 'vite'
 import { isAPI } from '../core/api'
 import { pathToFileURL } from 'node:url'
 
@@ -15,7 +16,7 @@ const codeGen = (id: string, methods: Record<string,string>) => {
   }
   return result
 }
-export const transform = async (code: string, id: string,idKey:string) => {
+export const transform = async (code: string, id: string,idKey:string):Promise<TransformResult> => {
   const url = pathToFileURL(id)
   const ID = Symbol.for(idKey)
   const apiList = await import(url.toString());
@@ -24,6 +25,9 @@ export const transform = async (code: string, id: string,idKey:string) => {
     if (!isAPI(API)) continue;
     result[Reflect.get(API,ID) as string] = k
   }
-  if (!Object.keys(result).length) return code;
-  return codeGen(id, result)
+  if (!Object.keys(result).length) return {code,map:null};
+  return {
+    code:codeGen(id, result),
+    map:null
+  }
 }

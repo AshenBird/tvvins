@@ -28,7 +28,7 @@ var viewPlugin = (options) => {
   const result = {
     name: "@tvvins/view",
     middlewares: [
-      (0, import_static.createStaticMiddleware)(options.build.vite)
+      (0, import_static.createStaticMiddleware)(options.vite)
     ]
   };
   return result;

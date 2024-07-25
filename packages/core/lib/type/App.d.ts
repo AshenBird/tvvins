@@ -10,9 +10,9 @@ export declare class App extends EventEmitter<Tvvins.AppEventMap> {
     private _connect;
     get isDevelopment(): boolean;
     get httpServer(): HttpServer<typeof import("http").IncomingMessage, typeof import("http").ServerResponse> | undefined;
-    get options(): Tvvins.ResolvedInitOptions | Tvvins.ResolvedRunTimeInitOptions;
-    constructor(options: Tvvins.ResolvedInitOptions | Tvvins.ResolvedRunTimeInitOptions);
-    private init;
+    get options(): Tvvins.ResolvedInitOptions | Tvvins.ResolvedRunTimeInitOptions | null;
+    constructor();
+    start(options: Tvvins.ResolvedInitOptions | Tvvins.ResolvedRunTimeInitOptions): Promise<void>;
     private listen;
     use(middleware: Tvvins.Middleware, name?: string | symbol): this;
 }

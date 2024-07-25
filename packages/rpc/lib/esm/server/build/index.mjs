@@ -19,7 +19,25 @@ var unplugin = createUnplugin(
     }
   })
 );
-var vitePlugin = (dirs, idStore) => unplugin.vite({ dirs, idStore });
+var vitePlugin = (dirs, idStore) => ({
+  name: "@tvvins/rpc",
+  enforce: "pre",
+  // transformInclude: (id: string) => {
+  //   const { dirs } = options;
+  //   const result = dirs.some((dir) => {
+  //     const r = !normalize(relative(dir, id)).startsWith(`..${sep}`);
+  //     return r;
+  //   });
+  //   return result;
+  // },
+  async transform(code, id) {
+    const include = dirs.some((dir) => {
+      const r = !normalize(relative(dir, id)).startsWith(`..${sep}`);
+      return r;
+    });
+    return await transform(code, id, idStore.key);
+  }
+});
 export {
   vitePlugin
 };

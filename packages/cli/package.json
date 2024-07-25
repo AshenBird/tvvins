@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/cli",
-  "version": "1.0.0-beta2",
+  "version": "1.0.0-beta4",
   "description": "",
   "type": "module",
   "scripts": {
@@ -27,6 +27,7 @@
     "@mcswift/cli": "^1.0.9",
     "@mcswift/esbuild": "^1.0.9",
     "@mcswift/node": "^1.0.9",
+    "@mcswift/utils": "^1.0.9",
     "chalk": "^5.2.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.20.2",

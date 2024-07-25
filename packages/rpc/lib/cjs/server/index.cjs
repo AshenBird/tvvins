@@ -92,10 +92,13 @@ var useRPC = (options = {}) => {
               });
             }
           }
-        ],
-        vite: {
-          plugins: [(0, import_build.vitePlugin)(apiDir, idStore)]
-        }
+        ]
+      },
+      vite: {
+        plugins: [
+          // @ts-ignore
+          (0, import_build.vitePlugin)(apiDir, idStore)
+        ]
       }
     };
     return result;

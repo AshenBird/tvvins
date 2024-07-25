@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import {addTask} from "../apis/index"
-await addTask()
+// import { ref } from "vue";
+import {gatTasks} from "../api/index"
+ gatTasks().then(console.debug)
 </script>
-
 <template>
-  <div>{{ }}</div>
+  <div>aaa</div>
 </template>

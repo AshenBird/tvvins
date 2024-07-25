@@ -33,38 +33,36 @@ var import_vite = require("vite");
 var DEFAULT_OPTION = {
   host: "localhost",
   port: 8e3,
-  plugins: [import_view.viewPlugin],
+  plugins: [],
   modules: [],
   middlewares: [],
   build: {
     source: "./src",
-    output: "./dist",
-    vite: {
-      publicDir: (0, import_path.resolve)((0, import_process.cwd)(), "./public")
-    }
+    output: "./dist"
+  },
+  vite: {
+    publicDir: (0, import_path.resolve)((0, import_process.cwd)(), "./public")
   }
 };
 var mergeOptions = (a, b) => {
   return (0, import_utils.mergeRecord)(a, b);
 };
-var resolveOptions = (raw, mode) => {
+var resolveOptions = async (raw, mode) => {
   const merged = mergeOptions(DEFAULT_OPTION, raw);
   Reflect.set(merged, "mode", mode);
   const buildPlugins = [];
-  let vite = {};
+  let vite = (0, import_vite.mergeConfig)({}, await unwrapViteConfig(merged?.vite || {}));
+  merged.plugins.push(import_view.viewPlugin);
   for (const plugin of merged.plugins) {
-    const { middlewares = [], build } = plugin(
+    const { middlewares = [], build, vite: pVite = {}, name } = plugin(
       merged
     );
     merged.middlewares = (0, import_utils.mergeArray)(merged.middlewares, middlewares);
+    vite = (0, import_vite.mergeConfig)(vite, await unwrapViteConfig(pVite));
+    merged.vite = vite;
     if (build) {
       buildPlugins.push(...build.plugins || []);
-      vite = (0, import_vite.mergeConfig)(vite, unwrapViteConfig(build.vite || {}));
     }
-  }
-  if (mode === "server") {
-    Reflect.deleteProperty(merged, "build");
-    return merged;
   }
   Reflect.set(merged.build, "plugins", buildPlugins);
   Reflect.set(merged.build, "vite", vite);

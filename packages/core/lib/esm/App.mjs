@@ -5,7 +5,7 @@ import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap } from "./Middleware.mjs";
 var App = class extends EventEmitter {
   middleWares = [];
-  _options;
+  _options = null;
   _httpServer;
   _connect;
   get isDevelopment() {
@@ -17,15 +17,14 @@ var App = class extends EventEmitter {
   get options() {
     return this._options;
   }
-  constructor(options) {
+  constructor() {
     super();
+    this._connect = connect();
+  }
+  async start(options) {
     this._options = options;
     Object.freeze(this._options);
-    this._connect = connect();
     this._httpServer = createServer(this._connect);
-    this.init();
-  }
-  async init() {
     for (const middleware of this._options.middlewares) {
       this.use(middleware);
     }
@@ -52,7 +51,6 @@ var App = class extends EventEmitter {
       return null;
     if (!this.options)
       return null;
-    console.debug(this.options.port);
     this._httpServer.listen(this.options.port);
   }
   use(middleware, name) {

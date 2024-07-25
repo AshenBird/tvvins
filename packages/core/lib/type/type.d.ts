@@ -1,5 +1,5 @@
 import type { Server as ConnectServer, HandleFunction } from "connect";
-import type { UserConfigExport } from "vite";
+import type { UserConfig as ViteUserConfig, UserConfigExport } from "vite";
 import type { Plugin as EsbuildPlugin } from "esbuild";
 import type { App as A } from "./App";
 import type { Context as C } from "./Context";
@@ -13,6 +13,7 @@ export declare namespace Tvvins {
         modules?: Module[];
         middlewares?: Middleware[];
         build?: InitBuildOptions;
+        vite?: UserConfigExport;
     };
     type AppEventMap = {
         "pre-mount": [];
@@ -21,21 +22,22 @@ export declare namespace Tvvins {
     type InitBuildOptions = {
         source?: string;
         output?: string;
-        vite?: UserConfigExport;
     };
     type Mode = "build" | "server";
     type Stage = "development" | "production" | "test";
-    type MergedInitOptions = Omit<Required<InitOptions>, "build"> & {
+    type MergedInitOptions = Omit<Required<InitOptions>, "build" | "vite"> & {
         build: Required<InitBuildOptions>;
         mode: Mode;
         stage: Stage;
+        vite: ViteUserConfig;
     };
     interface ResolvedInitBuildOptions extends Required<InitBuildOptions> {
         plugins: EsbuildPlugin[];
     }
-    interface ResolvedInitOptions extends Omit<MergedInitOptions, "plugins" | "build"> {
+    interface ResolvedInitOptions extends Omit<MergedInitOptions, "plugins" | "build" | "vite"> {
         plugins: PluginObj[];
         build: ResolvedInitBuildOptions;
+        vite: ViteUserConfig;
     }
     type ResolvedRunTimeInitOptions = Omit<ResolvedInitOptions, "build">;
     type Middleware = ConnectMiddleware | TvvinsMiddleware;
@@ -58,8 +60,8 @@ export declare namespace Tvvins {
         middlewares?: Middleware[];
         build?: {
             plugins?: EsbuildPlugin[];
-            vite?: UserConfigExport;
         };
+        vite?: UserConfigExport;
     }
     interface Plugin {
         (option: MergedInitOptions): PluginObj;

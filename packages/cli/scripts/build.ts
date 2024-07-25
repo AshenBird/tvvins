@@ -4,10 +4,10 @@ import * as FS from 'node:fs'
 import * as FileSystem from "fs-extra"
 // import * as ChildProcess from 'node:child_process'
 
-import { mandatoryFileExtensionsPlugin } from '@mcswift/utils/cli'
-import { getFilePaths } from '@mcswift/utils/fs'
+// import { mandatoryFileExtensionsPlugin } from '@mcswift/utils/cli'
+import { getFilePaths } from '@mcswift/utils/node'
 import { Logger } from '@mcswift/utils'
-import { resolveCliOption } from "@mcswift/utils/cli"
+// import { resolveCliOption } from "@mcswift/utils/cli"
 import { cwd } from 'node:process'
 
 export const build = async () => {

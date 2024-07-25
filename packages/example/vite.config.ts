@@ -11,7 +11,6 @@ const vueMarkdown = (blockName:string):Plugin=>{
     transform:(code,id)=>{
       const reg = new RegExp('vue&type=' + (blockName))
       if (!reg.test(id)) return
-      console.debug(id,"match")
       // if (/\.md$/.test(id)) {
       //   code = ""
       // }
@@ -25,7 +24,8 @@ const vueMarkdown = (blockName:string):Plugin=>{
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, join(process.cwd(), 'env'))
   return {
-    plugins: [vue(), vueJsx(),vueMarkdown("readme")],
+    plugins: [
+      vue(), vueJsx()],//,vueMarkdown("readme")
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))

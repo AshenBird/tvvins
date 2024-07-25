@@ -1,6 +1,6 @@
 // src/server/core/store.ts
 import { ensureFileSync } from "fs-extra";
-import { existsSync, writeFileSync,readSync } from "node:fs";
+import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cwd } from "node:process";
 import { nanoid } from "nanoid";
@@ -12,7 +12,7 @@ var Store = class {
   }
   path = join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
   constructor() {
-    const raw = existsSync(this.path) ? JSON.parse(readSync(this.path)) : {
+    const raw = existsSync(this.path) ? JSON.parse(readFileSync(this.path, { encoding: "utf-8" })) : {
       key: nanoid(),
       files: []
     };
