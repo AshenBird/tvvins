@@ -35,6 +35,8 @@ var vitePlugin = (dirs, idStore) => ({
       const r = !normalize(relative(dir, id)).startsWith(`..${sep}`);
       return r;
     });
+    if (!include)
+      return;
     return await transform(code, id, idStore.key);
   }
 });

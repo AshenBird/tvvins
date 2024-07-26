@@ -27,8 +27,7 @@
     "esbuild": "^0.20.2",
     "fs-extra": "^11.2.0",
     "tsx": "^4.7.2",
-    "typescript": "^5.4.3",
-    "vite": "^5.2.8"
+    "typescript": "^5.4.3"
   },
   "dependencies": {
     "@mcswift/bellman": "^0.0.8",
@@ -38,6 +37,7 @@
     "koa-connect": "^2.1.0"
   },
   "peerDependencies": {
-    "@tvvins/cli": "workspace:^"
+    "@tvvins/cli": "workspace:^",
+    "vite": "^5.2.8"
   }
 }

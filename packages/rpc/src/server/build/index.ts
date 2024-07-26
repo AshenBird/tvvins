@@ -43,19 +43,8 @@ export const vitePlugin = (dirs: string[], idStore: Store): Plugin => ({
       const r = !normalize(relative(dir, id)).startsWith(`..${sep}`);
       return r;
     });
-    // if(idList.includes(id)){
-    //   console.debug("repeat:",id)
-    // }{
-    //   idList.push(id)
-    // }
     // @todo 重复编译缓存化
-    // if (id.includes("api")) {
-    //   if (!include) return
-
-    //   console.table({
-    //     id
-    //   })
-    // }
+    if (!include) return
     return await transform(code, id, idStore.key);
   },
 })
