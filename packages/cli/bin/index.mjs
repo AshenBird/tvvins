@@ -1,4 +1,4 @@
-// src/index.ts
+#!/usr/bin/env node
 import { Logger } from "@mcswift/base-utils";
 import { Cli } from "@mcswift/cli";
 import { getCommandFile } from "@mcswift/node";

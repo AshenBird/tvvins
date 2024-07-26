@@ -16,9 +16,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@mcswift/esbuild": "^1.0.9",
-    "@mcswift/node": "^1.0.9",
-    "@mcswift/tsc": "^1.0.9",
+    "@mcswift/esbuild": "^1.0.10",
+    "@mcswift/node": "^1.0.10",
+    "@mcswift/tsc": "^1.0.10",
     "@tvvins/cli": "workspace:^",
     "@types/connect": "^3.4.38",
     "@types/fs-extra": "^11.0.4",

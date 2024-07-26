@@ -11,20 +11,20 @@ importers:
   packages/cli:
     dependencies:
       '@mcswift/base-utils':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/cli':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/esbuild':
-        specifier: ^1.0.9
-        version: 1.0.9(esbuild@0.20.2)
+        specifier: ^1.0.10
+        version: 1.0.10(esbuild@0.20.2)
       '@mcswift/node':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/utils':
-        specifier: ^1.0.9
-        version: 1.0.9(esbuild@0.20.2)
+        specifier: ^1.0.10
+        version: 1.0.10(esbuild@0.20.2)
       chalk:
         specifier: ^5.2.0
         version: 5.3.0
@@ -79,14 +79,14 @@ importers:
         version: 2.1.0
     devDependencies:
       '@mcswift/esbuild':
-        specifier: ^1.0.9
-        version: 1.0.9(esbuild@0.20.2)
+        specifier: ^1.0.10
+        version: 1.0.10(esbuild@0.20.2)
       '@mcswift/node':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/tsc':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@tvvins/cli':
         specifier: workspace:^
         version: link:../cli
@@ -190,20 +190,20 @@ importers:
   packages/rpc:
     dependencies:
       '@mcswift/esbuild':
-        specifier: ^1.0.9
-        version: 1.0.9(esbuild@0.20.2)
+        specifier: ^1.0.10
+        version: 1.0.10(esbuild@0.20.2)
       '@mcswift/node':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/tsc':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/types':
-        specifier: ^1.0.9
-        version: 1.0.9
+        specifier: ^1.0.10
+        version: 1.0.10
       '@mcswift/utils':
-        specifier: ^1.0.9
-        version: 1.0.9(esbuild@0.20.2)
+        specifier: ^1.0.10
+        version: 1.0.10(esbuild@0.20.2)
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -1451,12 +1451,12 @@ packages:
       '@json2csv/plainjs': 7.0.6
     dev: false
 
-  /@mcswift/base-utils@1.0.9:
-    resolution: {integrity: sha512-mXeCWpX9InfuTYCl8MZU7Eet9gIehZ+puTj2DvkVzMhnb1yiK7tENmCPRqFiq/LSw43pAcysGUEIfqt7EI2Jvg==}
+  /@mcswift/base-utils@1.0.10:
+    resolution: {integrity: sha512-9/H5XWGVpwqCF3LjrIasJr/I6E1EnZGJhkZbDzBf6k6IF3fqeTu77pxhm+oACJhCFjBrtV6FC7WxD5h9Fcti+A==}
     dependencies:
       '@json2csv/whatwg': 7.0.6
       '@mcswift/bellman': 0.0.7
-      '@mcswift/types': 1.0.9
+      '@mcswift/types': 1.0.10
       chalk: 5.3.0
       eslint: 8.57.0
       nanoid: 5.0.6
@@ -1474,39 +1474,39 @@ packages:
     resolution: {integrity: sha512-rwVm1GkEZ2QfbuHnDb9OBVJytmXWI2DYiERAgQCmNFUqBQKaj2u/tYcdJ4neFJtTAc7nD+yYozcnP7hXvZZ3rA==}
     dev: false
 
-  /@mcswift/cli@1.0.9:
-    resolution: {integrity: sha512-ocNMghE7DVOhgYRqVxRwAOTW6K6BD3Wn+22oDWODwuhCqPKdxkc+uZZ+g5Nw38mzBYwr35XkxWqdfS2Q0kzVKw==}
+  /@mcswift/cli@1.0.10:
+    resolution: {integrity: sha512-n2AsHPn8nd5VIgMqelWmgcV/14U/9bShkXuN/k22zfNER1aJJceooZR1HqNpj/WLnRmQ1fC9r5M2LmJJogxuog==}
     dependencies:
-      '@mcswift/base-utils': 1.0.9
+      '@mcswift/base-utils': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@mcswift/esbuild@1.0.9(esbuild@0.20.2):
-    resolution: {integrity: sha512-/VXxGHbCsaRIdOuMKPuzHw1PwWiEdy9NUIEZS/uTOQjN5sjtfwiN2svYGT2MS1UyxF0uAvnDoJvj+f9klMgmDA==}
+  /@mcswift/esbuild@1.0.10(esbuild@0.20.2):
+    resolution: {integrity: sha512-CepkJ+rqMhpAhTDSBusZcXMcQbraAhRfIIXOvSqoMBHvwKqHvpUqbqEH0zLnEJAgeWwt+5n/Om9qivG3cF11sw==}
     peerDependencies:
       esbuild: ^0.20.2
     dependencies:
-      '@mcswift/types': 1.0.9
+      '@mcswift/types': 1.0.10
       esbuild: 0.20.2
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
 
-  /@mcswift/node@1.0.9:
-    resolution: {integrity: sha512-4jpzW72BeKcDyS3FQVICQJyJKVG+X3/DSpuuOoA/y0aXOqXejTDhQxy2b2uKXZsbHGO7ti3H5DqVPSV/67hbxQ==}
+  /@mcswift/node@1.0.10:
+    resolution: {integrity: sha512-cAYsVSizCrF9cSgo/GG8P4mZLZQOujDpaP7r77DFZ7x9m/KiRY4aZmtQEerBdSNBNfja7HpQRJ42XXzD22Xk4A==}
     dependencies:
-      '@mcswift/types': 1.0.9
+      '@mcswift/types': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
 
-  /@mcswift/npm@1.0.9:
-    resolution: {integrity: sha512-iuvNiIw2RQrHxFnxQJr5q4nC1NUymuujgBzPMIBgvxxixbRsRh++bNlqX/0+1pHbLGPg59fcYoSHY4KX+JTalg==}
+  /@mcswift/npm@1.0.10:
+    resolution: {integrity: sha512-62D6FFBYbflsTzoql/cYr8iqIulIIhm0KhRcKxB6gBs2R++gwpEPA7IUk42BBJ0JWIRHRJkjk/x2jYdi+mdKEw==}
     dependencies:
-      '@mcswift/node': 1.0.9
-      '@mcswift/types': 1.0.9
+      '@mcswift/node': 1.0.10
+      '@mcswift/types': 1.0.10
       eslint: 8.57.0
       npm: 10.5.1
       pnpm: 8.15.6
@@ -1514,55 +1514,55 @@ packages:
       - supports-color
     dev: false
 
-  /@mcswift/svn@1.0.9:
-    resolution: {integrity: sha512-3dOxh/5itNWWJreTVt9eXsbDKUQD0z9Q4AZGVFJa05DjPxq4QMO4sphnLpI7vad/PmYJpaviiAhrlFgXT/8ZpA==}
+  /@mcswift/svn@1.0.10:
+    resolution: {integrity: sha512-BBj9/jMZNjdDkf/bvnHUiyICJ2oh99RzUF3NdhJdOab2ZlAj1Q/Md78xw4w2fy8SNMncKbDaVOBSLtZX3n9xnw==}
     dependencies:
-      '@mcswift/node': 1.0.9
-      '@mcswift/types': 1.0.9
+      '@mcswift/node': 1.0.10
+      '@mcswift/types': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@mcswift/tsc@1.0.9:
-    resolution: {integrity: sha512-N5WG5BPepGTpe+tCBzFE/YUmu9OnUUWZEJAGjOBEpKN/jKgjXiCWsjueF95frx5zMid4Gv+YLtq+54AxAt709Q==}
+  /@mcswift/tsc@1.0.10:
+    resolution: {integrity: sha512-RU0D3OK4thbMm9fAenAP1HI9YmQHcKzA7NgID3itFIJOdkM5dezcdbQ9JoHPt+p6Wt3q+zvLt/pEfSRrTekdqQ==}
     dependencies:
-      '@mcswift/node': 1.0.9
-      '@mcswift/types': 1.0.9
+      '@mcswift/node': 1.0.10
+      '@mcswift/types': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
 
-  /@mcswift/types@1.0.9:
-    resolution: {integrity: sha512-cP4U5h7+TNbcXE8i0Z38wvZSSU9ck/kMbWhtdjW52Xf1mivYQdoKtTb9SuNIQKzVuE9PW0LssQGmqL/jTHlgXg==}
+  /@mcswift/types@1.0.10:
+    resolution: {integrity: sha512-+4GMiETcgQ8guwqVx8xAArifsfSj3j5ChGT89CIndhHDGLuEMKJvcxAfccfMXgZQnud8RjVYc40NJBUErKOxhA==}
     dependencies:
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
 
-  /@mcswift/utils@1.0.9(esbuild@0.20.2):
-    resolution: {integrity: sha512-nZ65hSaXXfR1WGNHCJhpjALFM3N/tScSe/Ts8hgGN8wcqY0m13JqJzie7kw34BuaSNYS2EPDy4B119ua8HqcNw==}
+  /@mcswift/utils@1.0.10(esbuild@0.20.2):
+    resolution: {integrity: sha512-7zsiUCCa0wwo3oqmofdXAzHSxucQPnxuY5+v1H0h726BgzQU8uBRvzbHU9G4smidArO93lFUCdFr/dNvs/7PWg==}
     dependencies:
-      '@mcswift/base-utils': 1.0.9
-      '@mcswift/cli': 1.0.9
-      '@mcswift/esbuild': 1.0.9(esbuild@0.20.2)
-      '@mcswift/node': 1.0.9
-      '@mcswift/npm': 1.0.9
-      '@mcswift/svn': 1.0.9
-      '@mcswift/tsc': 1.0.9
-      '@mcswift/types': 1.0.9
-      '@mcswift/windows': 1.0.9
+      '@mcswift/base-utils': 1.0.10
+      '@mcswift/cli': 1.0.10
+      '@mcswift/esbuild': 1.0.10(esbuild@0.20.2)
+      '@mcswift/node': 1.0.10
+      '@mcswift/npm': 1.0.10
+      '@mcswift/svn': 1.0.10
+      '@mcswift/tsc': 1.0.10
+      '@mcswift/types': 1.0.10
+      '@mcswift/windows': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - esbuild
       - supports-color
     dev: false
 
-  /@mcswift/windows@1.0.9:
-    resolution: {integrity: sha512-d8Iz/TGzSwkRDqWix1vLfw11XcB7H5kSyxA60NU3aZ4zj9ov/HrWCadky+pKyv0SarrasqTVGQ7vdM4T/uXq7A==}
+  /@mcswift/windows@1.0.10:
+    resolution: {integrity: sha512-W5twA5O1fwutADcXyhjqMEx8oWB2zyaUs2qN3CrAYTQCCJ298fRwkxlZTh2WeLc9LkI/DQAJdKgR9H7er+uRoA==}
     dependencies:
-      '@mcswift/node': 1.0.9
-      '@mcswift/types': 1.0.9
+      '@mcswift/node': 1.0.10
+      '@mcswift/types': 1.0.10
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
