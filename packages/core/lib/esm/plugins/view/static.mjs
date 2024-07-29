@@ -38,7 +38,7 @@ var createProdMiddleware = (viteOptions) => {
     const { url } = req;
     if (!url)
       return next();
-    let path = join(outDir, url);
+    let path = join(`${outDir}/client`, url);
     if (!existsSync(path)) {
       return;
     }

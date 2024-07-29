@@ -64,7 +64,7 @@ var createProdMiddleware = (viteOptions) => {
     const { url } = req;
     if (!url)
       return next();
-    let path = (0, import_node_path.join)(outDir, url);
+    let path = (0, import_node_path.join)(`${outDir}/client`, url);
     if (!(0, import_node_fs.existsSync)(path)) {
       return;
     }

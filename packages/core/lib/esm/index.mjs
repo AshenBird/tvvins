@@ -7,6 +7,7 @@ export * from "./type.mjs";
 export * from "./Middleware.mjs";
 var useTvvins = (options) => {
   const mode = env["TVVINS_MODE"];
+  const stage = env["TVVINS_STAGE"];
   if (mode === "server") {
     const app = new App();
     resolveOptions(options, mode).then((resolved) => {

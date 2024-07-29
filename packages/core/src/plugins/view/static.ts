@@ -40,7 +40,7 @@ const createProdMiddleware = (viteOptions:UserConfig):Tvvins.Middleware=>{
     const { outDir }  = (await resolveViteConfig(await unwrapViteConfig(viteOptions),"build")).build
     const {url} = req
     if(!url)return next()
-    let path =join(outDir,url)
+    let path =join(`${outDir}/client`,url)
     if(!existsSync(path)){
       return
     }

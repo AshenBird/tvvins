@@ -32,6 +32,7 @@ __reExport(src_exports, require("./type.cjs"), module.exports);
 __reExport(src_exports, require("./Middleware.cjs"), module.exports);
 var useTvvins = (options) => {
   const mode = import_node_process.env["TVVINS_MODE"];
+  const stage = import_node_process.env["TVVINS_STAGE"];
   if (mode === "server") {
     const app = new import_App.App();
     (0, import_options.resolveOptions)(options, mode).then((resolved) => {

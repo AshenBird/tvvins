@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+
+// src/index.ts
 import { Logger } from "@mcswift/base-utils";
 import { Cli } from "@mcswift/cli";
 import { getCommandFile } from "@mcswift/node";
@@ -14,15 +16,17 @@ var start = async (isDev, entry) => {
     return;
   const entryPath = resolve(cwd(), entry);
   const args = [];
-  if (isDev)
-    args.push("watch");
-  args.push("--no-warnings", "--ignore", "./vite.config.ts.timestamp-*", entryPath);
+  if (isDev) {
+    args.push("watch", "--no-warnings", "--ignore", "./vite.config.ts.timestamp-*", entryPath);
+  } else {
+    args.push("--no-warnings", entryPath);
+  }
   Logger.debug("run dev server");
   spawn(command, args, {
     stdio: "inherit",
     shell: true,
     env: Object.assign({
-      TVVINS_STAGE: "development",
+      TVVINS_STAGE: isDev ? "development" : "production",
       TVVINS_MODE: "server"
     }, process.env)
   });
@@ -40,11 +44,14 @@ tvvins.use("build", async (options) => {
   const entryPath = resolve(cwd(), options.entry);
   const args = [];
   args.push("--no-warnings", entryPath);
-  Logger.debug("run dev server");
+  Logger.debug("building");
   spawn(command, args, {
     stdio: "inherit",
     shell: true,
-    env: Object.assign({ TVVINS_MODE: "build" }, process.env)
+    env: Object.assign({
+      TVVINS_STAGE: "development",
+      TVVINS_MODE: "build"
+    }, process.env)
   });
 });
 tvvins.start();

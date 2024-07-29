@@ -67,5 +67,4 @@ export const build = async () => {
   Logger.log(`@tvvins/cli has build`)
   return
 }
-
 build()

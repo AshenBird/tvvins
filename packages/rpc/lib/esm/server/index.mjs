@@ -57,7 +57,7 @@ var useRPC = (options = {}) => {
                   const mod = await import(pathToFileURL(path).toString());
                   for (const name of Object.keys(mod)) {
                     const id = idStore.get(normalize(path), name);
-                    contents = contents + `Reflect.set(${name},ID,'${id}')`;
+                    contents = contents + `;Reflect.set(${name},ID,'${id}')`;
                   }
                 }
                 return {

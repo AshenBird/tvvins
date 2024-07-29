@@ -38,6 +38,9 @@ var resolveOptions = async (raw, mode) => {
       buildPlugins.push(...build.plugins || []);
     }
   }
+  vite.build = mergeConfig(vite.build || {}, {
+    outDir: `${merged.build.output}/client`
+  }, false);
   Reflect.set(merged.build, "plugins", buildPlugins);
   Reflect.set(merged.build, "vite", vite);
   return merged;
