@@ -1,6 +1,6 @@
 // src/build.ts
 import { argv, cwd } from "node:process";
-import { relative, resolve } from "node:path";
+import { join, normalize, relative, resolve } from "node:path";
 import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite";
@@ -13,9 +13,9 @@ var build = async (options) => {
   const outdir = resolve(base, output);
   ensureDirSync(outdir);
   emptyDirSync(outdir);
-  const viewTask = viteBuild(options.vite);
+  await viteBuild(options.vite);
   console.debug("client build finish");
-  const serverTask = esbuild({
+  await esbuild({
     entryPoints: [entryPath],
     target: "node20",
     platform: "node",
@@ -31,15 +31,19 @@ var build = async (options) => {
     ]
   });
   console.debug("server build finish");
-  await Promise.all([viewTask, serverTask]);
   const dependencies = JSON.parse(readFileSync(resolve(cwd(), "./package.json"), { encoding: "utf-8" })).dependencies;
+  const postInstallPath = resolve(outdir, "scripts/post-install.mjs");
   const targetPackage = {
     dependencies: {
       ...dependencies,
       "cross-env": "7.0.3"
     },
+    devDependencies: {
+      "fs-extra": "^11.2.0"
+    },
     scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${resolve(`${outdir}/server`, relative(options.build.source, entryPath)).replace(".ts", ".mjs")}`
+      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${resolve(`${outdir}/server`, relative(options.build.source, entryPath)).replace(".ts", ".mjs")}`,
+      "postinstall": `node ${postInstallPath}`
     },
     private: true
   };
@@ -49,6 +53,19 @@ var build = async (options) => {
   writeFileSync(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
   console.debug(existsSync(packagePath));
   console.debug("package.json init");
+  ensureFileSync(postInstallPath);
+  const idStorePathSource = normalize(join(cwd(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
+  const idStorePathTarget = normalize(join(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
+  writeFileSync(
+    postInstallPath,
+    `
+      import { ensureFileSync } from "fs-extra";
+      import { copyFileSync } from "node:fs";
+      ensureFileSync(\`${idStorePathTarget}\`);
+      copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+    `,
+    { encoding: "utf-8" }
+  );
 };
 export {
   build

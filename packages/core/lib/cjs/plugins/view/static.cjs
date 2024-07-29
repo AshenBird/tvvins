@@ -30,6 +30,7 @@ var import_node_path = require("node:path");
 var import_node_fs = require("node:fs");
 var import_Middleware = require("../../Middleware.cjs");
 var import_options = require("../../options.cjs");
+var import_node_process = require("node:process");
 var createViteDevServer = async (viteOptions) => {
   const viteConfig = (0, import_vite.mergeConfig)(await (0, import_options.unwrapViteConfig)(viteOptions), {
     server: { middlewareMode: true }
@@ -64,7 +65,7 @@ var createProdMiddleware = (viteOptions) => {
     const { url } = req;
     if (!url)
       return next();
-    let path = (0, import_node_path.join)(`${outDir}/client`, url);
+    let path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, url === "/" ? "index.html" : url);
     if (!(0, import_node_fs.existsSync)(path)) {
       return;
     }

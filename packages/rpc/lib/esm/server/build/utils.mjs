@@ -1,6 +1,7 @@
 // src/server/build/utils.ts
 import { isAPI } from "../core/api.mjs";
 import { pathToFileURL } from "node:url";
+import { normalize } from "node:path";
 var codeGen = (id, methods) => {
   let result = `
     import {rpc} from "@tvvins/rpc/client";
@@ -14,15 +15,17 @@ var codeGen = (id, methods) => {
   }
   return result;
 };
-var transform = async (code, id, idKey) => {
+var transform = async (code, id, store) => {
   const url = pathToFileURL(id);
-  const ID = Symbol.for(idKey);
+  const ID = Symbol.for(store.key);
   const apiList = await import(url.toString());
   const result = {};
   for (const [k, API] of Object.entries(apiList)) {
     if (!isAPI(API))
       continue;
-    result[Reflect.get(API, ID)] = k;
+    const i = Reflect.get(API, ID);
+    result[i] = k;
+    store.set(normalize(id), k, i);
   }
   if (!Object.keys(result).length)
     return { code, map: null };

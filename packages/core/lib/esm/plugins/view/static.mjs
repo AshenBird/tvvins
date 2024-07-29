@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { defineMiddleWare } from "../../Middleware.mjs";
 import { unwrapViteConfig } from "../../options.mjs";
+import { cwd } from "node:process";
 var createViteDevServer = async (viteOptions) => {
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
     server: { middlewareMode: true }
@@ -38,7 +39,7 @@ var createProdMiddleware = (viteOptions) => {
     const { url } = req;
     if (!url)
       return next();
-    let path = join(`${outDir}/client`, url);
+    let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
     if (!existsSync(path)) {
       return;
     }

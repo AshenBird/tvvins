@@ -15,7 +15,7 @@ var unplugin = createUnplugin(
       return result;
     },
     async transform(code, id) {
-      return await transform(code, id, options.idStore.key);
+      return await transform(code, id, options.idStore);
     }
   })
 );
@@ -37,7 +37,7 @@ var vitePlugin = (dirs, idStore) => ({
     });
     if (!include)
       return;
-    return await transform(code, id, idStore.key);
+    return await transform(code, id, idStore);
   }
 });
 export {

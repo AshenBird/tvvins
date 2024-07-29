@@ -1,2 +1,3 @@
 import { TransformResult } from 'vite';
-export declare const transform: (code: string, id: string, idKey: string) => Promise<TransformResult>;
+import { Store } from '../core/store';
+export declare const transform: (code: string, id: string, store: Store) => Promise<TransformResult>;

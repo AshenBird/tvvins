@@ -37,9 +37,9 @@ var build = async (options) => {
   const outdir = (0, import_node_path.resolve)(base, output);
   (0, import_fs_extra.ensureDirSync)(outdir);
   (0, import_fs_extra.emptyDirSync)(outdir);
-  const viewTask = (0, import_vite.build)(options.vite);
+  await (0, import_vite.build)(options.vite);
   console.debug("client build finish");
-  const serverTask = (0, import_esbuild.build)({
+  await (0, import_esbuild.build)({
     entryPoints: [entryPath],
     target: "node20",
     platform: "node",
@@ -55,15 +55,19 @@ var build = async (options) => {
     ]
   });
   console.debug("server build finish");
-  await Promise.all([viewTask, serverTask]);
   const dependencies = JSON.parse((0, import_node_fs.readFileSync)((0, import_node_path.resolve)((0, import_node_process.cwd)(), "./package.json"), { encoding: "utf-8" })).dependencies;
+  const postInstallPath = (0, import_node_path.resolve)(outdir, "scripts/post-install.mjs");
   const targetPackage = {
     dependencies: {
       ...dependencies,
       "cross-env": "7.0.3"
     },
+    devDependencies: {
+      "fs-extra": "^11.2.0"
+    },
     scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${(0, import_node_path.resolve)(`${outdir}/server`, (0, import_node_path.relative)(options.build.source, entryPath)).replace(".ts", ".mjs")}`
+      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${(0, import_node_path.resolve)(`${outdir}/server`, (0, import_node_path.relative)(options.build.source, entryPath)).replace(".ts", ".mjs")}`,
+      "postinstall": `node ${postInstallPath}`
     },
     private: true
   };
@@ -73,6 +77,19 @@ var build = async (options) => {
   (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
   console.debug((0, import_node_fs.existsSync)(packagePath));
   console.debug("package.json init");
+  (0, import_fs_extra.ensureFileSync)(postInstallPath);
+  const idStorePathSource = (0, import_node_path.normalize)((0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
+  const idStorePathTarget = (0, import_node_path.normalize)((0, import_node_path.join)(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
+  (0, import_node_fs.writeFileSync)(
+    postInstallPath,
+    `
+      import { ensureFileSync } from "fs-extra";
+      import { copyFileSync } from "node:fs";
+      ensureFileSync(\`${idStorePathTarget}\`);
+      copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+    `,
+    { encoding: "utf-8" }
+  );
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

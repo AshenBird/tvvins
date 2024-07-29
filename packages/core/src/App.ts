@@ -4,7 +4,7 @@ import type { Server as ConnectServer } from "connect";
 import connect from "connect";
 import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap } from "./Middleware";
-
+// import { Logger } from "@mcswift/base-utils"
 export class App extends EventEmitter<Tvvins.AppEventMap> {
   private middleWares: Tvvins.Middleware[] = [];
   private _options: Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions|null =null
@@ -38,7 +38,6 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
-    console.debug("aaa")
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
       if(!middleware){
@@ -56,6 +55,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     if (!this.options) return null as never;
     // @todo 监听信息输出
     this._httpServer.listen(this.options.port);
+    console.debug(`listening ${this.options.port}`)
   }
   use(middleware: Tvvins.Middleware, name?: string | symbol) {
     this.middleWares.push(middleware);

@@ -28,23 +28,33 @@ export class Store {
       }
       this.data.set(filename, map);
     }
+    this.save()
+  }
+  set(filename: string, name: string,id:string) {
+    const file = this.data.get(filename);
+    if (!file) {
+      const map = this.createApiMap();
+      map.set(name, { name, id });
+      this.data.set(filename, map);
+      this.save()
+      return id;
+    }
+    file.set(name, { id, name });
+    this.save()
+    return id
   }
   get(filename: string, name: string) {
     const file = this.data.get(filename);
     if (!file) {
-      const map = this.createApiMap();
-      const id = nanoid();
-      map.set(name, { name, id });
-      this.data.set(filename, new Map());
-      return id;
+      return ;
     }
     const api = file.get(name);
     if (!api) {
-      const id = nanoid();
-      file.set(name, { id, name });
-      return;
+      return ;
     }
+    return api.id
   }
+
   empty() {
     this.data = new Map();
     this._key = nanoid();
@@ -62,7 +72,7 @@ export class Store {
   }
   save() {
     const raw: IDStore = {
-      key: nanoid(),
+      key: this._key,
       files: [],
     };
     for (const [filename, map] of this.data) {

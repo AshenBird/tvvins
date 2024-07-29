@@ -34,7 +34,6 @@ var App = class extends EventEmitter {
     if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
-    console.debug("aaa");
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
       if (!middleware) {
@@ -53,6 +52,7 @@ var App = class extends EventEmitter {
     if (!this.options)
       return null;
     this._httpServer.listen(this.options.port);
+    console.debug(`listening ${this.options.port}`);
   }
   use(middleware, name) {
     this.middleWares.push(middleware);

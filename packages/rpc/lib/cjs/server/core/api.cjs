@@ -63,6 +63,14 @@ var _defineAPI = (store, handle, idStore) => {
       if (p === "name") {
         return Reflect.get(handle, import_const.NAME) || id;
       }
+      if (p === "update") {
+        return (key, id2) => {
+          if (key !== ID)
+            return;
+          Reflect.set(shadow, ID, id2);
+          store.set(id2, shadow);
+        };
+      }
       return target[p];
     },
     set(target, p, nv) {

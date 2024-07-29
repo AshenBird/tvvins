@@ -49,22 +49,31 @@ var Store = class {
       }
       this.data.set(filename, map);
     }
+    this.save();
+  }
+  set(filename, name, id) {
+    const file = this.data.get(filename);
+    if (!file) {
+      const map = this.createApiMap();
+      map.set(name, { name, id });
+      this.data.set(filename, map);
+      this.save();
+      return id;
+    }
+    file.set(name, { id, name });
+    this.save();
+    return id;
   }
   get(filename, name) {
     const file = this.data.get(filename);
     if (!file) {
-      const map = this.createApiMap();
-      const id = (0, import_nanoid.nanoid)();
-      map.set(name, { name, id });
-      this.data.set(filename, /* @__PURE__ */ new Map());
-      return id;
+      return;
     }
     const api = file.get(name);
     if (!api) {
-      const id = (0, import_nanoid.nanoid)();
-      file.set(name, { id, name });
       return;
     }
+    return api.id;
   }
   empty() {
     this.data = /* @__PURE__ */ new Map();
@@ -83,7 +92,7 @@ var Store = class {
   }
   save() {
     const raw = {
-      key: (0, import_nanoid.nanoid)(),
+      key: this._key,
       files: []
     };
     for (const [filename, map] of this.data) {

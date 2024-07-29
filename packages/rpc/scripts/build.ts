@@ -77,7 +77,6 @@ const genTypes = async ()=>{
   emptyDirSync(outdir)
   await generatorDeclare(`./src`, outdir, cwd(), `tsconfig.lib.json`);
   const tsbuildinfo = join(out,"tsconfig.lib.tsbuildinfo")
-  console.debug(tsbuildinfo)
   if(existsSync(tsbuildinfo))rmSync(tsbuildinfo);
 }
 main()

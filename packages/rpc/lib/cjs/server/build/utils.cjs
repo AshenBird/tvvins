@@ -25,6 +25,7 @@ __export(utils_exports, {
 module.exports = __toCommonJS(utils_exports);
 var import_api = require("../core/api.cjs");
 var import_node_url = require("node:url");
+var import_node_path = require("node:path");
 var codeGen = (id, methods) => {
   let result = `
     import {rpc} from "@tvvins/rpc/client";
@@ -38,15 +39,17 @@ var codeGen = (id, methods) => {
   }
   return result;
 };
-var transform = async (code, id, idKey) => {
+var transform = async (code, id, store) => {
   const url = (0, import_node_url.pathToFileURL)(id);
-  const ID = Symbol.for(idKey);
+  const ID = Symbol.for(store.key);
   const apiList = await import(url.toString());
   const result = {};
   for (const [k, API] of Object.entries(apiList)) {
     if (!(0, import_api.isAPI)(API))
       continue;
-    result[Reflect.get(API, ID)] = k;
+    const i = Reflect.get(API, ID);
+    result[i] = k;
+    store.set((0, import_node_path.normalize)(id), k, i);
   }
   if (!Object.keys(result).length)
     return { code, map: null };

@@ -2,6 +2,8 @@
 import { TransformResult } from 'vite'
 import { isAPI } from '../core/api'
 import { pathToFileURL } from 'node:url'
+import { Store } from '../core/store'
+import { normalize } from 'node:path'
 
 const codeGen = (id: string, methods: Record<string,string>) => {
   let result = `
@@ -16,14 +18,16 @@ const codeGen = (id: string, methods: Record<string,string>) => {
   }
   return result
 }
-export const transform = async (code: string, id: string,idKey:string):Promise<TransformResult> => {
+export const transform = async (code: string, id: string,store:Store):Promise<TransformResult> => {
   const url = pathToFileURL(id)
-  const ID = Symbol.for(idKey)
+  const ID = Symbol.for(store.key)
   const apiList = await import(url.toString());
   const result:Record<string,string> = {}
   for (const [k, API] of Object.entries(apiList)) {
     if (!isAPI(API)) continue;
-    result[Reflect.get(API,ID) as string] = k
+    const i = Reflect.get(API,ID)
+    result[i as string] = k
+    store.set(normalize(id),k,i)
   }
   if (!Object.keys(result).length) return {code,map:null};
   return {

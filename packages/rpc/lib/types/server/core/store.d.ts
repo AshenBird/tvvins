@@ -4,6 +4,7 @@ export declare class Store {
     get key(): string;
     private readonly path;
     constructor();
+    set(filename: string, name: string, id: string): string;
     get(filename: string, name: string): string | undefined;
     empty(): void;
     private _save;

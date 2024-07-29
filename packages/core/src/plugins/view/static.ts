@@ -6,6 +6,7 @@ import { ServerResponse } from "node:http";
 import { defineMiddleWare } from "../../Middleware";
 import { Tvvins } from "../../type";
 import { unwrapViteConfig } from "../../options";
+import { cwd } from "node:process";
 
 const createViteDevServer = async (viteOptions:InlineConfig)=>{
   
@@ -40,7 +41,8 @@ const createProdMiddleware = (viteOptions:UserConfig):Tvvins.Middleware=>{
     const { outDir }  = (await resolveViteConfig(await unwrapViteConfig(viteOptions),"build")).build
     const {url} = req
     if(!url)return next()
-    let path =join(`${outDir}/client`,url)
+    
+    let path =join(cwd(),`client`,url==="/"?"index.html":url)
     if(!existsSync(path)){
       return
     }

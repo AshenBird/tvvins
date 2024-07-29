@@ -1,20 +1,19 @@
 import { type Tvvins, defineMiddleWare } from "@tvvins/core";
-import { API, ApiHandle, IDStore, RPCOptions } from "./type";
+import { API, ApiHandle, RPCOptions } from "./type";
 import { bodyParse } from "./core/body-parse";
 import { resHandle } from "./core/response";
 import { _defineAPI } from "./core/api";
 import { join, normalize, relative, resolve, sep } from "node:path";
 import { vitePlugin } from "./build";
-// import { nanoid } from "nanoid";
-// import { readJSONSync } from "fs-extra";
-import { existsSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
-// import { cwd } from "node:process";
 import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
 export const useRPC = (options: Partial<RPCOptions> = {}) => {
   const { base = "/rpc", dirs = "./api" } = options;
+  // key store 
   const idStore = new Store()
+  // api store
   const store = new Map<string, API>();
   const handle = async (ctx: Tvvins.Context, next: () => unknown) => {
     if (!ctx.request.url.startsWith(base)) {
@@ -62,7 +61,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
                   const mod = await import(pathToFileURL(path).toString())
                   for (const name of Object.keys(mod)) {
                     const id = idStore.get(normalize(path), name);
-                    contents = contents + `;Reflect.set(${name},ID,'${id}')`;
+                    contents = contents + `;${name}.update(ID,'${id}')`;
                   }
                 }
                 return {

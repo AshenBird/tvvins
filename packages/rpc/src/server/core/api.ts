@@ -58,6 +58,13 @@ export const _defineAPI = <
       if(p==="name"){
         return Reflect.get(handle,NAME)||id
       }
+      if(p==="update"){
+        return (key:Symbol,id:string)=>{
+          if(key!==ID)return
+          Reflect.set(shadow,ID,id)
+          store.set(id,shadow)
+        }
+      }
       // @ts-ignore
       return target[p];
     },

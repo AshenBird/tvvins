@@ -39,7 +39,7 @@ var unplugin = (0, import_unplugin.createUnplugin)(
       return result;
     },
     async transform(code, id) {
-      return await (0, import_utils.transform)(code, id, options.idStore.key);
+      return await (0, import_utils.transform)(code, id, options.idStore);
     }
   })
 );
@@ -61,7 +61,7 @@ var vitePlugin = (dirs, idStore) => ({
     });
     if (!include)
       return;
-    return await (0, import_utils.transform)(code, id, idStore.key);
+    return await (0, import_utils.transform)(code, id, idStore);
   }
 });
 // Annotate the CommonJS export names for ESM import in node:

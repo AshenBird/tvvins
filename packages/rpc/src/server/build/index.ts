@@ -20,7 +20,7 @@ const unplugin = createUnplugin(
       return result;
     },
     async transform(code, id) {
-      return await transform(code, id, options.idStore.key);
+      return await transform(code, id, options.idStore);
     },
   })
 );
@@ -45,6 +45,6 @@ export const vitePlugin = (dirs: string[], idStore: Store): Plugin => ({
     });
     // @todo 重复编译缓存化
     if (!include) return
-    return await transform(code, id, idStore.key);
+    return await transform(code, id, idStore);
   },
 })
