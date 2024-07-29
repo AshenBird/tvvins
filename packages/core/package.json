@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/core",
-  "version": "1.0.0-beta7",
+  "version": "1.0.0-beta8",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"
