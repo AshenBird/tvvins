@@ -28,7 +28,6 @@ var import_node_path = require("node:path");
 var import_esbuild = require("esbuild");
 var import_fs_extra = require("fs-extra");
 var import_vite = require("vite");
-var import_node_fs = require("node:fs");
 var build = async (options) => {
   const [nodePath, entryPath] = import_node_process.argv;
   const base = (0, import_node_process.cwd)();
@@ -37,8 +36,9 @@ var build = async (options) => {
   const outdir = (0, import_node_path.resolve)(base, output);
   (0, import_fs_extra.ensureDirSync)(outdir);
   (0, import_fs_extra.emptyDirSync)(outdir);
-  const viewTask = (0, import_vite.build)(options.vite);
-  const serverTask = (0, import_esbuild.build)({
+  const viewTask = await (0, import_vite.build)(options.vite);
+  console.debug("client build finish");
+  const serverTask = await (0, import_esbuild.build)({
     entryPoints: [entryPath],
     target: "node20",
     platform: "node",
@@ -53,21 +53,7 @@ var build = async (options) => {
       ...plugins
     ]
   });
-  await Promise.all([viewTask, serverTask]);
-  const dependencies = JSON.parse((0, import_node_fs.readFileSync)((0, import_node_path.resolve)((0, import_node_process.cwd)(), "./package.json"), { encoding: "utf-8" })).dependencies;
-  const targetPackage = {
-    dependencies: {
-      ...dependencies,
-      "cross-env": "7.0.3"
-    },
-    scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node start ${(0, import_node_path.resolve)(`${outdir}/server`, (0, import_node_path.relative)(options.build.source, entryPath))}`
-    },
-    private: true
-  };
-  const packagePath = (0, import_node_path.resolve)(outdir, "./package.json");
-  (0, import_fs_extra.ensureFileSync)(packagePath);
-  (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
+  console.debug("server build finish");
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

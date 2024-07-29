@@ -20,7 +20,7 @@ const DEFAULT_OPTION: Required<Tvvins.InitOptions> & {
   },
   vite: {
     publicDir: resolve(cwd(), "./public")
-  }
+  },
 };
 
 export const mergeOptions = <

@@ -16,6 +16,7 @@ var start = async (isDev, entry) => {
     return;
   const entryPath = resolve(cwd(), entry);
   const args = [];
+  console.debug(isDev);
   if (isDev) {
     args.push("watch", "--no-warnings", "--ignore", "./vite.config.ts.timestamp-*", entryPath);
   } else {
@@ -45,11 +46,11 @@ tvvins.use("build", async (options) => {
   const args = [];
   args.push("--no-warnings", entryPath);
   Logger.debug("building");
+  Logger.debug(args);
   spawn(command, args, {
     stdio: "inherit",
     shell: true,
     env: Object.assign({
-      TVVINS_STAGE: "development",
       TVVINS_MODE: "build"
     }, process.env)
   });

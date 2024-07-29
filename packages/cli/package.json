@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/cli",
-  "version": "1.0.0-beta6",
+  "version": "1.0.0-beta7",
   "description": "",
   "type": "module",
   "scripts": {
@@ -20,7 +20,7 @@
     "fs-extra": "^11.2.0",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3",
-    "vite": "^5.2.6"
+    "vite": "^5.3.5"
   },
   "dependencies": {
     "@mcswift/base-utils": "^1.0.10",

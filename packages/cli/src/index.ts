@@ -65,11 +65,11 @@ tvvins.use("build",async (options)=>{
   const args = []
   args.push('--no-warnings',entryPath)
   Logger.debug("building")
+  Logger.debug(args)
   spawn(command,args,{
     stdio:"inherit",
     shell:true,
     env:Object.assign({
-      TVVINS_STAGE:"development",
       TVVINS_MODE:"build"
     },process.env)
   })

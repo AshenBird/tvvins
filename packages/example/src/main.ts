@@ -5,4 +5,4 @@ const tvvins = useTvvins({
   plugins:[rpc]
 })
 
-export default tvvins
+// export default tvvins

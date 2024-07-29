@@ -68,6 +68,7 @@ var App = class extends import_node_events.EventEmitter {
     if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
+    console.debug("aaa");
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
       if (!middleware) {

@@ -38,6 +38,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     if (process.env["TVVINS_MODE"] === "build") {
       return;
     }
+    console.debug("aaa")
     this.emit("pre-mount");
     for (const middleware of this.middleWares) {
       if(!middleware){
