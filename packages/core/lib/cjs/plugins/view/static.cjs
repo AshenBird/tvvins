@@ -61,31 +61,40 @@ var matchContentType = (path) => {
 };
 var createProdMiddleware = (viteOptions) => {
   const handle = async (req, res, next) => {
-    const { outDir } = (await (0, import_vite.resolveConfig)(await (0, import_options.unwrapViteConfig)(viteOptions), "build")).build;
-    const { url } = req;
+    const url = new URL(req.url || "/", `http://${req.headers.host}`).pathname;
     if (!url)
       return next();
     let path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, url === "/" ? "index.html" : url);
+    console.debug(url);
+    const end = () => {
+      const contentType = matchContentType(path);
+      const buffer = (0, import_node_fs.readFileSync)(path);
+      res.writeHead(200, {
+        "content-type": contentType
+      }).end(buffer);
+    };
     if (!(0, import_node_fs.existsSync)(path)) {
-      return;
-    }
-    FindFile:
+      next();
+    } else {
       if ((0, import_node_fs.statSync)(path).isDirectory()) {
         for (const fp of ["index.html", "index.htm"]) {
           const p = (0, import_node_path.join)(path, fp);
           if ((0, import_node_fs.existsSync)(p)) {
             path = p;
-            break FindFile;
+            end();
+            return;
           }
         }
+      } else {
+        end();
         return;
       }
-    const contentType = matchContentType(path);
+    }
     next();
-    const buffer = (0, import_node_fs.readFileSync)(path);
-    res.writeHead(200, {
-      "content-type": contentType
-    }).end(buffer);
+    if (!req.headers.accept?.includes("text/html"))
+      return;
+    path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, "index.html");
+    end();
   };
   return (0, import_Middleware.defineMiddleWare)(handle, "official-view", true);
 };
