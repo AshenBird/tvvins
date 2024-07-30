@@ -1,6 +1,6 @@
 import { argv, cwd } from "node:process";
 import { Tvvins } from "./type"
-import { join, normalize, relative, resolve } from "node:path";
+import path, { join, normalize, relative, resolve, sep } from "node:path";
 import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite"
@@ -35,7 +35,7 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   });
   console.debug("server build finish")
   const dependencies = JSON.parse(readFileSync(resolve(cwd(), "./package.json"), { encoding: "utf-8" })).dependencies
-  const postInstallPath = resolve(outdir, "scripts/post-install.mjs")
+  const postInstallPath = "./scripts/post-install.mjs"
   const targetPackage = {
     dependencies: {
       ...dependencies,
@@ -45,27 +45,28 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
       "fs-extra": "^11.2.0",
     },
     scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${resolve(`${outdir}/server`, relative(options.build.source, entryPath)).replace(".ts", ".mjs")}`,
+      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(sep).pop()?.replace(".ts", ".mjs")}`,
       "postinstall": `node ${postInstallPath}`
     },
     private: true
   }
   const packagePath = resolve(outdir, "./package.json")
-  console.debug(packagePath)
   ensureFileSync(packagePath)
   writeFileSync(packagePath, JSON.stringify(targetPackage, undefined, 2), { encoding: "utf-8" })
-  console.debug(existsSync(packagePath))
   console.debug("package.json init")
   // post install
-  ensureFileSync(postInstallPath)
+  ensureFileSync(resolve(outdir,postInstallPath))
   const idStorePathSource = normalize(join(cwd(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll('\\', '\\\\')
   const idStorePathTarget = normalize(join(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll('\\', '\\\\')
-  writeFileSync(postInstallPath,
+
+  writeFileSync(resolve(outdir,postInstallPath),
     `
       import { ensureFileSync } from "fs-extra";
-      import { copyFileSync } from "node:fs";
-      ensureFileSync(\`${idStorePathTarget}\`);
-      copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+      import { copyFileSync, existsSync } from "node:fs";
+      if(existsSync('${idStorePathSource}')){
+        ensureFileSync(\`${idStorePathTarget}\`);
+        copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+      }
     `,
     { encoding: "utf-8" }
   )

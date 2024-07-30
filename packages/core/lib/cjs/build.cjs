@@ -56,7 +56,7 @@ var build = async (options) => {
   });
   console.debug("server build finish");
   const dependencies = JSON.parse((0, import_node_fs.readFileSync)((0, import_node_path.resolve)((0, import_node_process.cwd)(), "./package.json"), { encoding: "utf-8" })).dependencies;
-  const postInstallPath = (0, import_node_path.resolve)(outdir, "scripts/post-install.mjs");
+  const postInstallPath = "./scripts/post-install.mjs";
   const targetPackage = {
     dependencies: {
       ...dependencies,
@@ -66,27 +66,27 @@ var build = async (options) => {
       "fs-extra": "^11.2.0"
     },
     scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node ${(0, import_node_path.resolve)(`${outdir}/server`, (0, import_node_path.relative)(options.build.source, entryPath)).replace(".ts", ".mjs")}`,
+      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(import_node_path.sep).pop()?.replace(".ts", ".mjs")}`,
       "postinstall": `node ${postInstallPath}`
     },
     private: true
   };
   const packagePath = (0, import_node_path.resolve)(outdir, "./package.json");
-  console.debug(packagePath);
   (0, import_fs_extra.ensureFileSync)(packagePath);
   (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
-  console.debug((0, import_node_fs.existsSync)(packagePath));
   console.debug("package.json init");
-  (0, import_fs_extra.ensureFileSync)(postInstallPath);
+  (0, import_fs_extra.ensureFileSync)((0, import_node_path.resolve)(outdir, postInstallPath));
   const idStorePathSource = (0, import_node_path.normalize)((0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
   const idStorePathTarget = (0, import_node_path.normalize)((0, import_node_path.join)(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
   (0, import_node_fs.writeFileSync)(
-    postInstallPath,
+    (0, import_node_path.resolve)(outdir, postInstallPath),
     `
       import { ensureFileSync } from "fs-extra";
-      import { copyFileSync } from "node:fs";
-      ensureFileSync(\`${idStorePathTarget}\`);
-      copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+      import { copyFileSync, existsSync } from "node:fs";
+      if(existsSync('${idStorePathSource}')){
+        ensureFileSync(\`${idStorePathTarget}\`);
+        copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
+      }
     `,
     { encoding: "utf-8" }
   );
