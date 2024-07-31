@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/rpc",
-  "version": "1.0.0-beta10",
+  "version": "1.0.0-beta12",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"
@@ -42,8 +42,9 @@
     "zod": "^3.22.4"
   },
   "peerDependencies": {
-    "@tvvins/core": "workspace:^",
-    "vite": "^4.4.9",
-    "zod": "^3.22.2"
+    "@tvvins/core": "workspace:^"
+  },
+  "optionalDependencies": {
+    "vite": "^4.4.9"
   }
 }

@@ -1,11 +1,11 @@
 // src/plugins/view/static.ts
-import { createServer, mergeConfig } from "vite";
 import { join } from "node:path";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { defineMiddleWare } from "../../Middleware.mjs";
 import { unwrapViteConfig } from "../../options.mjs";
 import { cwd } from "node:process";
 var createViteDevServer = async (viteOptions) => {
+  const { mergeConfig, createServer } = await import("vite");
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
     server: { middlewareMode: true }
   });
@@ -19,7 +19,6 @@ var createDevMiddleware = (viteOptions) => {
   };
   return defineMiddleWare(handle, "official-view", true);
 };
-var _createViteServer = createServer;
 var matchContentType = (path) => {
   if (path.endsWith(".js"))
     return "application/x-javascript; charset=utf-8";
@@ -79,7 +78,6 @@ var createStaticMiddleware = (viteOptions) => {
   return createDevMiddleware(viteOptions);
 };
 export {
-  _createViteServer,
   createDevMiddleware,
   createStaticMiddleware
 };

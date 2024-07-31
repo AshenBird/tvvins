@@ -16,6 +16,7 @@ const esbuildOptions:BuildOptions = {
   packages:"external",
 }
 export const main = async ()=>{
+  emptyDirSync(out)
   buildModule("client")
   buildModule("server")
   // buildModule("plugin")

@@ -2,7 +2,6 @@ import { env } from "node:process";
 import { App } from "./App";
 import { resolveOptions } from "./options";
 import { Tvvins } from "./type";
-import { build } from "./build";
 export * from "./type";
 export type { Context } from "./Context";
 export * from "./Middleware";
@@ -16,7 +15,10 @@ export const useTvvins = (options: Tvvins.InitOptions) => {
     })
     return app;
   }
-  resolveOptions(options,mode).then((resolved)=>{
+  const buildCtrl = async ()=>{
+    const resolved =await resolveOptions(options,mode)
+    const { build } = await import("./build")
     build(resolved)
-  })
+  }
+  buildCtrl()
 };

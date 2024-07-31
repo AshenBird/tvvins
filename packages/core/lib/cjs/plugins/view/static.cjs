@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,27 +17,34 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/plugins/view/static.ts
 var static_exports = {};
 __export(static_exports, {
-  _createViteServer: () => _createViteServer,
   createDevMiddleware: () => createDevMiddleware,
   createStaticMiddleware: () => createStaticMiddleware
 });
 module.exports = __toCommonJS(static_exports);
-var import_vite = require("vite");
 var import_node_path = require("node:path");
 var import_node_fs = require("node:fs");
 var import_Middleware = require("../../Middleware.cjs");
 var import_options = require("../../options.cjs");
 var import_node_process = require("node:process");
 var createViteDevServer = async (viteOptions) => {
-  const viteConfig = (0, import_vite.mergeConfig)(await (0, import_options.unwrapViteConfig)(viteOptions), {
+  const { mergeConfig, createServer } = await import("vite");
+  const viteConfig = mergeConfig(await (0, import_options.unwrapViteConfig)(viteOptions), {
     server: { middlewareMode: true }
   });
-  return (0, import_vite.createServer)(viteConfig);
+  return createServer(viteConfig);
 };
 var createDevMiddleware = (viteOptions) => {
   const createServerJob = createViteDevServer(viteOptions);
@@ -45,7 +54,6 @@ var createDevMiddleware = (viteOptions) => {
   };
   return (0, import_Middleware.defineMiddleWare)(handle, "official-view", true);
 };
-var _createViteServer = import_vite.createServer;
 var matchContentType = (path) => {
   if (path.endsWith(".js"))
     return "application/x-javascript; charset=utf-8";
@@ -106,7 +114,6 @@ var createStaticMiddleware = (viteOptions) => {
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  _createViteServer,
   createDevMiddleware,
   createStaticMiddleware
 });

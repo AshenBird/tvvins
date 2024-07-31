@@ -1,4 +1,4 @@
-import { InlineConfig, type UserConfig, UserConfigExport, createServer, mergeConfig, resolveConfig as resolveViteConfig } from "vite"
+import { type InlineConfig, type UserConfig, } from "vite"
 import { join } from "node:path";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import type { IncomingMessage, NextHandleFunction } from "connect";
@@ -9,7 +9,7 @@ import { unwrapViteConfig } from "../../options";
 import { cwd } from "node:process";
 
 const createViteDevServer = async (viteOptions: InlineConfig) => {
-
+  const {mergeConfig,createServer} = await import("vite")
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
     server: { middlewareMode: true }
   })
@@ -24,7 +24,7 @@ export const createDevMiddleware = (viteOptions: InlineConfig) => {
   }
   return defineMiddleWare(handle, "official-view", true)
 }
-export const _createViteServer = createServer
+// export const _createViteServer = createServer
 
 const matchContentType = (path: string) => {
   if (path.endsWith(".js")) return "application/x-javascript; charset=utf-8"

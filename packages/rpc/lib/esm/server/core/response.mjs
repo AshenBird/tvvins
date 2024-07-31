@@ -72,8 +72,8 @@ var commonHandle = (val) => {
     return val;
   if (typeof val === "number" && isNaN(val))
     return "NaN";
-  if (typeof val === "number" && isFinite(val))
-    return "Finite";
+  if (typeof val === "number" && !isFinite(val))
+    return "Infinity";
   if (typeof val === "number")
     return val;
   if (val === null)
@@ -84,7 +84,12 @@ var commonHandle = (val) => {
     return mapToRecord(val);
   if (val instanceof Set)
     return setToArray(val);
+  if (val instanceof Date)
+    return date2timestamp(val);
   return toRecord(val);
+};
+var date2timestamp = (val) => {
+  return val.getTime();
 };
 var refHandle = (res, ref) => {
   const identity = Reflect.get(ref, IDENTITY);
