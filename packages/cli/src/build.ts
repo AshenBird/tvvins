@@ -17,7 +17,6 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   // 视图层构建
   
   const viewTask = await viteBuild(options.vite)
-  console.debug("client build finish")
   // 服务端构建
   const serverTask = await esbuild({
     entryPoints: [entryPath],
@@ -34,7 +33,6 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
       ...plugins
     ],
   });
-  console.debug("server build finish")
   // await Promise.all([viewTask, serverTask])
   const dependencies = JSON.parse(readFileSync(resolve(cwd(), "./package.json"), { encoding: "utf-8" })).dependencies
   const targetPackage = {

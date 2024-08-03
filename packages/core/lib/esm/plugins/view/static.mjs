@@ -38,7 +38,6 @@ var createProdMiddleware = (viteOptions) => {
     if (!url)
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
-    console.debug(url);
     const end = () => {
       const contentType = matchContentType(path);
       const buffer = readFileSync(path);

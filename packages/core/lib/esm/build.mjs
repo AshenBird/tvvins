@@ -5,6 +5,7 @@ import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite";
 import { readFileSync, writeFileSync } from "node:fs";
+import { Logger } from "@mcswift/base-utils";
 var build = async (options) => {
   const [nodePath, entryPath] = argv;
   const base = cwd();
@@ -14,7 +15,7 @@ var build = async (options) => {
   ensureDirSync(outdir);
   emptyDirSync(outdir);
   await viteBuild(options.vite);
-  console.debug("client build finish");
+  Logger.info("client build finish");
   await esbuild({
     entryPoints: [entryPath],
     target: "node20",
@@ -30,7 +31,7 @@ var build = async (options) => {
       ...plugins
     ]
   });
-  console.debug("server build finish");
+  Logger.info("server build finish");
   const dependencies = JSON.parse(readFileSync(resolve(cwd(), "./package.json"), { encoding: "utf-8" })).dependencies;
   const postInstallPath = "./scripts/post-install.mjs";
   const targetPackage = {
@@ -50,7 +51,7 @@ var build = async (options) => {
   const packagePath = resolve(outdir, "./package.json");
   ensureFileSync(packagePath);
   writeFileSync(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
-  console.debug("package.json init");
+  Logger.info("production package.json has init");
   ensureFileSync(resolve(outdir, postInstallPath));
   const idStorePathSource = normalize(join(cwd(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
   const idStorePathTarget = normalize(join(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");

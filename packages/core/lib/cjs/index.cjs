@@ -26,7 +26,7 @@ var build_exports = {};
 __export(build_exports, {
   build: () => build
 });
-var import_node_process, import_node_path, import_esbuild, import_fs_extra, import_vite, import_node_fs, build;
+var import_node_process, import_node_path, import_esbuild, import_fs_extra, import_vite, import_node_fs, import_base_utils, build;
 var init_build = __esm({
   "src/build.ts"() {
     "use strict";
@@ -36,6 +36,7 @@ var init_build = __esm({
     import_fs_extra = require("fs-extra");
     import_vite = require("vite");
     import_node_fs = require("node:fs");
+    import_base_utils = require("@mcswift/base-utils");
     build = async (options) => {
       const [nodePath, entryPath] = import_node_process.argv;
       const base = (0, import_node_process.cwd)();
@@ -45,7 +46,7 @@ var init_build = __esm({
       (0, import_fs_extra.ensureDirSync)(outdir);
       (0, import_fs_extra.emptyDirSync)(outdir);
       await (0, import_vite.build)(options.vite);
-      console.debug("client build finish");
+      import_base_utils.Logger.info("client build finish");
       await (0, import_esbuild.build)({
         entryPoints: [entryPath],
         target: "node20",
@@ -61,7 +62,7 @@ var init_build = __esm({
           ...plugins
         ]
       });
-      console.debug("server build finish");
+      import_base_utils.Logger.info("server build finish");
       const dependencies = JSON.parse((0, import_node_fs.readFileSync)((0, import_node_path.resolve)((0, import_node_process.cwd)(), "./package.json"), { encoding: "utf-8" })).dependencies;
       const postInstallPath = "./scripts/post-install.mjs";
       const targetPackage = {
@@ -81,7 +82,7 @@ var init_build = __esm({
       const packagePath = (0, import_node_path.resolve)(outdir, "./package.json");
       (0, import_fs_extra.ensureFileSync)(packagePath);
       (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
-      console.debug("package.json init");
+      import_base_utils.Logger.info("production package.json has init");
       (0, import_fs_extra.ensureFileSync)((0, import_node_path.resolve)(outdir, postInstallPath));
       const idStorePathSource = (0, import_node_path.normalize)((0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
       const idStorePathTarget = (0, import_node_path.normalize)((0, import_node_path.join)(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");

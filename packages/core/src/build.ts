@@ -5,6 +5,7 @@ import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite"
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { Logger } from "@mcswift/base-utils";
 export const build = async (options: Tvvins.ResolvedInitOptions) => {
   const [nodePath, entryPath] = argv
   const base = cwd();
@@ -16,7 +17,7 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   emptyDirSync(outdir);
   // 视图层构建
   await viteBuild(options.vite)
-  console.debug("client build finish")
+  Logger.info("client build finish")
   // 服务端构建
   await esbuild({
     entryPoints: [entryPath],
@@ -33,7 +34,7 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
       ...plugins
     ],
   });
-  console.debug("server build finish")
+  Logger.info("server build finish")
   const dependencies = JSON.parse(readFileSync(resolve(cwd(), "./package.json"), { encoding: "utf-8" })).dependencies
   const postInstallPath = "./scripts/post-install.mjs"
   const targetPackage = {
@@ -53,7 +54,7 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   const packagePath = resolve(outdir, "./package.json")
   ensureFileSync(packagePath)
   writeFileSync(packagePath, JSON.stringify(targetPackage, undefined, 2), { encoding: "utf-8" })
-  console.debug("package.json init")
+  Logger.info("production package.json has init")
   // post install
   ensureFileSync(resolve(outdir,postInstallPath))
   const idStorePathSource = normalize(join(cwd(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll('\\', '\\\\')

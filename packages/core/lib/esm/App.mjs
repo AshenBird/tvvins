@@ -52,7 +52,8 @@ var App = class extends EventEmitter {
     if (!this.options)
       return null;
     this._httpServer.listen(this.options.port);
-    console.debug(`listening ${this.options.port}`);
+    const { Logger } = await import("@mcswift/base-utils");
+    Logger.info(`listening ${this.options.host}${this.options.port}`);
   }
   use(middleware, name) {
     this.middleWares.push(middleware);

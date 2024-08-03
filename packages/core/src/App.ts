@@ -55,7 +55,8 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     if (!this.options) return null as never;
     // @todo 监听信息输出
     this._httpServer.listen(this.options.port);
-    console.debug(`listening ${this.options.port}`)
+    const { Logger} = await import("@mcswift/base-utils")
+    Logger.info(`listening ${this.options.host}${this.options.port}`)
   }
   use(middleware: Tvvins.Middleware, name?: string | symbol) {
     this.middleWares.push(middleware);

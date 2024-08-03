@@ -31,14 +31,15 @@ const start = async (isDev:boolean,entry:string)=>{
   // const sourcePath = resolve(cwd(),source);
   const entryPath = resolve(cwd(),entry)
   const args = []
-  console.debug(isDev)
   if(isDev){
     args.push("watch",'--no-warnings',"--ignore","./vite.config.ts.timestamp-*",entryPath);
   }else{
     args.push('--no-warnings',entryPath)
   }
   
-  Logger.debug("run dev server")
+  if(isDev){
+    Logger.info("Begin Run devServer")
+  }
   spawn(command,args,{
     stdio:"inherit",
     shell:true,
