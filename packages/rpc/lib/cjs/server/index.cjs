@@ -35,7 +35,6 @@ var import_node_url = require("node:url");
 var import_store = require("./core/store.cjs");
 var import_body_parse2 = require("./core/body-parse.cjs");
 var useRPC = (options = {}) => {
-  const logger = (0, import_core.useLog)("Plugin/RPC");
   const { base = "/rpc", dirs = "./api" } = options;
   const idStore = new import_store.Store();
   const store = /* @__PURE__ */ new Map();
@@ -43,15 +42,15 @@ var useRPC = (options = {}) => {
     if (!ctx.request.url.startsWith(base)) {
       return;
     }
-    logger.debug("\u5339\u914D RPC \u8DEF\u7531:", ctx.request.url);
+    console.debug("\u5339\u914D RPC \u8DEF\u7531:", ctx.request.url);
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
     if (!id)
       return;
-    logger.debug("\u83B7\u53D6 RPC-ID:", id);
+    console.debug("\u83B7\u53D6 RPC-ID:", id);
     const h = store.get(id);
     if (!h)
       return;
-    logger.debug("\u627E\u5230\u5904\u7406\u51FD\u6570");
+    console.debug("\u627E\u5230\u5904\u7406\u51FD\u6570");
     const payload = await (0, import_body_parse.bodyParse)(ctx.$.req);
     const result = await h(payload.data);
     (0, import_response.resHandle)(ctx.$.res, result);

@@ -22,8 +22,3 @@ export const useTvvins = (options: Tvvins.InitOptions) => {
   }
   buildCtrl()
 };
-
-import { getLogger } from "log4js"
-export const useLog = (channel:string)=>{
-  return getLogger(channel)
-}

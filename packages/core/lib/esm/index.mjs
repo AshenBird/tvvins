@@ -83,7 +83,6 @@ import { App } from "./App.mjs";
 import { resolveOptions } from "./options.mjs";
 export * from "./type.mjs";
 export * from "./Middleware.mjs";
-import { getLogger } from "log4js";
 var useTvvins = (options) => {
   const mode = env["TVVINS_MODE"];
   const stage = env["TVVINS_STAGE"];
@@ -101,10 +100,6 @@ var useTvvins = (options) => {
   };
   buildCtrl();
 };
-var useLog = (channel) => {
-  return getLogger(channel);
-};
 export {
-  useLog,
   useTvvins
 };

@@ -93,7 +93,6 @@ var init_build = __esm({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  useLog: () => useLog,
   useTvvins: () => useTvvins
 });
 module.exports = __toCommonJS(src_exports);
@@ -102,7 +101,6 @@ var import_App = require("./App.cjs");
 var import_options = require("./options.cjs");
 __reExport(src_exports, require("./type.cjs"), module.exports);
 __reExport(src_exports, require("./Middleware.cjs"), module.exports);
-var import_log4js = require("log4js");
 var useTvvins = (options) => {
   const mode = import_node_process2.env["TVVINS_MODE"];
   const stage = import_node_process2.env["TVVINS_STAGE"];
@@ -120,12 +118,8 @@ var useTvvins = (options) => {
   };
   buildCtrl();
 };
-var useLog = (channel) => {
-  return (0, import_log4js.getLogger)(channel);
-};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  useLog,
   useTvvins,
   ...require("./type.cjs"),
   ...require("./Middleware.cjs")

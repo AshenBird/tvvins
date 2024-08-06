@@ -1,4 +1,4 @@
-import { type Tvvins, defineMiddleWare,useLog } from "@tvvins/core";
+import { type Tvvins, defineMiddleWare } from "@tvvins/core";
 import { API, ApiHandle, RPCOptions } from "./type";
 import { bodyParse } from "./core/body-parse";
 import { resHandle } from "./core/response";
@@ -10,7 +10,7 @@ import { pathToFileURL } from "node:url";
 import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
 export const useRPC = (options: Partial<RPCOptions> = {}) => {
-  const logger = useLog("Plugin/RPC")
+  // const logger = useLog("Plugin/RPC")
   const { base = "/rpc", dirs = "./api" } = options;
   // key store 
   const idStore = new Store()
@@ -20,13 +20,13 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     if (!ctx.request.url.startsWith(base)) {
       return;
     }
-    logger.debug("匹配 RPC 路由:",ctx.request.url)
+    console.debug("匹配 RPC 路由:",ctx.request.url)
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
     if (!id) return;
-    logger.debug("获取 RPC-ID:",id)
+    console.debug("获取 RPC-ID:",id)
     const h = store.get(id as string);
     if (!h) return ;
-    logger.debug("找到处理函数")
+    console.debug("找到处理函数")
     const payload = await bodyParse(ctx.$.req);
     // 用户处理逻辑
     const result = await h(payload.data);
