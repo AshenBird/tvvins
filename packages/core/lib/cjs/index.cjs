@@ -51,7 +51,7 @@ var init_build = __esm({
         entryPoints: [entryPath],
         target: "node20",
         platform: "node",
-        outdir: `${outdir}/server`,
+        outdir: (0, import_node_path.join)(outdir, "server"),
         format: "esm",
         packages: "external",
         bundle: true,
@@ -74,8 +74,7 @@ var init_build = __esm({
           "fs-extra": "^11.2.0"
         },
         scripts: {
-          "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(import_node_path.sep).pop()?.replace(".ts", ".mjs")}`,
-          "postinstall": `node ${postInstallPath}`
+          "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(import_node_path.sep).pop()?.replace(".ts", ".mjs")}`
         },
         private: true
       };
@@ -84,20 +83,9 @@ var init_build = __esm({
       (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
       import_base_utils.Logger.info("production package.json has init");
       (0, import_fs_extra.ensureFileSync)((0, import_node_path.resolve)(outdir, postInstallPath));
-      const idStorePathSource = (0, import_node_path.normalize)((0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-      const idStorePathTarget = (0, import_node_path.normalize)((0, import_node_path.join)(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-      (0, import_node_fs.writeFileSync)(
-        (0, import_node_path.resolve)(outdir, postInstallPath),
-        `
-      import { ensureFileSync } from "fs-extra";
-      import { copyFileSync, existsSync } from "node:fs";
-      if(existsSync('${idStorePathSource}')){
-        ensureFileSync(\`${idStorePathTarget}\`);
-        copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
-      }
-    `,
-        { encoding: "utf-8" }
-      );
+      const idStorePathSource = (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
+      const idStorePathTarget = (0, import_node_path.join)(outdir, "idStore.json");
+      (0, import_node_fs.copyFileSync)(idStorePathSource, idStorePathTarget);
     };
   }
 });
@@ -105,6 +93,7 @@ var init_build = __esm({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
+  useLog: () => useLog,
   useTvvins: () => useTvvins
 });
 module.exports = __toCommonJS(src_exports);
@@ -113,6 +102,7 @@ var import_App = require("./App.cjs");
 var import_options = require("./options.cjs");
 __reExport(src_exports, require("./type.cjs"), module.exports);
 __reExport(src_exports, require("./Middleware.cjs"), module.exports);
+var import_log4js = require("log4js");
 var useTvvins = (options) => {
   const mode = import_node_process2.env["TVVINS_MODE"];
   const stage = import_node_process2.env["TVVINS_STAGE"];
@@ -130,8 +120,12 @@ var useTvvins = (options) => {
   };
   buildCtrl();
 };
+var useLog = (channel) => {
+  return (0, import_log4js.getLogger)(channel);
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  useLog,
   useTvvins,
   ...require("./type.cjs"),
   ...require("./Middleware.cjs")

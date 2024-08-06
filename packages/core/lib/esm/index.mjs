@@ -14,11 +14,11 @@ __export(build_exports, {
   build: () => build
 });
 import { argv, cwd } from "node:process";
-import { join, normalize, resolve, sep } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite";
-import { readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { Logger } from "@mcswift/base-utils";
 var build;
 var init_build = __esm({
@@ -38,7 +38,7 @@ var init_build = __esm({
         entryPoints: [entryPath],
         target: "node20",
         platform: "node",
-        outdir: `${outdir}/server`,
+        outdir: join(outdir, "server"),
         format: "esm",
         packages: "external",
         bundle: true,
@@ -61,8 +61,7 @@ var init_build = __esm({
           "fs-extra": "^11.2.0"
         },
         scripts: {
-          "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(sep).pop()?.replace(".ts", ".mjs")}`,
-          "postinstall": `node ${postInstallPath}`
+          "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(sep).pop()?.replace(".ts", ".mjs")}`
         },
         private: true
       };
@@ -71,20 +70,9 @@ var init_build = __esm({
       writeFileSync(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
       Logger.info("production package.json has init");
       ensureFileSync(resolve(outdir, postInstallPath));
-      const idStorePathSource = normalize(join(cwd(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-      const idStorePathTarget = normalize(join(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-      writeFileSync(
-        resolve(outdir, postInstallPath),
-        `
-      import { ensureFileSync } from "fs-extra";
-      import { copyFileSync, existsSync } from "node:fs";
-      if(existsSync('${idStorePathSource}')){
-        ensureFileSync(\`${idStorePathTarget}\`);
-        copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
-      }
-    `,
-        { encoding: "utf-8" }
-      );
+      const idStorePathSource = join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
+      const idStorePathTarget = join(outdir, "idStore.json");
+      copyFileSync(idStorePathSource, idStorePathTarget);
     };
   }
 });
@@ -95,6 +83,7 @@ import { App } from "./App.mjs";
 import { resolveOptions } from "./options.mjs";
 export * from "./type.mjs";
 export * from "./Middleware.mjs";
+import { getLogger } from "log4js";
 var useTvvins = (options) => {
   const mode = env["TVVINS_MODE"];
   const stage = env["TVVINS_STAGE"];
@@ -112,6 +101,10 @@ var useTvvins = (options) => {
   };
   buildCtrl();
 };
+var useLog = (channel) => {
+  return getLogger(channel);
+};
 export {
+  useLog,
   useTvvins
 };

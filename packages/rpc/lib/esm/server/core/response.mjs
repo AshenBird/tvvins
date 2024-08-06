@@ -28,34 +28,88 @@ var resHandle = (res, result) => {
 };
 var toRecord = (val) => {
   const result = {};
+  const schemas = {};
   for (const [k, v] of Object.entries(val)) {
-    Reflect.set(result, k, commonHandle(v));
+    const vr = commonHandle(v);
+    if (!vr)
+      continue;
+    const { val: _v, schema } = vr;
+    Reflect.set(result, k, commonHandle(_v));
+    Reflect.set(schemas, k, schema);
   }
-  return result;
+  return {
+    val: result,
+    schema: {
+      type: "record",
+      children: schemas
+    }
+  };
 };
 var cleanArray = (val) => {
   const result = [];
+  const schemas = [];
   for (const v of val) {
-    result.push(commonHandle(v));
+    const vr = commonHandle(v);
+    if (!vr)
+      continue;
+    const { val: _v, schema } = vr;
+    result.push(_v);
+    schemas.push(schema);
   }
-  return result;
+  return {
+    val: result,
+    schema: {
+      type: "array",
+      children: schemas
+    }
+  };
 };
 var bigIntHandle = (val) => {
-  return val.toString();
+  const r = {
+    schema: {
+      type: "bigint"
+    },
+    val: val.toString()
+  };
+  return r;
 };
 var mapToRecord = (val) => {
   const result = {};
+  const schemas = {};
   for (const [k, v] of val) {
-    Reflect.set(result, Object.prototype.toString.bind(k)(), commonHandle(v));
+    const vr = commonHandle(v);
+    if (!vr)
+      continue;
+    const { val: _v, schema } = vr;
+    Reflect.set(result, Object.prototype.toString.bind(k)(), _v);
+    Reflect.set(schemas, Object.prototype.toString.bind(k)(), schema);
   }
-  return result;
+  return {
+    val: result,
+    schema: {
+      type: "map",
+      children: schemas
+    }
+  };
 };
 var setToArray = (val) => {
   const result = [];
+  const schemas = [];
   for (const v of val) {
-    result.push(commonHandle(v));
+    const vr = commonHandle(v);
+    if (!vr)
+      continue;
+    const { val: _v, schema } = vr;
+    result.push(_v);
+    schemas.push(schema);
   }
-  return result;
+  return {
+    val: result,
+    schema: {
+      type: "set",
+      children: schemas
+    }
+  };
 };
 var commonHandle = (val) => {
   if (typeof val === "bigint")
@@ -65,19 +119,19 @@ var commonHandle = (val) => {
   if (typeof val === "undefined")
     return null;
   if (typeof val === "symbol")
-    return val.description || "[symbol]";
+    return { val: val.description || "[symbol]", schema: { type: "symbol" } };
   if (typeof val === "boolean")
-    return val;
+    return { val, schema: { type: "boolean" } };
   if (typeof val === "string")
-    return val;
+    return { val, schema: { type: "string" } };
   if (typeof val === "number" && isNaN(val))
-    return "NaN";
+    return { val: "NaN", schema: { type: "NaN" } };
   if (typeof val === "number" && !isFinite(val))
-    return "Infinity";
+    return { val: "Infinity", schema: { type: "Infinity" } };
   if (typeof val === "number")
-    return val;
+    return { val, schema: { type: "number" } };
   if (val === null)
-    return val;
+    return { val, schema: { type: "null" } };
   if (Array.isArray(val))
     return cleanArray(val);
   if (val instanceof Map)
@@ -89,7 +143,12 @@ var commonHandle = (val) => {
   return toRecord(val);
 };
 var date2timestamp = (val) => {
-  return val.getTime();
+  return {
+    val: val.getTime(),
+    schema: {
+      type: "date"
+    }
+  };
 };
 var refHandle = (res, ref) => {
   const identity = Reflect.get(ref, IDENTITY);

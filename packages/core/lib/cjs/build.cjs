@@ -44,7 +44,7 @@ var build = async (options) => {
     entryPoints: [entryPath],
     target: "node20",
     platform: "node",
-    outdir: `${outdir}/server`,
+    outdir: (0, import_node_path.join)(outdir, "server"),
     format: "esm",
     packages: "external",
     bundle: true,
@@ -67,8 +67,7 @@ var build = async (options) => {
       "fs-extra": "^11.2.0"
     },
     scripts: {
-      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(import_node_path.sep).pop()?.replace(".ts", ".mjs")}`,
-      "postinstall": `node ${postInstallPath}`
+      "start": `cross-env TVVINS_STAGE=production TVVINS_MODE=server  node server/${entryPath.split(import_node_path.sep).pop()?.replace(".ts", ".mjs")}`
     },
     private: true
   };
@@ -77,20 +76,9 @@ var build = async (options) => {
   (0, import_node_fs.writeFileSync)(packagePath, JSON.stringify(targetPackage, void 0, 2), { encoding: "utf-8" });
   import_base_utils.Logger.info("production package.json has init");
   (0, import_fs_extra.ensureFileSync)((0, import_node_path.resolve)(outdir, postInstallPath));
-  const idStorePathSource = (0, import_node_path.normalize)((0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-  const idStorePathTarget = (0, import_node_path.normalize)((0, import_node_path.join)(outdir, "node_modules/@tvvins/rpc/idStore.json")).replaceAll("\\", "\\\\");
-  (0, import_node_fs.writeFileSync)(
-    (0, import_node_path.resolve)(outdir, postInstallPath),
-    `
-      import { ensureFileSync } from "fs-extra";
-      import { copyFileSync, existsSync } from "node:fs";
-      if(existsSync('${idStorePathSource}')){
-        ensureFileSync(\`${idStorePathTarget}\`);
-        copyFileSync(\`${idStorePathSource}\`,\`${idStorePathTarget}\`);
-      }
-    `,
-    { encoding: "utf-8" }
-  );
+  const idStorePathSource = (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
+  const idStorePathTarget = (0, import_node_path.join)(outdir, "idStore.json");
+  (0, import_node_fs.copyFileSync)(idStorePathSource, idStorePathTarget);
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

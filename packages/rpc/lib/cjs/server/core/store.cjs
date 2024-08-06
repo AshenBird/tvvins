@@ -34,8 +34,9 @@ var Store = class {
   get key() {
     return this._key;
   }
-  path = (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
+  path;
   constructor() {
+    this.path = import_node_process.env["TVVINS_STAGE"] === "production" ? (0, import_node_path.join)((0, import_node_process.cwd)(), "idStore.json") : (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
     const raw = (0, import_node_fs.existsSync)(this.path) ? JSON.parse((0, import_node_fs.readFileSync)(this.path, { encoding: "utf-8" })) : {
       key: (0, import_nanoid.nanoid)(),
       files: []

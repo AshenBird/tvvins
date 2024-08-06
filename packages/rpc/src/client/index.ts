@@ -1,3 +1,5 @@
+import { HandledResult, Schema } from "../common/type";
+
 const utf8Decoder = new TextDecoder('utf8')
 const byteToUTF8 = (bytes: Uint8Array | ArrayBufferView) => {
   const input = ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer) : bytes
@@ -18,8 +20,13 @@ export const rpc = async (payload: any, id: string, url: string) => {
   
   if(type==="application/json"){
     if(!response.body)return ""
-    return JSON.parse(await textDecode(response.body))
+    const responseBody = JSON.parse(await textDecode(response.body)) as HandledResult<unknown>
+    const { val, schema } = responseBody
+    return recoveryData(val,schema)
   }
+  /**
+   * @deprecated 不再会有纯字符串了
+   */
   if(type==="text/plain"){
     if(!response.body)return ""
     return await textDecode(response.body)
@@ -43,4 +50,51 @@ const textDecode = async (body:ReadableStream<Uint8Array>)=>{
 const getPayloadType = (val:unknown)=>{
   if(typeof val ==="string")return "text/plain"
   return "application/json"
+}
+const directTypes = [
+  "string",
+  "number",
+  "boolean",
+]
+const recoveryData =(val:any, schema:Schema)=>{
+  if(directTypes.includes(schema.type)) return val
+  if(schema.type==="bigint") return BigInt(val)
+  if(schema.type==="symbol") return val?Symbol.for(val):Symbol()
+  if(schema.type==="NaN") return NaN
+  if(schema.type==="Infinity") return Infinity
+  if(schema.type==="null") return null
+  if(schema.type==="date") return new Date(val)
+  if(schema.type==="array"){
+    const result:unknown[] = []
+    for(const [i, v] of (val as unknown[]).entries()){
+      const r = recoveryData(v,(schema.children as Schema[])[i]);
+      result.push(r)
+    }
+    return result
+  }
+  if(schema.type==="set"){
+    const result:Set<unknown> = new Set()
+    for(const [i, v] of (val as unknown[]).entries()){
+      const r = recoveryData(v,(schema.children as Schema[])[i]);
+      result.add(r)
+    }
+    return result
+  }
+  if(schema.type==="record"){
+    const result:Record<string,unknown> = {}
+    for(const [k, v] of Object.entries((val as Record<string,unknown>))){
+      const r = recoveryData(v,(schema.children as Record<string, Schema>)[k]);
+      result[k] =r
+    }
+    return result
+  }
+  if(schema.type==="map"){
+    const result:Map<string,unknown> = new Map()
+    for(const [k, v] of Object.entries((val as Record<string,unknown>))){
+      const r = recoveryData(v,(schema.children as Record<string, Schema>)[k]);
+      result.set(k,v)
+    }
+    return result
+  }
+  return val
 }

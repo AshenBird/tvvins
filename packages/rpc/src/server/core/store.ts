@@ -1,8 +1,8 @@
 import { ensureFileSync } from "fs-extra";
-import { existsSync, writeFileSync,readFileSync } from "node:fs";
+import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { IDStore } from "../type";
 import { join } from "node:path";
-import { cwd } from "node:process";
+import { cwd, env } from "node:process";
 import { nanoid } from "nanoid";
 
 export class Store {
@@ -11,14 +11,17 @@ export class Store {
   get key() {
     return this._key;
   }
-  private readonly path = join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
+  private readonly path;
   constructor() {
+    this.path = env["TVVINS_STAGE"] === "production"
+      ? join(cwd(), "idStore.json")
+      : join(cwd(), "node_modules/@tvvins/rpc/idStore.json")
     const raw: IDStore = existsSync(this.path)
-      ? (JSON.parse(readFileSync(this.path,{encoding:"utf-8"})) as IDStore)
+      ? (JSON.parse(readFileSync(this.path, { encoding: "utf-8" })) as IDStore)
       : {
-          key: nanoid(),
-          files: [],
-        };
+        key: nanoid(),
+        files: [],
+      };
     this._key = raw.key;
     for (const file of raw.files) {
       const { filename, apis } = file;
@@ -30,7 +33,7 @@ export class Store {
     }
     this.save()
   }
-  set(filename: string, name: string,id:string) {
+  set(filename: string, name: string, id: string) {
     const file = this.data.get(filename);
     if (!file) {
       const map = this.createApiMap();
@@ -46,11 +49,11 @@ export class Store {
   get(filename: string, name: string) {
     const file = this.data.get(filename);
     if (!file) {
-      return ;
+      return;
     }
     const api = file.get(name);
     if (!api) {
-      return ;
+      return;
     }
     return api.id
   }

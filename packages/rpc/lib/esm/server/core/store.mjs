@@ -2,7 +2,7 @@
 import { ensureFileSync } from "fs-extra";
 import { existsSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { cwd } from "node:process";
+import { cwd, env } from "node:process";
 import { nanoid } from "nanoid";
 var Store = class {
   data = /* @__PURE__ */ new Map();
@@ -10,8 +10,9 @@ var Store = class {
   get key() {
     return this._key;
   }
-  path = join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
+  path;
   constructor() {
+    this.path = env["TVVINS_STAGE"] === "production" ? join(cwd(), "idStore.json") : join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
     const raw = existsSync(this.path) ? JSON.parse(readFileSync(this.path, { encoding: "utf-8" })) : {
       key: nanoid(),
       files: []
