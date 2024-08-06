@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import connect from "connect";
 import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap } from "./Middleware.mjs";
+import { logger } from "./logger.mjs";
 var App = class extends EventEmitter {
   middleWares = [];
   _options = null;
@@ -35,6 +36,10 @@ var App = class extends EventEmitter {
       return;
     }
     this.emit("pre-mount");
+    this._connect.use((req, res, next) => {
+      logger.info(req.url);
+      next();
+    });
     for (const middleware of this.middleWares) {
       if (!middleware) {
         continue;

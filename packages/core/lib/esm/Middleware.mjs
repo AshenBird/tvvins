@@ -6,7 +6,7 @@ var defineMiddleWare = (handle, name = handle.name, isConnect) => {
   const key = Symbol();
   Reflect.set(ref, "name", name || "");
   Reflect.set(ref, "handle", handle);
-  Reflect.set(ref, "isConnect", isConnect);
+  Reflect.set(ref, "isConnect", !!isConnect);
   Reflect.set(ref, KEY, key);
   Reflect.set(ref, "setName", (name2) => {
     Reflect.set(ref, "name", name2);

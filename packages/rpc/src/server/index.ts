@@ -11,7 +11,7 @@ import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
 import { Logger } from "@mcswift/base-utils/logger"
 export const useRPC = (options: Partial<RPCOptions> = {}) => {
-  const logger = new Logger("Tvvins.RPC") 
+  const logger = new Logger("Tvvins.RPC")
   const { base = "/rpc", dirs = "./api" } = options;
   // key store 
   const idStore = new Store()
@@ -19,15 +19,13 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
   const store = new Map<string, API>();
   const handle = async (ctx: Tvvins.Context, next: () => unknown) => {
     if (!ctx.request.url.startsWith(base)) {
-      return;
+      return next();
     }
-    logger.debug("匹配 RPC 路由:",ctx.request.url)
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
-    if (!id) return;
-    logger.debug("获取 RPC-ID:",id)
+    if (!id) return next();
     const h = store.get(id as string);
-    if (!h) return ;
-    logger.debug("找到处理函数")
+    if (!h) return next();
+    logger.info("处理请求:",id)
     const payload = await bodyParse(ctx.$.req);
     // 用户处理逻辑
     const result = await h(payload.data);

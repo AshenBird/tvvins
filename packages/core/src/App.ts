@@ -4,6 +4,7 @@ import type { Server as ConnectServer } from "connect";
 import connect from "connect";
 import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap } from "./Middleware";
+import { logger } from "./logger";
 export class App extends EventEmitter<Tvvins.AppEventMap> {
   private middleWares: Tvvins.Middleware[] = [];
   private _options: Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions|null =null
@@ -38,6 +39,10 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
       return;
     }
     this.emit("pre-mount");
+    this._connect.use((req,res,next)=>{
+      logger.info(req.url)
+      next()
+    })
     for (const middleware of this.middleWares) {
       if(!middleware){
         continue

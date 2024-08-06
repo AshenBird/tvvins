@@ -60,7 +60,7 @@ var toRecord = (val) => {
     if (!vr)
       continue;
     const { val: _v, schema } = vr;
-    Reflect.set(result, k, commonHandle(_v));
+    Reflect.set(result, k, _v);
     Reflect.set(schemas, k, schema);
   }
   return {

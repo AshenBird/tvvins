@@ -16,7 +16,7 @@ export const defineMiddleWare = <T extends boolean = false>(
   const key = Symbol();
   Reflect.set(ref, "name", name || "");
   Reflect.set(ref, "handle", handle);
-  Reflect.set(ref, "isConnect", isConnect);
+  Reflect.set(ref, "isConnect", !!isConnect);
   Reflect.set(ref, KEY, key);
   Reflect.set(ref, "setName", (name: string) => {
     Reflect.set(ref, "name", name);

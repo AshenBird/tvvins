@@ -42,17 +42,15 @@ var useRPC = (options = {}) => {
   const store = /* @__PURE__ */ new Map();
   const handle = async (ctx, next) => {
     if (!ctx.request.url.startsWith(base)) {
-      return;
+      return next();
     }
-    logger.debug("\u5339\u914D RPC \u8DEF\u7531:", ctx.request.url);
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
     if (!id)
-      return;
-    logger.debug("\u83B7\u53D6 RPC-ID:", id);
+      return next();
     const h = store.get(id);
     if (!h)
-      return;
-    logger.debug("\u627E\u5230\u5904\u7406\u51FD\u6570");
+      return next();
+    logger.info("\u5904\u7406\u8BF7\u6C42:", id);
     const payload = await (0, import_body_parse.bodyParse)(ctx.$.req);
     const result = await h(payload.data);
     (0, import_response.resHandle)(ctx.$.res, result);

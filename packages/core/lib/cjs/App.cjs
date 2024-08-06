@@ -37,6 +37,7 @@ var import_node_http = require("node:http");
 var import_connect = __toESM(require("connect"));
 var import_node_events = require("node:events");
 var import_Middleware = require("./Middleware.cjs");
+var import_logger = require("./logger.cjs");
 var App = class extends import_node_events.EventEmitter {
   middleWares = [];
   _options = null;
@@ -69,6 +70,10 @@ var App = class extends import_node_events.EventEmitter {
       return;
     }
     this.emit("pre-mount");
+    this._connect.use((req, res, next) => {
+      import_logger.logger.info(req.url);
+      next();
+    });
     for (const middleware of this.middleWares) {
       if (!middleware) {
         continue;
