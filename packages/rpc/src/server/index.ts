@@ -9,8 +9,9 @@ import { readFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
+import { Logger } from "@mcswift/base-utils/logger"
 export const useRPC = (options: Partial<RPCOptions> = {}) => {
-  // const logger = useLog("Plugin/RPC")
+  const logger = new Logger("Tvvins.RPC") 
   const { base = "/rpc", dirs = "./api" } = options;
   // key store 
   const idStore = new Store()
@@ -20,13 +21,13 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     if (!ctx.request.url.startsWith(base)) {
       return;
     }
-    console.debug("匹配 RPC 路由:",ctx.request.url)
+    logger.debug("匹配 RPC 路由:",ctx.request.url)
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
     if (!id) return;
-    console.debug("获取 RPC-ID:",id)
+    logger.debug("获取 RPC-ID:",id)
     const h = store.get(id as string);
     if (!h) return ;
-    console.debug("找到处理函数")
+    logger.debug("找到处理函数")
     const payload = await bodyParse(ctx.$.req);
     // 用户处理逻辑
     const result = await h(payload.data);

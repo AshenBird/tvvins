@@ -5,7 +5,7 @@ import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite"
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Logger } from "@mcswift/base-utils";
+
 
 const checkFile = (path:string)=>{
   const withExt = path + ".ts"
@@ -15,6 +15,7 @@ const checkFile = (path:string)=>{
   return ""
 }
 export const build = async (options: Tvvins.ResolvedInitOptions) => {
+  const { Logger } = await import("@mcswift/base-utils/logger")
   const [nodePath, entryPath] = argv
   const base = cwd();
   const { build: buildOption } = options

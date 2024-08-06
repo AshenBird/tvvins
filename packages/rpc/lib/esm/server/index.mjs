@@ -9,7 +9,9 @@ import { readFileSync, statSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { Store } from "./core/store.mjs";
 import { BodyParserManager } from "./core/body-parse.mjs";
+import { Logger } from "@mcswift/base-utils/logger";
 var useRPC = (options = {}) => {
+  const logger = new Logger("Tvvins.RPC");
   const { base = "/rpc", dirs = "./api" } = options;
   const idStore = new Store();
   const store = /* @__PURE__ */ new Map();
@@ -17,15 +19,15 @@ var useRPC = (options = {}) => {
     if (!ctx.request.url.startsWith(base)) {
       return;
     }
-    console.debug("\u5339\u914D RPC \u8DEF\u7531:", ctx.request.url);
+    logger.debug("\u5339\u914D RPC \u8DEF\u7531:", ctx.request.url);
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
     if (!id)
       return;
-    console.debug("\u83B7\u53D6 RPC-ID:", id);
+    logger.debug("\u83B7\u53D6 RPC-ID:", id);
     const h = store.get(id);
     if (!h)
       return;
-    console.debug("\u627E\u5230\u5904\u7406\u51FD\u6570");
+    logger.debug("\u627E\u5230\u5904\u7406\u51FD\u6570");
     const payload = await bodyParse(ctx.$.req);
     const result = await h(payload.data);
     resHandle(ctx.$.res, result);

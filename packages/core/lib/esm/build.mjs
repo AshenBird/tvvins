@@ -5,8 +5,8 @@ import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite";
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Logger } from "@mcswift/base-utils";
 var build = async (options) => {
+  const { Logger } = await import("@mcswift/base-utils/logger");
   const [nodePath, entryPath] = argv;
   const base = cwd();
   const { build: buildOption } = options;

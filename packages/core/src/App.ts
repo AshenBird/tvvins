@@ -4,7 +4,6 @@ import type { Server as ConnectServer } from "connect";
 import connect from "connect";
 import { EventEmitter } from "node:events";
 import { connectMiddlewareWrap } from "./Middleware";
-// import { Logger } from "@mcswift/base-utils"
 export class App extends EventEmitter<Tvvins.AppEventMap> {
   private middleWares: Tvvins.Middleware[] = [];
   private _options: Tvvins.ResolvedInitOptions|Tvvins.ResolvedRunTimeInitOptions|null =null
@@ -55,7 +54,7 @@ export class App extends EventEmitter<Tvvins.AppEventMap> {
     if (!this.options) return null as never;
     // @todo 监听信息输出
     this._httpServer.listen(this.options.port);
-    const { Logger} = await import("@mcswift/base-utils")
+    const { Logger} = await import("@mcswift/base-utils/logger")
     Logger.info(`listening ${this.options.host}${this.options.port}`)
   }
   use(middleware: Tvvins.Middleware, name?: string | symbol) {

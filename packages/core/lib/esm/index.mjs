@@ -19,12 +19,12 @@ import { build as esbuild } from "esbuild";
 import { emptyDirSync, ensureDirSync, ensureFileSync } from "fs-extra";
 import { build as viteBuild } from "vite";
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { Logger } from "@mcswift/base-utils";
 var build;
 var init_build = __esm({
   "src/build.ts"() {
     "use strict";
     build = async (options) => {
+      const { Logger } = await import("@mcswift/base-utils/logger");
       const [nodePath, entryPath] = argv;
       const base = cwd();
       const { build: buildOption } = options;
@@ -81,24 +81,29 @@ var init_build = __esm({
 import { env } from "node:process";
 import { App } from "./App.mjs";
 import { resolveOptions } from "./options.mjs";
+import { logger } from "./logger.mjs";
 export * from "./type.mjs";
 export * from "./Middleware.mjs";
 var useTvvins = (options) => {
-  const mode = env["TVVINS_MODE"];
-  const stage = env["TVVINS_STAGE"];
-  if (mode === "server") {
-    const app = new App();
-    resolveOptions(options, mode).then((resolved) => {
-      app.start(resolved);
-    });
-    return app;
+  try {
+    const mode = env["TVVINS_MODE"];
+    const stage = env["TVVINS_STAGE"];
+    if (mode === "server") {
+      const app = new App();
+      resolveOptions(options, mode).then((resolved) => {
+        app.start(resolved);
+      });
+      return app;
+    }
+    const buildCtrl = async () => {
+      const resolved = await resolveOptions(options, mode);
+      const { build: build2 } = await Promise.resolve().then(() => (init_build(), build_exports));
+      build2(resolved);
+    };
+    buildCtrl();
+  } catch (e) {
+    logger.error(e);
   }
-  const buildCtrl = async () => {
-    const resolved = await resolveOptions(options, mode);
-    const { build: build2 } = await Promise.resolve().then(() => (init_build(), build_exports));
-    build2(resolved);
-  };
-  buildCtrl();
 };
 export {
   useTvvins

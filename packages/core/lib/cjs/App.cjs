@@ -86,7 +86,7 @@ var App = class extends import_node_events.EventEmitter {
     if (!this.options)
       return null;
     this._httpServer.listen(this.options.port);
-    const { Logger } = await import("@mcswift/base-utils");
+    const { Logger } = await import("@mcswift/base-utils/logger");
     Logger.info(`listening ${this.options.host}${this.options.port}`);
   }
   use(middleware, name) {
