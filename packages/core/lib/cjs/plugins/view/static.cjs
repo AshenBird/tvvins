@@ -77,16 +77,16 @@ var createProdMiddleware = (viteOptions) => {
     if (!url)
       return next();
     let path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, url === "/" ? "index.html" : url);
+    const filePath = (0, import_node_url.fileURLToPath)((0, import_node_url.pathToFileURL)(path));
     const end = () => {
-      const fileUrl = (0, import_node_url.pathToFileURL)(path);
-      const contentType = matchContentType(path);
-      const buffer = (0, import_node_fs.readFileSync)(fileUrl);
+      const contentType = matchContentType(filePath);
+      const buffer = (0, import_node_fs.readFileSync)(filePath);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
     };
-    if (!(0, import_node_fs.existsSync)(path)) {
-      import_logger.logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", path);
+    if (!(0, import_node_fs.existsSync)(filePath)) {
+      import_logger.logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", filePath);
       next();
     } else {
       if ((0, import_node_fs.statSync)(path).isDirectory()) {

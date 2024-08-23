@@ -8,7 +8,7 @@ import { Tvvins } from "../../type";
 import { unwrapViteConfig } from "../../options";
 import { cwd } from "node:process";
 import { logger } from "../../logger";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const createViteDevServer = async (viteOptions: InlineConfig) => {
   const {mergeConfig,createServer} = await import("vite")
@@ -47,17 +47,17 @@ const createProdMiddleware = (viteOptions: UserConfig): Tvvins.Middleware => {
     if (!url)
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
+    const filePath = fileURLToPath(pathToFileURL(path))
     // @todo 记录访问
     const end = () => {
-      const fileUrl = pathToFileURL(path)
-      const contentType = matchContentType(path);
-      const buffer = readFileSync(fileUrl);
+      const contentType = matchContentType(filePath);
+      const buffer = readFileSync(filePath);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
     }
-    if (!existsSync(path)) {
-      logger.error("没找到静态资源:",path)
+    if (!existsSync(filePath)) {
+      logger.error("没找到静态资源:",filePath)
       next();
     } else {
       if (statSync(path).isDirectory()) {

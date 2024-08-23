@@ -5,7 +5,7 @@ import { defineMiddleWare } from "../../Middleware.mjs";
 import { unwrapViteConfig } from "../../options.mjs";
 import { cwd } from "node:process";
 import { logger } from "../../logger.mjs";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 var createViteDevServer = async (viteOptions) => {
   const { mergeConfig, createServer } = await import("vite");
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
@@ -42,16 +42,16 @@ var createProdMiddleware = (viteOptions) => {
     if (!url)
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
+    const filePath = fileURLToPath(pathToFileURL(path));
     const end = () => {
-      const fileUrl = pathToFileURL(path);
-      const contentType = matchContentType(path);
-      const buffer = readFileSync(fileUrl);
+      const contentType = matchContentType(filePath);
+      const buffer = readFileSync(filePath);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
     };
-    if (!existsSync(path)) {
-      logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", path);
+    if (!existsSync(filePath)) {
+      logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", filePath);
       next();
     } else {
       if (statSync(path).isDirectory()) {
