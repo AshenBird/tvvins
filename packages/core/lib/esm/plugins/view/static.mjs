@@ -5,6 +5,7 @@ import { defineMiddleWare } from "../../Middleware.mjs";
 import { unwrapViteConfig } from "../../options.mjs";
 import { cwd } from "node:process";
 import { logger } from "../../logger.mjs";
+import { pathToFileURL } from "node:url";
 var createViteDevServer = async (viteOptions) => {
   const { mergeConfig, createServer } = await import("vite");
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
@@ -42,8 +43,9 @@ var createProdMiddleware = (viteOptions) => {
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
     const end = () => {
+      const fileUrl = pathToFileURL(path);
       const contentType = matchContentType(path);
-      const buffer = readFileSync(path);
+      const buffer = readFileSync(fileUrl);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);

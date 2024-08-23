@@ -40,6 +40,7 @@ var import_Middleware = require("../../Middleware.cjs");
 var import_options = require("../../options.cjs");
 var import_node_process = require("node:process");
 var import_logger = require("../../logger.cjs");
+var import_node_url = require("node:url");
 var createViteDevServer = async (viteOptions) => {
   const { mergeConfig, createServer } = await import("vite");
   const viteConfig = mergeConfig(await (0, import_options.unwrapViteConfig)(viteOptions), {
@@ -77,8 +78,9 @@ var createProdMiddleware = (viteOptions) => {
       return next();
     let path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, url === "/" ? "index.html" : url);
     const end = () => {
+      const fileUrl = (0, import_node_url.pathToFileURL)(path);
       const contentType = matchContentType(path);
-      const buffer = (0, import_node_fs.readFileSync)(path);
+      const buffer = (0, import_node_fs.readFileSync)(fileUrl);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);

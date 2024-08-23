@@ -8,6 +8,7 @@ import { Tvvins } from "../../type";
 import { unwrapViteConfig } from "../../options";
 import { cwd } from "node:process";
 import { logger } from "../../logger";
+import { pathToFileURL } from "node:url";
 
 const createViteDevServer = async (viteOptions: InlineConfig) => {
   const {mergeConfig,createServer} = await import("vite")
@@ -48,8 +49,9 @@ const createProdMiddleware = (viteOptions: UserConfig): Tvvins.Middleware => {
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
     // @todo 记录访问
     const end = () => {
+      const fileUrl = pathToFileURL(path)
       const contentType = matchContentType(path);
-      const buffer = readFileSync(path);
+      const buffer = readFileSync(fileUrl);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
