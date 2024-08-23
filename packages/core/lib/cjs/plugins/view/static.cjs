@@ -78,9 +78,9 @@ var createProdMiddleware = (viteOptions) => {
       return next();
     let path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, url === "/" ? "index.html" : url);
     const filePath = (0, import_node_url.fileURLToPath)((0, import_node_url.pathToFileURL)(path));
-    const end = () => {
-      const contentType = matchContentType(filePath);
-      const buffer = (0, import_node_fs.readFileSync)(filePath);
+    const end = (p) => {
+      const contentType = matchContentType(p);
+      const buffer = (0, import_node_fs.readFileSync)(p);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
@@ -89,25 +89,24 @@ var createProdMiddleware = (viteOptions) => {
       import_logger.logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", filePath);
       next();
     } else {
-      if ((0, import_node_fs.statSync)(path).isDirectory()) {
+      if ((0, import_node_fs.statSync)(filePath).isDirectory()) {
         for (const fp of ["index.html", "index.htm"]) {
-          const p = (0, import_node_path.join)(path, fp);
+          const p = (0, import_node_path.join)(filePath, fp);
           if ((0, import_node_fs.existsSync)(p)) {
-            path = p;
-            end();
+            end(p);
             return;
           }
         }
       } else {
-        end();
+        end(filePath);
         return;
       }
     }
     next();
     if (!req.headers.accept?.includes("text/html"))
       return;
-    path = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, "index.html");
-    end();
+    const index = (0, import_node_path.join)((0, import_node_process.cwd)(), `client`, "index.html");
+    end(index);
   };
   return (0, import_Middleware.defineMiddleWare)(handle, "official-view", true);
 };

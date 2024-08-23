@@ -43,9 +43,9 @@ var createProdMiddleware = (viteOptions) => {
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
     const filePath = fileURLToPath(pathToFileURL(path));
-    const end = () => {
-      const contentType = matchContentType(filePath);
-      const buffer = readFileSync(filePath);
+    const end = (p) => {
+      const contentType = matchContentType(p);
+      const buffer = readFileSync(p);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
@@ -54,25 +54,24 @@ var createProdMiddleware = (viteOptions) => {
       logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", filePath);
       next();
     } else {
-      if (statSync(path).isDirectory()) {
+      if (statSync(filePath).isDirectory()) {
         for (const fp of ["index.html", "index.htm"]) {
-          const p = join(path, fp);
+          const p = join(filePath, fp);
           if (existsSync(p)) {
-            path = p;
-            end();
+            end(p);
             return;
           }
         }
       } else {
-        end();
+        end(filePath);
         return;
       }
     }
     next();
     if (!req.headers.accept?.includes("text/html"))
       return;
-    path = join(cwd(), `client`, "index.html");
-    end();
+    const index = join(cwd(), `client`, "index.html");
+    end(index);
   };
   return defineMiddleWare(handle, "official-view", true);
 };

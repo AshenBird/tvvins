@@ -49,35 +49,40 @@ const createProdMiddleware = (viteOptions: UserConfig): Tvvins.Middleware => {
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
     const filePath = fileURLToPath(pathToFileURL(path))
     // @todo 记录访问
-    const end = () => {
-      const contentType = matchContentType(filePath);
-      const buffer = readFileSync(filePath);
+    const end = (p:string) => {
+      const contentType = matchContentType(p);
+      const buffer = readFileSync(p);
       res.writeHead(200, {
         "content-type": contentType
       }).end(buffer);
     }
+    // 路径不存在
     if (!existsSync(filePath)) {
       logger.error("没找到静态资源:",filePath)
       next();
     } else {
-      if (statSync(path).isDirectory()) {
+      // 路径存在
+      // 如果是目录
+      if (statSync(filePath).isDirectory()) {
+        // 循环查询
         for (const fp of ["index.html", "index.htm"]) {
-          const p = join(path, fp);
+          const p = join(filePath, fp);
           if (existsSync(p)) {
-            path = p;
-            end()
+            // path = p;
+            end(p)
             return
           }
         }
       } else {
-        end()
+        // 如果是文件
+        end(filePath)
         return
       }
     }
     next()
     if (!req.headers.accept?.includes('text/html')) return
-    path = join(cwd(), `client`, "index.html");
-    end()
+    const index = join(cwd(), `client`, "index.html");
+    end(index)
   }
   return defineMiddleWare(handle, "official-view", true)
 }
