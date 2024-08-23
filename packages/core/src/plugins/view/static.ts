@@ -47,7 +47,7 @@ const createProdMiddleware = (viteOptions: UserConfig): Tvvins.Middleware => {
     if (!url)
       return next();
     let path = join(cwd(), `client`, url === "/" ? "index.html" : url);
-    const filePath = fileURLToPath(pathToFileURL(path))
+    const filePath = decodeURIComponent(path)
     // @todo 记录访问
     const end = (p:string) => {
       const contentType = matchContentType(p);
