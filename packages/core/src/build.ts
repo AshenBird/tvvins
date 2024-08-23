@@ -19,8 +19,13 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   const [nodePath, entryPath] = argv
   const base = cwd();
   const { build: buildOption } = options
-  const { output, plugins } = buildOption
+  const { output, plugins,hooks } = buildOption
   const outdir = resolve(base, output);
+  if(hooks.beforeBuild){
+    for(const hook of hooks.beforeBuild){
+      hook()
+    }
+  }
   ensureDirSync(outdir);
   emptyDirSync(outdir);
   // 视图层构建
@@ -71,6 +76,11 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   const idStorePathSource = join(cwd(), "node_modules/@tvvins/rpc/idStore.json")
   const idStorePathTarget = join(outdir, "idStore.json")
   copyFileSync(idStorePathSource, idStorePathTarget)
+  if(hooks.builded){
+    for(const hook of hooks.builded){
+      hook()
+    }
+  }
 }
 
 

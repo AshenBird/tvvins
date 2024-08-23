@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { IDENTITY } from "./core/const";
 import { IncomingMessage } from "node:http";
+import { Session } from "./core/session";
 export type IDStore = {
     key: string;
     files: {
@@ -14,13 +15,21 @@ export type IDStore = {
 export type RPCOptions = {
     base?: string;
     dirs?: string | string[];
+    middlewares?: RPCMiddleware[];
 };
+export type RPCMiddleware = <Payload = any>(payload: Payload, session: Session, name: string) => MiddlewareResult | Promise<MiddlewareResult>;
+export type MiddlewareResult = {
+    code: number;
+    message: string;
+    data?: string;
+} | boolean;
 export interface ApiHandle<Payload, Result> {
     (payload: Payload): Promise<Result> | Result;
 }
 export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
 export interface API<Payload = any, Result = any> {
-    (payload?: Payload): Promise<Result>;
+    (payload: Payload): Promise<Result>;
+    (): Promise<Result>;
     [IDENTITY]: "api";
 }
 export interface ValidateResult {

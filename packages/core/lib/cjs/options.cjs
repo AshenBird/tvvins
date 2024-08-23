@@ -38,7 +38,8 @@ var DEFAULT_OPTION = {
   middlewares: [],
   build: {
     source: "./src",
-    output: "./dist"
+    output: "./dist",
+    hooks: {}
   },
   vite: {
     publicDir: (0, import_path.resolve)((0, import_process.cwd)(), "./public")

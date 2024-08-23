@@ -10,33 +10,95 @@ import { pathToFileURL } from "node:url";
 import { Store } from "./core/store";
 export { BodyParserManager } from "./core/body-parse";
 import { Logger } from "@mcswift/base-utils/logger"
+import { NAME, SESSION } from "./core/const";
+import { Session } from "./core/session";
+import { nanoid } from "nanoid";
 export const useRPC = (options: Partial<RPCOptions> = {}) => {
   const logger = new Logger("Tvvins.RPC")
-  const { base = "/rpc", dirs = "./api" } = options;
+  const { base = "/rpc", dirs = "./api", middlewares = [] } = options;
   // key store 
   const idStore = new Store()
   // api store
   const store = new Map<string, API>();
+  const sessionStore = new Map<string, Session>()
   const handle = async (ctx: Tvvins.Context, next: () => unknown) => {
     if (!ctx.request.url.startsWith(base)) {
       return next();
     }
+    const isSessionRequest = () => ctx.request.url.startsWith(base + "/session")
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
+    const sessionId = (ctx.$.req.headers["x-tvvins-rpc-session-id"] as string) || nanoid();
+    if (isSessionRequest()) {
+      ctx.$.res.setHeader("x-tvvins-rpc-session-id", sessionId);
+      resHandle(ctx.$.res, {});
+      return
+    }
     if (!id) return next();
     const h = store.get(id as string);
     if (!h) return next();
-    logger.info("处理请求:",id)
+    logger.info("处理请求:", id)
     const payload = await bodyParse(ctx.$.req);
+    const data = payload.data
+    /*--- session  ---*/
+    let session = sessionStore.get(sessionId)
+    if (!session) {
+      session = new Session()
+      sessionStore.set(sessionId, session)
+    }
+    Reflect.set(data, SESSION, session)
+    const name = Reflect.get(h, NAME)
+    if (name) {
+      for (const middleware of middlewares) {
+        try {
+          const r = await middleware(payload, session, name)
+          if (typeof r === "boolean") {
+            if (!r) return resHandle(ctx.$.res, r,true);
+            continue;
+          }
+          if (r.code < 300) continue
+          if (r.code < 400) {
+            //@todo 重定向逻辑
+            return r
+          }
+          if (r.code < 500) {
+            //@todo 重定向逻辑
+            return r
+          }
+          // 服务端错误
+          return r
+        } catch (e) {
+          return resHandle(ctx.$.res,{
+            code: 500,
+            message: (e as Error)?.message || "middlewares Error",
+            stacks: (e as Error)?.stack?.split("/n")||[]
+          },true)
+        }
+      }
+    }
     // 用户处理逻辑
-    const result = await h(payload.data);
-    resHandle(ctx.$.res, result);
+    const result = await h(data).catch(e => {
+      logger.error(e)
+      return {
+        code: 500,
+        message: e?.message || "API Error",
+        stacks: (e as Error)?.stack?.split("/n")||[]
+      }
+    });
+    ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
+    resHandle(ctx.$.res, result,true);
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
   const defineAPI = <Payload, Result>(
     handle: ApiHandle<Payload, Result>,
+    name?: string
   ) => {
-    return _defineAPI<Payload, Result>(store, handle, idStore);
+    return _defineAPI<Payload, Result>(store, handle, idStore, name);
   };
+
+  const getSession = (payload: any) => {
+    const r = Reflect.get(payload, SESSION)
+    return r
+  }
   const plugin: Tvvins.Plugin = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
     const apiDir = _dirs.map((dir) => resolve(appOptions.build.source, dir));
@@ -93,5 +155,6 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
   return {
     plugin,
     defineAPI,
+    getSession
   };
 };

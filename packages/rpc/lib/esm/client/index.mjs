@@ -1,16 +1,41 @@
 // src/client/index.ts
+import { Bellman } from "@mcswift/bellman";
 var utf8Decoder = new TextDecoder("utf8");
 var byteToUTF8 = (bytes) => {
   const input = ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer) : bytes;
   return utf8Decoder.decode(input);
 };
+var sessionId = "";
+var bellman = new Bellman();
+var lock = false;
 var rpc = async (payload, id, url) => {
+  if (bellman.status === "padding" && lock) {
+    console.debug(1);
+    await bellman.signal;
+  } else if (!sessionId) {
+    console.debug(2);
+    lock = true;
+    const r = await fetch(url + "/session", {
+      method: "POST"
+    });
+    const sid = r.headers.get("x-tvvins-rpc-session-id");
+    if (!sid) {
+      const err = new Error("can't get sessionId");
+      bellman.reject(err);
+      throw err;
+    }
+    bellman.resolve();
+    sessionId = sid;
+    lock = false;
+  }
+  console.debug(3);
   const rt = getPayloadType(payload);
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "x-tvvins-rpc-id": id,
-      "content-type": rt
+      "content-type": rt,
+      "x-tvvins-rpc-session-id": sessionId
     },
     body: rt === "application/json" ? JSON.stringify(payload) : payload
   });
@@ -19,8 +44,12 @@ var rpc = async (payload, id, url) => {
     if (!response.body)
       return "";
     const responseBody = JSON.parse(await textDecode(response.body));
-    const { val, schema } = responseBody;
-    return recoveryData(val, schema);
+    const { val, schema, isError = false } = responseBody;
+    const r = recoveryData(val, schema);
+    if (isError) {
+      console.error(val.message);
+    }
+    return r;
   }
   if (type === "text/plain") {
     if (!response.body)

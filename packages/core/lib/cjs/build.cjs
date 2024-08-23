@@ -44,8 +44,13 @@ var build = async (options) => {
   const [nodePath, entryPath] = import_node_process.argv;
   const base = (0, import_node_process.cwd)();
   const { build: buildOption } = options;
-  const { output, plugins } = buildOption;
+  const { output, plugins, hooks } = buildOption;
   const outdir = (0, import_node_path.resolve)(base, output);
+  if (hooks.beforeBuild) {
+    for (const hook of hooks.beforeBuild) {
+      hook();
+    }
+  }
   (0, import_fs_extra.ensureDirSync)(outdir);
   (0, import_fs_extra.emptyDirSync)(outdir);
   await (0, import_vite.build)(options.vite);
@@ -89,6 +94,11 @@ var build = async (options) => {
   const idStorePathSource = (0, import_node_path.join)((0, import_node_process.cwd)(), "node_modules/@tvvins/rpc/idStore.json");
   const idStorePathTarget = (0, import_node_path.join)(outdir, "idStore.json");
   (0, import_node_fs.copyFileSync)(idStorePathSource, idStorePathTarget);
+  if (hooks.builded) {
+    for (const hook of hooks.builded) {
+      hook();
+    }
+  }
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

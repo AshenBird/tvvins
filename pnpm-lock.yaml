@@ -63,8 +63,8 @@ importers:
   packages/core:
     dependencies:
       '@mcswift/base-utils':
-        specifier: ^1.0.11
-        version: 1.0.11
+        specifier: ^1.0.12
+        version: 1.0.12
       '@mcswift/bellman':
         specifier: ^0.0.8
         version: 0.0.8
@@ -92,7 +92,7 @@ importers:
         version: link:../cli
       vite:
         specifier: ^5.2.8
-        version: 5.3.5(@types/node@20.11.30)
+        version: 5.4.0(@types/node@20.11.30)
     devDependencies:
       '@mcswift/esbuild':
         specifier: ^1.0.10
@@ -207,10 +207,10 @@ importers:
         version: 20.14.12
       '@vitejs/plugin-vue':
         specifier: ^5.1.0
-        version: 5.1.0(vite@5.3.5)(vue@3.4.34)
+        version: 5.1.0(vite@5.4.0)(vue@3.4.34)
       '@vitejs/plugin-vue-jsx':
         specifier: ^3.1.0
-        version: 3.1.0(vite@5.3.5)(vue@3.4.34)
+        version: 3.1.0(vite@5.4.0)(vue@3.4.34)
       '@vue/eslint-config-prettier':
         specifier: ^8.0.0
         version: 8.0.0(eslint@8.57.0)(prettier@3.3.3)
@@ -245,8 +245,8 @@ importers:
         specifier: ~5.3.3
         version: 5.3.3
       vite:
-        specifier: ^5.3.5
-        version: 5.3.5(@types/node@20.14.12)
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.14.12)
       vitepress:
         specifier: ^1.3.1
         version: 1.3.1(@algolia/client-search@4.24.0)(@types/node@20.14.12)(search-insights@2.15.0)(typescript@5.3.3)
@@ -332,6 +332,9 @@ importers:
       '@mcswift/base-utils':
         specifier: ^1.0.11
         version: 1.0.11
+      '@mcswift/bellman':
+        specifier: ^0.0.8
+        version: 0.0.8
       '@mcswift/esbuild':
         specifier: ^1.0.10
         version: 1.0.10(esbuild@0.20.2)
@@ -1837,6 +1840,21 @@ packages:
       - supports-color
     dev: false
 
+  /@mcswift/base-utils@1.0.12:
+    resolution: {integrity: sha512-xZXUXg4whled9/Ydtzrk87NvcvLooGdII8gmE6VSSF6xAVzSRQXyq037Yiqf/8+P+3sITh1gBRYEwYaYgu+Dtw==}
+    dependencies:
+      '@json2csv/whatwg': 7.0.6
+      '@mcswift/bellman': 0.0.7
+      '@mcswift/types': 1.0.10
+      chalk: 5.3.0
+      eslint: 8.57.0
+      nanoid: 5.0.7
+    optionalDependencies:
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/bellman@0.0.4:
     resolution: {integrity: sha512-F5yy7e/1LAyvGtn0yCpxiwKeaXW1HOLv6bTQSmlB1zI7mjLENmfGTbZbfYHf1YmuXq9jvP0lwbRU+rgHanEXQA==}
     dev: false
@@ -1852,7 +1870,7 @@ packages:
   /@mcswift/cli@1.0.10:
     resolution: {integrity: sha512-n2AsHPn8nd5VIgMqelWmgcV/14U/9bShkXuN/k22zfNER1aJJceooZR1HqNpj/WLnRmQ1fC9r5M2LmJJogxuog==}
     dependencies:
-      '@mcswift/base-utils': 1.0.11
+      '@mcswift/base-utils': 1.0.12
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
@@ -1918,7 +1936,7 @@ packages:
   /@mcswift/utils@1.0.10(esbuild@0.20.2):
     resolution: {integrity: sha512-7zsiUCCa0wwo3oqmofdXAzHSxucQPnxuY5+v1H0h726BgzQU8uBRvzbHU9G4smidArO93lFUCdFr/dNvs/7PWg==}
     dependencies:
-      '@mcswift/base-utils': 1.0.11
+      '@mcswift/base-utils': 1.0.12
       '@mcswift/cli': 1.0.10
       '@mcswift/esbuild': 1.0.10(esbuild@0.20.2)
       '@mcswift/node': 1.0.10
@@ -2505,7 +2523,7 @@ packages:
     resolution: {integrity: sha512-3+wUFuxb7e8OzZ8Wryct1pzfA2vyoF4lwW98O9s27ZrfCGaJGNmqG+q8A7vQ92Mf+COCgxpK+rhNPTtTvaU6qw==}
     dev: false
 
-  /@vitejs/plugin-vue-jsx@3.1.0(vite@5.3.5)(vue@3.4.34):
+  /@vitejs/plugin-vue-jsx@3.1.0(vite@5.4.0)(vue@3.4.34):
     resolution: {integrity: sha512-w9M6F3LSEU5kszVb9An2/MmXNxocAnUb3WhRr8bHlimhDrXNt6n6D2nJQR3UXpGlZHh/EsgouOHCsM8V3Ln+WA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -2515,20 +2533,20 @@ packages:
       '@babel/core': 7.24.9
       '@babel/plugin-transform-typescript': 7.24.8(@babel/core@7.24.9)
       '@vue/babel-plugin-jsx': 1.2.2(@babel/core@7.24.9)
-      vite: 5.3.5(@types/node@20.14.12)
+      vite: 5.4.0(@types/node@20.14.12)
       vue: 3.4.34(typescript@5.3.3)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue@5.1.0(vite@5.3.5)(vue@3.4.34):
+  /@vitejs/plugin-vue@5.1.0(vite@5.4.0)(vue@3.4.34):
     resolution: {integrity: sha512-QMRxARyrdiwi1mj3AW4fLByoHTavreXq0itdEW696EihXglf1MB3D4C2gBvE0jMPH29ZjC3iK8aIaUMLf4EOGA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.3.5(@types/node@20.14.12)
+      vite: 5.4.0(@types/node@20.14.12)
       vue: 3.4.34(typescript@5.3.3)
     dev: true
 
@@ -4893,6 +4911,14 @@ packages:
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
+  /postcss@8.4.41:
+    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.1
+      source-map-js: 1.2.0
+
   /preact@10.23.1:
     resolution: {integrity: sha512-O5UdRsNh4vdZaTieWe3XOgSpdMAmkIYBCT3VhQDlKrzyCm8lUYsk0fmVEvoQQifoOjFRTaHZO69ylrzTW2BH+A==}
     dev: true
@@ -5495,12 +5521,13 @@ packages:
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.1
-      vite: 5.3.5(@types/node@20.14.12)
+      vite: 5.4.0(@types/node@20.14.12)
     transitivePeerDependencies:
       - '@types/node'
       - less
       - lightningcss
       - sass
+      - sass-embedded
       - stylus
       - sugarss
       - supports-color
@@ -5579,9 +5606,10 @@ packages:
       rollup: 4.13.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
-  /vite@5.3.5(@types/node@20.14.12):
-    resolution: {integrity: sha512-MdjglKR6AQXQb9JGiS7Rc2wC6uMjcm7Go/NHNO63EwiJXfuk9PgqiP/n5IDJCziMkfw9n4Ubp7lttNwz+8ZVKA==}
+  /vite@5.4.0(@types/node@20.11.30):
+    resolution: {integrity: sha512-5xokfMX0PIiwCMCMb9ZJcMyh5wbBun0zUzKib+L65vAZ8GY9ePZMXxFrHbr/Kyll2+LSCY7xtERPpxkBDKngwg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -5589,6 +5617,7 @@ packages:
       less: '*'
       lightningcss: ^1.21.0
       sass: '*'
+      sass-embedded: '*'
       stylus: '*'
       sugarss: '*'
       terser: ^5.4.0
@@ -5601,6 +5630,48 @@ packages:
         optional: true
       sass:
         optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.11.30
+      esbuild: 0.21.5
+      postcss: 8.4.41
+      rollup: 4.13.0
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: false
+    optional: true
+
+  /vite@5.4.0(@types/node@20.14.12):
+    resolution: {integrity: sha512-5xokfMX0PIiwCMCMb9ZJcMyh5wbBun0zUzKib+L65vAZ8GY9ePZMXxFrHbr/Kyll2+LSCY7xtERPpxkBDKngwg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
       stylus:
         optional: true
       sugarss:
@@ -5610,7 +5681,7 @@ packages:
     dependencies:
       '@types/node': 20.14.12
       esbuild: 0.21.5
-      postcss: 8.4.39
+      postcss: 8.4.41
       rollup: 4.13.0
     optionalDependencies:
       fsevents: 2.3.3
@@ -5633,7 +5704,7 @@ packages:
       '@shikijs/core': 1.12.0
       '@shikijs/transformers': 1.12.0
       '@types/markdown-it': 14.1.2
-      '@vitejs/plugin-vue': 5.1.0(vite@5.3.5)(vue@3.4.34)
+      '@vitejs/plugin-vue': 5.1.0(vite@5.4.0)(vue@3.4.34)
       '@vue/devtools-api': 7.3.7
       '@vue/shared': 3.4.33
       '@vueuse/core': 10.11.0(vue@3.4.34)
@@ -5642,7 +5713,7 @@ packages:
       mark.js: 8.11.1
       minisearch: 7.1.0
       shiki: 1.12.0
-      vite: 5.3.5(@types/node@20.14.12)
+      vite: 5.4.0(@types/node@20.14.12)
       vue: 3.4.34(typescript@5.3.3)
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -5663,6 +5734,7 @@ packages:
       - react
       - react-dom
       - sass
+      - sass-embedded
       - search-insights
       - sortablejs
       - stylus
@@ -5716,13 +5788,14 @@ packages:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.3.5(@types/node@20.14.12)
+      vite: 5.4.0(@types/node@20.14.12)
       vite-node: 1.6.0(@types/node@20.14.12)
       why-is-node-running: 2.3.0
     transitivePeerDependencies:
       - less
       - lightningcss
       - sass
+      - sass-embedded
       - stylus
       - sugarss
       - supports-color

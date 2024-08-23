@@ -3,7 +3,7 @@
 import { Readable, Duplex, Transform } from "node:stream";
 import { ServerResponse } from "http";
 export declare const isReadableStream: (val: unknown) => val is Readable | Duplex | Transform;
-export declare const resHandle: (res: ServerResponse, result: unknown) => void;
+export declare const resHandle: (res: ServerResponse, result: unknown, isError?: boolean) => void;
 /**
  *
  * @param val

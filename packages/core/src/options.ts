@@ -4,7 +4,7 @@ import { mergeArray, mergeRecord } from "./utils";
 import { cwd } from "process";
 import { viewPlugin } from "./plugins/view";
 import type { ConfigEnv, UserConfig, UserConfigExport } from "vite";
-import { mergeConfig, loadConfigFromFile, resolveConfig } from "vite"
+import { mergeConfig } from "vite"
 import {pathToFileURL} from "node:url"
 const DEFAULT_OPTION: Required<Tvvins.InitOptions> & {
   build: Required<Tvvins.InitBuildOptions>
@@ -17,6 +17,7 @@ const DEFAULT_OPTION: Required<Tvvins.InitOptions> & {
   build: {
     source: "./src",
     output: "./dist",
+    hooks:{}
   },
   vite: {
     publicDir: resolve(cwd(), "./public")

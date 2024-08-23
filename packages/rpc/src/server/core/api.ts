@@ -22,7 +22,8 @@ export const _defineAPI = <
 >(
   store:Map<string,API>,
   handle: ApiHandle<Payload, Result>,
-  idStore:Store
+  idStore:Store,
+  name?:string
   // schema?: Schema
 ) => {
   const ID = Symbol.for(idStore.key);
@@ -79,7 +80,9 @@ export const _defineAPI = <
       return target.call(t, args[0]);
     },
   })  as API<Payload, Result>
-  
+  if(name){
+    christen(name)
+  }
   // @ts-ignore
   store.set(id,shadow)
   return shadow

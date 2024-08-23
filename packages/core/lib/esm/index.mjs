@@ -28,8 +28,13 @@ var init_build = __esm({
       const [nodePath, entryPath] = argv;
       const base = cwd();
       const { build: buildOption } = options;
-      const { output, plugins } = buildOption;
+      const { output, plugins, hooks } = buildOption;
       const outdir = resolve(base, output);
+      if (hooks.beforeBuild) {
+        for (const hook of hooks.beforeBuild) {
+          hook();
+        }
+      }
       ensureDirSync(outdir);
       emptyDirSync(outdir);
       await viteBuild(options.vite);
@@ -73,6 +78,11 @@ var init_build = __esm({
       const idStorePathSource = join(cwd(), "node_modules/@tvvins/rpc/idStore.json");
       const idStorePathTarget = join(outdir, "idStore.json");
       copyFileSync(idStorePathSource, idStorePathTarget);
+      if (hooks.builded) {
+        for (const hook of hooks.builded) {
+          hook();
+        }
+      }
     };
   }
 });

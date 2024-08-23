@@ -25,6 +25,10 @@ export declare namespace Tvvins {
   export type InitBuildOptions = {
     source?: string; // @default "./src"
     output?: string; // @default "./dist"
+    hooks?:{
+      beforeBuild?:((...age:any[])=>any)[]
+      builded?:((...age:any[])=>any)[]
+    }
   };
   export type Mode = "build" | "server"
   export type Stage = "development" | "production" | "test"

@@ -1,3 +1,4 @@
+import { Bellman } from "@mcswift/bellman";
 import { HandledResult, Schema } from "../common/type";
 
 const utf8Decoder = new TextDecoder('utf8')
@@ -5,14 +6,38 @@ const byteToUTF8 = (bytes: Uint8Array | ArrayBufferView) => {
   const input = ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer) : bytes
   return utf8Decoder.decode(input)
 }
-
+let sessionId = ""
+const bellman  = new Bellman()
+let lock = false
 export const rpc = async (payload: any, id: string, url: string) => {
+  if(bellman.status==="padding"&&lock){
+    console.debug(1)
+    await bellman.signal
+  }else if(!sessionId){
+    console.debug(2)
+    lock = true
+    const r = await fetch(url+"/session",{
+      method:"POST",
+    })
+    const sid = r.headers.get("x-tvvins-rpc-session-id")
+    if(!sid){
+      const err = new Error("can't get sessionId")
+      bellman.reject(err)
+      throw err;
+    }
+    bellman.resolve()
+    sessionId = sid
+    lock = false
+  }
+  
+  console.debug(3)
   const rt = getPayloadType(payload)
   const response =await fetch(url, {
     method: "POST",
     headers: { 
       "x-tvvins-rpc-id": id,
-      "content-type":rt
+      "content-type":rt,
+      "x-tvvins-rpc-session-id":sessionId
     },
     body: rt==="application/json"?JSON.stringify(payload):payload,
   });
@@ -21,8 +46,13 @@ export const rpc = async (payload: any, id: string, url: string) => {
   if(type==="application/json"){
     if(!response.body)return ""
     const responseBody = JSON.parse(await textDecode(response.body)) as HandledResult<unknown>
-    const { val, schema } = responseBody
-    return recoveryData(val,schema)
+    const { val, schema,isError=false } = responseBody
+    const r = recoveryData(val,schema)
+    if(isError){
+      // @ts-ignore
+      console.error(val.message)
+    }
+    return r
   }
   /**
    * @deprecated 不再会有纯字符串了

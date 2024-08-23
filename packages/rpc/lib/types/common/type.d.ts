@@ -6,4 +6,5 @@ export type Schema = {
 export interface HandledResult<T> {
     schema: Schema;
     val: T;
+    isError?: boolean;
 }

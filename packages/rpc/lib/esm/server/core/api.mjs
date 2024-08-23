@@ -4,7 +4,7 @@ import { IDENTITY, NAME } from "./const.mjs";
 var isAPI = (val) => {
   return val[IDENTITY] === "api";
 };
-var _defineAPI = (store, handle, idStore) => {
+var _defineAPI = (store, handle, idStore, name) => {
   const ID = Symbol.for(idStore.key);
   const genId = () => {
     const id2 = nanoid();
@@ -13,11 +13,11 @@ var _defineAPI = (store, handle, idStore) => {
     return genId();
   };
   const id = genId();
-  const christen = (name) => {
-    Reflect.set(handle, NAME, name);
+  const christen = (name2) => {
+    Reflect.set(handle, NAME, name2);
     Reflect.defineProperty(handle, NAME, {
       writable: false,
-      value: name,
+      value: name2,
       enumerable: false,
       configurable: false
     });
@@ -59,6 +59,9 @@ var _defineAPI = (store, handle, idStore) => {
       return target.call(t, args[0]);
     }
   });
+  if (name) {
+    christen(name);
+  }
   store.set(id, shadow);
   return shadow;
 };

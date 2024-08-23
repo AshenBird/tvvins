@@ -4,7 +4,7 @@ import { DATA, FILENAME, IDENTITY, TYPE } from "./const.mjs";
 var isReadableStream = (val) => {
   return val instanceof Readable || val instanceof Duplex || val instanceof Transform;
 };
-var resHandle = (res, result) => {
+var resHandle = (res, result, isError = false) => {
   if (isReadableStream(result)) {
     res.setHeader("Content-Type", "application/octet-stream");
     result.pipe(res);
@@ -22,7 +22,7 @@ var resHandle = (res, result) => {
     res.write(commonHandle(result));
   } else {
     res.setHeader("Content-Type", "application/json");
-    res.write(JSON.stringify(commonHandle(result)));
+    res.write(JSON.stringify({ ...commonHandle(result), isError }));
   }
   res.end();
 };

@@ -13,7 +13,7 @@ export const isReadableStream = (
   );
 };
 
-export const resHandle = (res: ServerResponse, result: unknown) => {
+export const resHandle = (res: ServerResponse, result: unknown,isError = false) => {
   // 可写流操作，可读流就过分了吧
   if (isReadableStream(result)) {
     res.setHeader("Content-Type", "application/octet-stream");
@@ -37,7 +37,7 @@ export const resHandle = (res: ServerResponse, result: unknown) => {
   } else {
     // 大部分的值都用 json 返回
     res.setHeader("Content-Type", "application/json");
-    res.write(JSON.stringify(commonHandle(result)));
+    res.write(JSON.stringify({...commonHandle(result),isError}));
   }
   res.end();
 };

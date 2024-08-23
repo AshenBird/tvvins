@@ -17,29 +17,15 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/server/core/const.ts
-var const_exports = {};
-__export(const_exports, {
-  DATA: () => DATA,
-  FILENAME: () => FILENAME,
-  IDENTITY: () => IDENTITY,
-  NAME: () => NAME,
-  SESSION: () => SESSION,
-  TYPE: () => TYPE
+// src/server/core/session.ts
+var session_exports = {};
+__export(session_exports, {
+  Session: () => Session
 });
-module.exports = __toCommonJS(const_exports);
-var IDENTITY = Symbol("identity");
-var NAME = Symbol("name");
-var FILENAME = Symbol("file-name");
-var DATA = Symbol("DATA");
-var TYPE = Symbol("type");
-var SESSION = Symbol("SESSION");
+module.exports = __toCommonJS(session_exports);
+var Session = class {
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  DATA,
-  FILENAME,
-  IDENTITY,
-  NAME,
-  SESSION,
-  TYPE
+  Session
 });

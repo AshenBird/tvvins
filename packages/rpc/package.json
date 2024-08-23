@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/rpc",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.1-beta1",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"
@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@mcswift/base-utils": "^1.0.11",
+    "@mcswift/bellman": "^0.0.8",
     "@mcswift/esbuild": "^1.0.10",
     "@mcswift/node": "^1.0.10",
     "@mcswift/tsc": "^1.0.10",

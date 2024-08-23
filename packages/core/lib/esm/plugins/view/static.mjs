@@ -4,6 +4,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { defineMiddleWare } from "../../Middleware.mjs";
 import { unwrapViteConfig } from "../../options.mjs";
 import { cwd } from "node:process";
+import { logger } from "../../logger.mjs";
 var createViteDevServer = async (viteOptions) => {
   const { mergeConfig, createServer } = await import("vite");
   const viteConfig = mergeConfig(await unwrapViteConfig(viteOptions), {
@@ -30,6 +31,8 @@ var matchContentType = (path) => {
     return "application/json; charset=utf-8";
   if (path.endsWith(".ico"))
     return "application/x-ico";
+  if (path.endsWith(".png"))
+    return "image/png";
   return "text/plain";
 };
 var createProdMiddleware = (viteOptions) => {
@@ -46,6 +49,7 @@ var createProdMiddleware = (viteOptions) => {
       }).end(buffer);
     };
     if (!existsSync(path)) {
+      logger.error("\u6CA1\u627E\u5230\u9759\u6001\u8D44\u6E90:", path);
       next();
     } else {
       if (statSync(path).isDirectory()) {

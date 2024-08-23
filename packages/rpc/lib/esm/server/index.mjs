@@ -10,16 +10,27 @@ import { pathToFileURL } from "node:url";
 import { Store } from "./core/store.mjs";
 import { BodyParserManager } from "./core/body-parse.mjs";
 import { Logger } from "@mcswift/base-utils/logger";
+import { NAME, SESSION } from "./core/const.mjs";
+import { Session } from "./core/session.mjs";
+import { nanoid } from "nanoid";
 var useRPC = (options = {}) => {
   const logger = new Logger("Tvvins.RPC");
-  const { base = "/rpc", dirs = "./api" } = options;
+  const { base = "/rpc", dirs = "./api", middlewares = [] } = options;
   const idStore = new Store();
   const store = /* @__PURE__ */ new Map();
+  const sessionStore = /* @__PURE__ */ new Map();
   const handle = async (ctx, next) => {
     if (!ctx.request.url.startsWith(base)) {
       return next();
     }
+    const isSessionRequest = () => ctx.request.url.startsWith(base + "/session");
     const id = ctx.$.req.headers["x-tvvins-rpc-id"];
+    const sessionId = ctx.$.req.headers["x-tvvins-rpc-session-id"] || nanoid();
+    if (isSessionRequest()) {
+      ctx.$.res.setHeader("x-tvvins-rpc-session-id", sessionId);
+      resHandle(ctx.$.res, {});
+      return;
+    }
     if (!id)
       return next();
     const h = store.get(id);
@@ -27,12 +38,59 @@ var useRPC = (options = {}) => {
       return next();
     logger.info("\u5904\u7406\u8BF7\u6C42:", id);
     const payload = await bodyParse(ctx.$.req);
-    const result = await h(payload.data);
-    resHandle(ctx.$.res, result);
+    const data = payload.data;
+    let session = sessionStore.get(sessionId);
+    if (!session) {
+      session = new Session();
+      sessionStore.set(sessionId, session);
+    }
+    Reflect.set(data, SESSION, session);
+    const name = Reflect.get(h, NAME);
+    if (name) {
+      for (const middleware2 of middlewares) {
+        try {
+          const r = await middleware2(payload, session, name);
+          if (typeof r === "boolean") {
+            if (!r)
+              return resHandle(ctx.$.res, r, true);
+            continue;
+          }
+          if (r.code < 300)
+            continue;
+          if (r.code < 400) {
+            return r;
+          }
+          if (r.code < 500) {
+            return r;
+          }
+          return r;
+        } catch (e) {
+          return resHandle(ctx.$.res, {
+            code: 500,
+            message: e?.message || "middlewares Error",
+            stacks: e?.stack?.split("/n") || []
+          }, true);
+        }
+      }
+    }
+    const result = await h(data).catch((e) => {
+      logger.error(e);
+      return {
+        code: 500,
+        message: e?.message || "API Error",
+        stacks: e?.stack?.split("/n") || []
+      };
+    });
+    ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
+    resHandle(ctx.$.res, result, true);
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
-  const defineAPI = (handle2) => {
-    return _defineAPI(store, handle2, idStore);
+  const defineAPI = (handle2, name) => {
+    return _defineAPI(store, handle2, idStore, name);
+  };
+  const getSession = (payload) => {
+    const r = Reflect.get(payload, SESSION);
+    return r;
   };
   const plugin = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
@@ -83,7 +141,8 @@ var useRPC = (options = {}) => {
   };
   return {
     plugin,
-    defineAPI
+    defineAPI,
+    getSession
   };
 };
 export {

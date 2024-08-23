@@ -7,6 +7,7 @@ import { defineMiddleWare } from "../../Middleware";
 import { Tvvins } from "../../type";
 import { unwrapViteConfig } from "../../options";
 import { cwd } from "node:process";
+import { logger } from "../../logger";
 
 const createViteDevServer = async (viteOptions: InlineConfig) => {
   const {mergeConfig,createServer} = await import("vite")
@@ -32,6 +33,7 @@ const matchContentType = (path: string) => {
   if (path.endsWith(".css")) return "text/css; charset=utf-8"
   if (path.endsWith(".json")) return "application/json; charset=utf-8"
   if (path.endsWith(".ico")) return "application/x-ico"
+  if (path.endsWith(".png")) return "image/png"
   // @todo 常见动态资源及可遍历
   return "text/plain"
 }
@@ -53,6 +55,7 @@ const createProdMiddleware = (viteOptions: UserConfig): Tvvins.Middleware => {
       }).end(buffer);
     }
     if (!existsSync(path)) {
+      logger.error("没找到静态资源:",path)
       next();
     } else {
       if (statSync(path).isDirectory()) {

@@ -12,7 +12,8 @@ var DEFAULT_OPTION = {
   middlewares: [],
   build: {
     source: "./src",
-    output: "./dist"
+    output: "./dist",
+    hooks: {}
   },
   vite: {
     publicDir: resolve(cwd(), "./public")
