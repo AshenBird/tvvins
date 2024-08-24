@@ -25,6 +25,7 @@ __export(const_exports, {
   IDENTITY: () => IDENTITY,
   NAME: () => NAME,
   SESSION: () => SESSION,
+  SESSION_GETTER: () => SESSION_GETTER,
   TYPE: () => TYPE
 });
 module.exports = __toCommonJS(const_exports);
@@ -34,6 +35,7 @@ var FILENAME = Symbol("file-name");
 var DATA = Symbol("DATA");
 var TYPE = Symbol("type");
 var SESSION = Symbol("SESSION");
+var SESSION_GETTER = Symbol("SESSION_GETTER");
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   DATA,
@@ -41,5 +43,6 @@ var SESSION = Symbol("SESSION");
   IDENTITY,
   NAME,
   SESSION,
+  SESSION_GETTER,
   TYPE
 });

@@ -24,6 +24,9 @@ __export(session_exports, {
 });
 module.exports = __toCommonJS(session_exports);
 var Session = class {
+  constructor(id) {
+    this.id = id;
+  }
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

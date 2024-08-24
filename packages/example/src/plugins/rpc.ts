@@ -1,4 +1,4 @@
 import { useRPC } from "@tvvins/rpc"
 
-export const {defineAPI, plugin, useSession} = useRPC()
+export const {defineAPI, plugin} = useRPC()
 

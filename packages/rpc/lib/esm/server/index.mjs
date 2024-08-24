@@ -10,11 +10,11 @@ import { pathToFileURL } from "node:url";
 import { Store } from "./core/store.mjs";
 import { BodyParserManager } from "./core/body-parse.mjs";
 import { Logger } from "@mcswift/base-utils/logger";
-import { NAME, SESSION } from "./core/const.mjs";
+import { NAME } from "./core/const.mjs";
 import { Session } from "./core/session.mjs";
 import { nanoid } from "nanoid";
+var logger = new Logger("Tvvins.RPC");
 var useRPC = (options = {}) => {
-  const logger = new Logger("Tvvins.RPC");
   const { base = "/rpc", dirs = "./api", middlewares = [] } = options;
   const idStore = new Store();
   const store = /* @__PURE__ */ new Map();
@@ -41,10 +41,9 @@ var useRPC = (options = {}) => {
     const data = payload.data;
     let session = sessionStore.get(sessionId);
     if (!session) {
-      session = new Session();
+      session = new Session(sessionId);
       sessionStore.set(sessionId, session);
     }
-    Reflect.set(data, SESSION, session);
     const name = Reflect.get(h, NAME);
     if (name) {
       for (const middleware2 of middlewares) {
@@ -73,7 +72,10 @@ var useRPC = (options = {}) => {
         }
       }
     }
-    const result = await h(data).catch((e) => {
+    const context = {
+      session
+    };
+    const result = await h.apply(context, data).catch((e) => {
       logger.error(e);
       return {
         code: 500,
@@ -87,10 +89,6 @@ var useRPC = (options = {}) => {
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
   const defineAPI = (handle2, name) => {
     return _defineAPI(store, handle2, idStore, name);
-  };
-  const getSession = (payload) => {
-    const r = Reflect.get(payload, SESSION);
-    return r;
   };
   const plugin = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
@@ -141,8 +139,8 @@ var useRPC = (options = {}) => {
   };
   return {
     plugin,
-    defineAPI,
-    getSession
+    defineAPI
+    // useSession,
   };
 };
 export {

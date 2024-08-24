@@ -4,9 +4,10 @@
 import { nanoid } from "nanoid";
 import { type ZodType } from "zod";
 import type { z } from "zod";
-import { IDENTITY, NAME } from "./const";
+import { IDENTITY, NAME, SESSION_GETTER } from "./const";
 import { API, ApiHandle, IDStore } from "../type";
 import { Store } from "./store";
+import { Session } from "node:inspector";
 export const isAPI = <T = unknown, Q = unknown>(
   val: unknown
 ): val is API<T,Q> => {
@@ -45,6 +46,7 @@ export const _defineAPI = <
     return shadow  
   }
   Reflect.set(handle,ID,id)
+
   const shadow = new Proxy(handle, {
     get(target, p) {
       if (p === IDENTITY) {

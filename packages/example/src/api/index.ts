@@ -1,9 +1,6 @@
 
-import { defineAPI, useSession } from "../plugins/rpc"
-
-export const test = defineAPI(async function() {
-  // const session = 
-  useSession()
+import { defineAPI } from "../plugins/rpc"
+export const test = defineAPI(async ()=> {
   return {
     aaa:"Aaa"
   }

@@ -1,4 +1,4 @@
-import { IDENTITY } from "./core/const";
+import { IDENTITY, SESSION_GETTER } from "./core/const";
 import { IncomingMessage } from "node:http";
 import { Session } from "./core/session";
 
@@ -27,16 +27,19 @@ export type MiddlewareResult = {
   data?:string
 }|boolean
 export interface ApiHandle<Payload, Result> {
-  (payload: Payload): Promise<Result> | Result;
+  (this:RPCContext,payload: Payload): Promise<Result> | Result;
 }
 
 export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
 
-
+export type RPCContext = {
+  session:Session
+}
 export interface API<Payload = any, Result = any> {
-  (payload: Payload): Promise<Result>;
+  (this:RPCContext,payload: Payload): Promise<Result>;
   (): Promise<Result>;
   [IDENTITY]: "api";
+  [SESSION_GETTER]:()=>Session
   // christen: Christen<Payload, Result>;
 }
 

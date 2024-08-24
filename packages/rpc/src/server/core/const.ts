@@ -4,3 +4,4 @@ export const FILENAME = Symbol("file-name");
 export const DATA = Symbol("DATA");
 export const TYPE = Symbol("type");
 export const SESSION = Symbol("SESSION");
+export const SESSION_GETTER = Symbol("SESSION_GETTER");

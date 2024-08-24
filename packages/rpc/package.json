@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/rpc",
-  "version": "1.0.1-beta3",
+  "version": "1.0.1-beta4",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"

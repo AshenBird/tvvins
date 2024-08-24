@@ -38,8 +38,8 @@ var import_logger = require("@mcswift/base-utils/logger");
 var import_const = require("./core/const.cjs");
 var import_session = require("./core/session.cjs");
 var import_nanoid = require("nanoid");
+var logger = new import_logger.Logger("Tvvins.RPC");
 var useRPC = (options = {}) => {
-  const logger = new import_logger.Logger("Tvvins.RPC");
   const { base = "/rpc", dirs = "./api", middlewares = [] } = options;
   const idStore = new import_store.Store();
   const store = /* @__PURE__ */ new Map();
@@ -66,10 +66,9 @@ var useRPC = (options = {}) => {
     const data = payload.data;
     let session = sessionStore.get(sessionId);
     if (!session) {
-      session = new import_session.Session();
+      session = new import_session.Session(sessionId);
       sessionStore.set(sessionId, session);
     }
-    Reflect.set(data, import_const.SESSION, session);
     const name = Reflect.get(h, import_const.NAME);
     if (name) {
       for (const middleware2 of middlewares) {
@@ -98,7 +97,10 @@ var useRPC = (options = {}) => {
         }
       }
     }
-    const result = await h(data).catch((e) => {
+    const context = {
+      session
+    };
+    const result = await h.apply(context, data).catch((e) => {
       logger.error(e);
       return {
         code: 500,
@@ -112,10 +114,6 @@ var useRPC = (options = {}) => {
   const middleware = (0, import_core.defineMiddleWare)(handle, "tvvins-rpc");
   const defineAPI = (handle2, name) => {
     return (0, import_api._defineAPI)(store, handle2, idStore, name);
-  };
-  const getSession = (payload) => {
-    const r = Reflect.get(payload, import_const.SESSION);
-    return r;
   };
   const plugin = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
@@ -166,8 +164,8 @@ var useRPC = (options = {}) => {
   };
   return {
     plugin,
-    defineAPI,
-    getSession
+    defineAPI
+    // useSession,
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
