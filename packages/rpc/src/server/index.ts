@@ -223,8 +223,9 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     const context = {
       session
     }
+    
     // 用户处理逻辑
-    const result = await h.apply(context,data).catch(e => {
+    const result = await h.apply(context,[data]).catch(e => {
       logger.error(e)
       return {
         code: 500,

@@ -75,7 +75,7 @@ var useRPC = (options = {}) => {
     const context = {
       session
     };
-    const result = await h.apply(context, data).catch((e) => {
+    const result = await h.apply(context, [data]).catch((e) => {
       logger.error(e);
       return {
         code: 500,

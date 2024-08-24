@@ -26,22 +26,35 @@ export type MiddlewareResult = {
   message:string,
   data?:string
 }|boolean
-export interface ApiHandle<Payload, Result> {
+
+export interface ApiWithPayloadHandle<Payload, Result> {
   (this:RPCContext,payload: Payload): Promise<Result> | Result;
 }
+export interface ApiWithoutHandle<Result> {
+  (this:RPCContext): Promise<Result> | Result;
+}
+export type ApiHandle<Payload, Result> = ApiWithPayloadHandle<Payload, Result>|ApiWithoutHandle<Result>
 
 export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
 
 export type RPCContext = {
   session:Session
 }
-export interface API<Payload = any, Result = any> {
-  (this:RPCContext,payload: Payload): Promise<Result>;
-  (): Promise<Result>;
+
+export interface APIBase {
   [IDENTITY]: "api";
   [SESSION_GETTER]:()=>Session
   // christen: Christen<Payload, Result>;
 }
+
+export interface APIWithPayload<Payload = any, Result = any> extends APIBase  {
+  (this:RPCContext,payload: Payload): Promise<Result>;
+}
+
+export interface APIWithoutPayload< Result = any> extends APIBase  {
+  (): Promise<Result>;
+}
+export type API<Payload = any, Result = any> = APIWithPayload<Payload,Result>|APIWithoutPayload<Result>
 
 export interface ValidateResult {
   success: boolean;
