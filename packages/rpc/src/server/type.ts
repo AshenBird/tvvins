@@ -48,7 +48,7 @@ export interface APIBase {
 }
 
 export interface APIWithPayload<Payload = any, Result = any> extends APIBase  {
-  (this:RPCContext,payload: Payload): Promise<Result>;
+  (payload: Payload): Promise<Result>;
 }
 
 export interface APIWithoutPayload< Result = any> extends APIBase  {
