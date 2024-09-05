@@ -1,5 +1,6 @@
 import { Bellman } from "@mcswift/bellman";
 import { HandledResult, Schema } from "../common/type";
+import { encode,decode } from "../common/data";
 
 const utf8Decoder = new TextDecoder('utf8')
 const byteToUTF8 = (bytes: Uint8Array | ArrayBufferView) => {
@@ -9,13 +10,23 @@ const byteToUTF8 = (bytes: Uint8Array | ArrayBufferView) => {
 let sessionId = ""
 const bellman  = new Bellman()
 let lock = false
-export const rpc = async (payload: any, id: string, url: string) => {
+
+export type ErrorHookResult = "continue"|"retry"|"break"|boolean
+export type ResponseErrorHook = (resp:any)=>Promise<ErrorHookResult>|ErrorHookResult
+
+const responseErrorHooks = new Map<symbol,ResponseErrorHook>()
+export const onResponseError = (hook:ResponseErrorHook)=>{
+  const id = Symbol()
+  responseErrorHooks.set(id,hook)
+  return ()=>{
+    responseErrorHooks.delete(id)
+  }
+}
+export const rpc = async (payload: any[], id: string, url: string,times=0):Promise<any> => {
   if(bellman.status==="padding"&&lock){
-    console.debug(1)
     await bellman.signal
   }else if(!sessionId){
-    console.debug(2)
-    lock = true
+    lock = true;
     const r = await fetch(url+"/session",{
       method:"POST",
     })
@@ -30,7 +41,6 @@ export const rpc = async (payload: any, id: string, url: string) => {
     lock = false
   }
   
-  console.debug(3)
   const rt = getPayloadType(payload)
   const response =await fetch(url, {
     method: "POST",
@@ -39,7 +49,7 @@ export const rpc = async (payload: any, id: string, url: string) => {
       "content-type":rt,
       "x-tvvins-rpc-session-id":sessionId
     },
-    body: rt==="application/json"?JSON.stringify(payload):payload,
+    body:JSON.stringify(encode(payload)),
   });
   const type = response.headers.get("content-type")
   
@@ -47,10 +57,23 @@ export const rpc = async (payload: any, id: string, url: string) => {
     if(!response.body)return ""
     const responseBody = JSON.parse(await textDecode(response.body)) as HandledResult<unknown>
     const { val, schema,isError=false } = responseBody
-    const r = recoveryData(val,schema)
+    const r = decode(val,schema)
     if(isError){
-      // @ts-ignore
-      console.error(val.message)
+      console.debug(r)
+      console.error(r.message)
+      for(const errorHook of responseErrorHooks.values()){
+        const errorResult = await errorHook(r)
+        if(typeof errorResult ==="boolean"){
+          if(errorResult)continue;
+          return r
+        }
+        if(errorResult==="continue")continue;
+        if(errorResult==="break")continue;
+        // 超过最大重试次数
+        if(times>=10)continue;
+        return await rpc(payload, id, url,times+1)
+      }
+      
     }
     return r
   }
@@ -77,54 +100,13 @@ const textDecode = async (body:ReadableStream<Uint8Array>)=>{
   }
   return result.join(" ")
 }
-const getPayloadType = (val:unknown)=>{
-  if(typeof val ==="string")return "text/plain"
+const getPayloadType = (val:unknown[])=>{
+  if(val.some(arg=>arg instanceof FormData)){
+    if(val.length > 1){
+      throw new Error("API accept only one param when use formdata param.")
+    }
+    // @todo formdata content-type 优化
+    return "FormData"
+  }
   return "application/json"
-}
-const directTypes = [
-  "string",
-  "number",
-  "boolean",
-]
-const recoveryData =(val:any, schema:Schema)=>{
-  if(directTypes.includes(schema.type)) return val
-  if(schema.type==="bigint") return BigInt(val)
-  if(schema.type==="symbol") return val?Symbol.for(val):Symbol()
-  if(schema.type==="NaN") return NaN
-  if(schema.type==="Infinity") return Infinity
-  if(schema.type==="null") return null
-  if(schema.type==="date") return new Date(val)
-  if(schema.type==="array"){
-    const result:unknown[] = []
-    for(const [i, v] of (val as unknown[]).entries()){
-      const r = recoveryData(v,(schema.children as Schema[])[i]);
-      result.push(r)
-    }
-    return result
-  }
-  if(schema.type==="set"){
-    const result:Set<unknown> = new Set()
-    for(const [i, v] of (val as unknown[]).entries()){
-      const r = recoveryData(v,(schema.children as Schema[])[i]);
-      result.add(r)
-    }
-    return result
-  }
-  if(schema.type==="record"){
-    const result:Record<string,unknown> = {}
-    for(const [k, v] of Object.entries((val as Record<string,unknown>))){
-      const r = recoveryData(v,(schema.children as Record<string, Schema>)[k]);
-      result[k] =r
-    }
-    return result
-  }
-  if(schema.type==="map"){
-    const result:Map<string,unknown> = new Map()
-    for(const [k, v] of Object.entries((val as Record<string,unknown>))){
-      const r = recoveryData(v,(schema.children as Record<string, Schema>)[k]);
-      result.set(k,v)
-    }
-    return result
-  }
-  return val
 }

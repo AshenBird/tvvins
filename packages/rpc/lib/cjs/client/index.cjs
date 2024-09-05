@@ -20,10 +20,12 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/client/index.ts
 var client_exports = {};
 __export(client_exports, {
+  onResponseError: () => onResponseError,
   rpc: () => rpc
 });
 module.exports = __toCommonJS(client_exports);
 var import_bellman = require("@mcswift/bellman");
+var import_data = require("../common/data.cjs");
 var utf8Decoder = new TextDecoder("utf8");
 var byteToUTF8 = (bytes) => {
   const input = ArrayBuffer.isView(bytes) ? new Uint8Array(bytes.buffer) : bytes;
@@ -32,12 +34,18 @@ var byteToUTF8 = (bytes) => {
 var sessionId = "";
 var bellman = new import_bellman.Bellman();
 var lock = false;
-var rpc = async (payload, id, url) => {
+var responseErrorHooks = /* @__PURE__ */ new Map();
+var onResponseError = (hook) => {
+  const id = Symbol();
+  responseErrorHooks.set(id, hook);
+  return () => {
+    responseErrorHooks.delete(id);
+  };
+};
+var rpc = async (payload, id, url, times = 0) => {
   if (bellman.status === "padding" && lock) {
-    console.debug(1);
     await bellman.signal;
   } else if (!sessionId) {
-    console.debug(2);
     lock = true;
     const r = await fetch(url + "/session", {
       method: "POST"
@@ -52,7 +60,6 @@ var rpc = async (payload, id, url) => {
     sessionId = sid;
     lock = false;
   }
-  console.debug(3);
   const rt = getPayloadType(payload);
   const response = await fetch(url, {
     method: "POST",
@@ -61,7 +68,7 @@ var rpc = async (payload, id, url) => {
       "content-type": rt,
       "x-tvvins-rpc-session-id": sessionId
     },
-    body: rt === "application/json" ? JSON.stringify(payload) : payload
+    body: JSON.stringify((0, import_data.encode)(payload))
   });
   const type = response.headers.get("content-type");
   if (type === "application/json") {
@@ -69,9 +76,25 @@ var rpc = async (payload, id, url) => {
       return "";
     const responseBody = JSON.parse(await textDecode(response.body));
     const { val, schema, isError = false } = responseBody;
-    const r = recoveryData(val, schema);
+    const r = (0, import_data.decode)(val, schema);
     if (isError) {
-      console.error(val.message);
+      console.debug(r);
+      console.error(r.message);
+      for (const errorHook of responseErrorHooks.values()) {
+        const errorResult = await errorHook(r);
+        if (typeof errorResult === "boolean") {
+          if (errorResult)
+            continue;
+          return r;
+        }
+        if (errorResult === "continue")
+          continue;
+        if (errorResult === "break")
+          continue;
+        if (times >= 10)
+          continue;
+        return await rpc(payload, id, url, times + 1);
+      }
     }
     return r;
   }
@@ -99,65 +122,16 @@ var textDecode = async (body) => {
   return result.join(" ");
 };
 var getPayloadType = (val) => {
-  if (typeof val === "string")
-    return "text/plain";
+  if (val.some((arg) => arg instanceof FormData)) {
+    if (val.length > 1) {
+      throw new Error("API accept only one param when use formdata param.");
+    }
+    return "FormData";
+  }
   return "application/json";
-};
-var directTypes = [
-  "string",
-  "number",
-  "boolean"
-];
-var recoveryData = (val, schema) => {
-  if (directTypes.includes(schema.type))
-    return val;
-  if (schema.type === "bigint")
-    return BigInt(val);
-  if (schema.type === "symbol")
-    return val ? Symbol.for(val) : Symbol();
-  if (schema.type === "NaN")
-    return NaN;
-  if (schema.type === "Infinity")
-    return Infinity;
-  if (schema.type === "null")
-    return null;
-  if (schema.type === "date")
-    return new Date(val);
-  if (schema.type === "array") {
-    const result = [];
-    for (const [i, v] of val.entries()) {
-      const r = recoveryData(v, schema.children[i]);
-      result.push(r);
-    }
-    return result;
-  }
-  if (schema.type === "set") {
-    const result = /* @__PURE__ */ new Set();
-    for (const [i, v] of val.entries()) {
-      const r = recoveryData(v, schema.children[i]);
-      result.add(r);
-    }
-    return result;
-  }
-  if (schema.type === "record") {
-    const result = {};
-    for (const [k, v] of Object.entries(val)) {
-      const r = recoveryData(v, schema.children[k]);
-      result[k] = r;
-    }
-    return result;
-  }
-  if (schema.type === "map") {
-    const result = /* @__PURE__ */ new Map();
-    for (const [k, v] of Object.entries(val)) {
-      const r = recoveryData(v, schema.children[k]);
-      result.set(k, v);
-    }
-    return result;
-  }
-  return val;
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  onResponseError,
   rpc
 });

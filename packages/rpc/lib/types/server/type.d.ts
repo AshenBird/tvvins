@@ -30,7 +30,7 @@ export interface ApiWithoutHandle<Result> {
     (this: RPCContext): Promise<Result> | Result;
 }
 export type ApiHandle<Payload, Result> = ApiWithPayloadHandle<Payload, Result> | ApiWithoutHandle<Result>;
-export type Christen<Payload, Result> = (name: string) => API<Payload, Result>;
+export type Christen<Payload extends any[], Result> = (name: string) => API<Payload, Result>;
 export type RPCContext = {
     session: Session;
 };
@@ -38,13 +38,6 @@ export interface APIBase {
     [IDENTITY]: "api";
     [SESSION_GETTER]: () => Session;
 }
-export interface APIWithPayload<Payload = any, Result = any> extends APIBase {
-    (payload: Payload): Promise<Result>;
-}
-export interface APIWithoutPayload<Result = any> extends APIBase {
-    (): Promise<Result>;
-}
-export type API<Payload = any, Result = any> = APIWithPayload<Payload, Result> | APIWithoutPayload<Result>;
 export interface ValidateResult {
     success: boolean;
     info?: {
@@ -83,3 +76,11 @@ export type ErrorResult = Result<ErrorData> & {
     status: false;
 };
 export type BodyParser = (req: IncomingMessage) => Promise<BodyParseResult>;
+export type APIFac<Handle extends (...args: any[]) => unknown> = ReturnType<Handle> extends Promise<unknown> ? Handle : (...args: Parameters<Handle>) => Promise<ReturnType<Handle>>;
+export interface APIWithPayload<Payload extends any[], Result = any> extends APIBase {
+    (...payload: Payload): Promise<Result>;
+}
+export interface APIWithoutPayload<Result = any> extends APIBase {
+    (): Promise<Result>;
+}
+export type API<Payload extends any[] = any[], Result = any> = APIWithPayload<Payload, Result> | APIWithoutPayload<Result>;

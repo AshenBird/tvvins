@@ -25,6 +25,7 @@ __export(body_parse_exports, {
 });
 module.exports = __toCommonJS(body_parse_exports);
 var import_error = require("./error.cjs");
+var import_data = require("../../common/data.cjs");
 var bodyParse = async (req) => {
   const type = req.headers["content-type"];
   if (!type)
@@ -44,17 +45,11 @@ var jsonHandle = async (req) => {
   const textResult = await textHandle(req);
   if (textResult.error)
     return textResult;
-  try {
-    return {
-      error: false,
-      data: JSON.parse(textResult.data)
-    };
-  } catch (err) {
-    return {
-      error: true,
-      data: (0, import_error.createErrorResult)(400, "please use right json ", err)
-    };
-  }
+  const { val, schema } = JSON.parse(textResult.data);
+  return {
+    error: false,
+    data: (0, import_data.decode)(val, schema)
+  };
 };
 var textHandle = (req) => {
   const chunks = [];

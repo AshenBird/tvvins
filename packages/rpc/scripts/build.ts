@@ -19,6 +19,7 @@ export const main = async ()=>{
   emptyDirSync(out)
   buildModule("client")
   buildModule("server")
+  buildModule("common")
   // buildModule("plugin")
   genTypes()
 }

@@ -81,7 +81,7 @@ var _defineAPI = (store, handle, idStore, name) => {
       return false;
     },
     apply: async (target, t, args) => {
-      return target.call(t, args[0]);
+      return target.call(t, ...args);
     }
   });
   if (name) {

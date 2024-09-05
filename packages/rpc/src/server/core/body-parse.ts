@@ -2,6 +2,7 @@ import { IncomingMessage } from "http"
 import { createErrorResult } from "./error"
 import { BodyParseResult, type BodyParser } from "../type"
 import { JSONValue } from "@mcswift/types"
+import { decode } from "../../common/data"
 
 /**
  * body 中接受的数据类型
@@ -27,16 +28,10 @@ export const bodyParse = async (req:IncomingMessage)=>{
 const jsonHandle = async (req:IncomingMessage):Promise<BodyParseResult<JSONValue>>=>{
   const textResult = await textHandle(req)
   if(textResult.error)return textResult
-  try{
-    return {
-      error:false,
-      data:JSON.parse(textResult.data)
-    }
-  }catch(err) {
-    return {
-      error:true,
-      data:createErrorResult(400,"please use right json ",err as Error)
-    }
+  const { val,schema } = JSON.parse(textResult.data)
+  return {
+    error:false,
+    data:decode(val,schema)
   }
 }
 const textHandle = (req:IncomingMessage):Promise<BodyParseResult<string>>=>{

@@ -38,6 +38,7 @@ var useRPC = (options = {}) => {
       return next();
     logger.info("\u5904\u7406\u8BF7\u6C42:", id);
     const payload = await bodyParse(ctx.$.req);
+    logger.info("\u63A5\u5230\u7684\u6570\u636E", payload);
     const data = payload.data;
     let session = sessionStore.get(sessionId);
     if (!session) {
@@ -75,7 +76,7 @@ var useRPC = (options = {}) => {
     const context = {
       session
     };
-    const result = await h.apply(context, [data]).catch((e) => {
+    const result = await h.apply(context, data).catch((e) => {
       logger.error(e);
       return {
         code: 500,
@@ -84,7 +85,7 @@ var useRPC = (options = {}) => {
       };
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
-    resHandle(ctx.$.res, result, true);
+    resHandle(ctx.$.res, result, result.code && result.code >= 400);
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
   const defineAPI = (handle2, name) => {

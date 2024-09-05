@@ -32,7 +32,7 @@ var codeGen = (id, methods) => {
   `;
   for (const [key, name] of Object.entries(methods)) {
     result += `
-      export const ${name} = async (payload)=>{
+      export const ${name} = async (...payload)=>{
         return await rpc(payload,"${key}","/rpc")
       };
     `;

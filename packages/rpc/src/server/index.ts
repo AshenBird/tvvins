@@ -183,6 +183,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     if (!h) return next();
     logger.info("处理请求:", id)
     const payload = await bodyParse(ctx.$.req);
+    logger.info("接到的数据",payload)
     const data = payload.data
     /*--- session  ---*/
     let session = sessionStore.get(sessionId)
@@ -225,7 +226,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     }
     
     // 用户处理逻辑
-    const result = await h.apply(context,[data]).catch(e => {
+    const result = await h.apply(context,data).catch(e => {
       logger.error(e)
       return {
         code: 500,
@@ -234,16 +235,18 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
       }
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
-    resHandle(ctx.$.res, result,true);
+    resHandle(ctx.$.res, result,result.code&&result.code>=400);
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
-  const defineAPI = <Payload, Result>(
-    handle: ApiHandle<Payload, Result>,
+  const defineAPI = <Result,Handle extends (...args:any[])=>Result >(
+    handle: Handle,//ApiHandle<Payload, Result>,
     name?: string
   ) => {
-    return _defineAPI<Payload, Result>(store, handle, idStore, name);
+    return _defineAPI(store, handle, idStore, name);
   };
-  const plugin: Tvvins.Plugin = (appOptions) => {
+  const plugin: Tvvins.Plugin<{
+    API?:Record<string,API>
+  }> = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
     const apiDir = _dirs.map((dir) => resolve(appOptions.build.source, dir));
     const result: Tvvins.PluginObj = {
@@ -292,7 +295,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
           // @ts-ignore
           vitePlugin(apiDir, idStore)
         ]
-      }
+      },
     };
     return result
   }

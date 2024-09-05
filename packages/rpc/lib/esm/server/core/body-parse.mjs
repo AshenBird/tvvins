@@ -1,5 +1,6 @@
 // src/server/core/body-parse.ts
 import { createErrorResult } from "./error.mjs";
+import { decode } from "../../common/data.mjs";
 var bodyParse = async (req) => {
   const type = req.headers["content-type"];
   if (!type)
@@ -19,17 +20,11 @@ var jsonHandle = async (req) => {
   const textResult = await textHandle(req);
   if (textResult.error)
     return textResult;
-  try {
-    return {
-      error: false,
-      data: JSON.parse(textResult.data)
-    };
-  } catch (err) {
-    return {
-      error: true,
-      data: createErrorResult(400, "please use right json ", err)
-    };
-  }
+  const { val, schema } = JSON.parse(textResult.data);
+  return {
+    error: false,
+    data: decode(val, schema)
+  };
 };
 var textHandle = (req) => {
   const chunks = [];

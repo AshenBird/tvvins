@@ -36,10 +36,10 @@ const start = async (isDev:boolean,entry:string)=>{
   }else{
     args.push('--no-warnings',entryPath)
   }
-  
   if(isDev){
     Logger.info("Begin Run devServer")
   }
+  
   spawn(command,args,{
     stdio:"inherit",
     shell:true,

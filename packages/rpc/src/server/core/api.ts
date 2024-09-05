@@ -5,10 +5,10 @@ import { nanoid } from "nanoid";
 import { type ZodType } from "zod";
 import type { z } from "zod";
 import { IDENTITY, NAME, SESSION_GETTER } from "./const";
-import { API, ApiHandle, IDStore } from "../type";
+import { API, APIFac, ApiHandle, IDStore } from "../type";
 import { Store } from "./store";
 import { Session } from "node:inspector";
-export const isAPI = <T = unknown, Q = unknown>(
+export const isAPI = <T extends any[] = any[], Q = unknown>(
   val: unknown
 ): val is API<T,Q> => {
   return (val as API<T, Q>)[IDENTITY] === "api";
@@ -17,12 +17,12 @@ export const isAPI = <T = unknown, Q = unknown>(
 
 
 export const _defineAPI = <
-  Payload,
   Result,
+  Handle extends (...args:any[])=>Result
   // Schema extends ZodType
 >(
   store:Map<string,API>,
-  handle: ApiHandle<Payload, Result>,
+  handle: Handle,
   idStore:Store,
   name?:string
   // schema?: Schema
@@ -65,7 +65,7 @@ export const _defineAPI = <
         return (key:Symbol,id:string)=>{
           if(key!==ID)return
           Reflect.set(shadow,ID,id)
-          store.set(id,shadow)
+          store.set(id,shadow as API)
         }
       }
       // @ts-ignore
@@ -79,9 +79,9 @@ export const _defineAPI = <
       return false
     },
     apply: async (target, t, args) => {
-      return target.call(t, args[0]);
+      return target.call(t, ...args);
     },
-  })  as API<Payload, Result>
+  }) as APIFac<typeof handle>
   if(name){
     christen(name)
   }

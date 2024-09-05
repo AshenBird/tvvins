@@ -76,8 +76,8 @@ export declare namespace Tvvins {
     };
     vite?:UserConfigExport
   }
-  export interface Plugin {
-    (option: MergedInitOptions): PluginObj;
+  export interface Plugin<T extends Record<string,unknown> = {}> {
+    (option: MergedInitOptions&T): PluginObj;
   }
   export interface ResolvedPlugin { }
 
