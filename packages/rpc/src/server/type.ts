@@ -98,7 +98,9 @@ export type APIFac<Handle extends (...args:any[])=>unknown> =ReturnType<Handle> 
 export interface APIWithPayload<Payload extends any[], Result = any> extends APIBase  {
   (...payload: Payload): Promise<Result>;
 }
-
+export type APIContext = {
+  session:Session
+}
 export interface APIWithoutPayload< Result = any> extends APIBase  {
   (): Promise<Result>;
 }

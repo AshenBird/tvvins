@@ -1,5 +1,5 @@
 import { type Tvvins, defineMiddleWare } from "@tvvins/core";
-import { API, ApiHandle, RPCMiddleware, RPCOptions } from "./type";
+import { API, APIContext, ApiHandle, RPCMiddleware, RPCOptions } from "./type";
 import { bodyParse } from "./core/body-parse";
 import { resHandle } from "./core/response";
 import { _defineAPI } from "./core/api";
@@ -238,7 +238,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     resHandle(ctx.$.res, result,result.code&&result.code>=400);
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
-  const defineAPI = <Result,Handle extends (...args:any[])=>Result >(
+  const defineAPI = <Result,Handle extends (this:APIContext,...args:any[])=>Result >(
     handle: Handle,//ApiHandle<Payload, Result>,
     name?: string
   ) => {

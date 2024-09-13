@@ -1,6 +1,7 @@
 
 import { defineAPI } from "../plugins/rpc"
-export const test = defineAPI((id:string,name:string)=> {
+export const test = defineAPI(function(id:string,name:string){
+  this.session
   return {
     id,
     name
