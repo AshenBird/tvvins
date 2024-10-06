@@ -94,7 +94,10 @@ export type ErrorResult = Result<ErrorData> & {
 
 export type BodyParser = (req: IncomingMessage) => Promise<BodyParseResult>
 
-export type APIFac<Handle extends (...args:any[])=>unknown> =ReturnType<Handle> extends Promise<unknown>?Handle:(...args:Parameters<Handle>)=>Promise<ReturnType<Handle>> 
+export type APIFac<Handle extends (...args:any[])=>unknown> 
+= ReturnType<Handle> extends Promise<unknown>
+  ?(...args:Parameters<Handle>)=>ReturnType<Handle>
+  :(...args:Parameters<Handle>)=>Promise<ReturnType<Handle>> 
 export interface APIWithPayload<Payload extends any[], Result = any> extends APIBase  {
   (...payload: Payload): Promise<Result>;
 }

@@ -1,7 +1,7 @@
 
 import { defineAPI } from "../plugins/rpc"
 export const test = defineAPI(function(id:string,name:string){
-  this.session
+  this.session.get("aaa")
   return {
     id,
     name
