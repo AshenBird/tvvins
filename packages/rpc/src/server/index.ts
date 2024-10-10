@@ -167,6 +167,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
   const store = new Map<string, API>();
   const sessionStore = new Map<string, Session>()
   const handle = async (ctx: Tvvins.Context, next: () => unknown) => {
+    const errorSymbol = Symbol()
     if (!ctx.request.url.startsWith(base)) {
       return next();
     }
@@ -183,7 +184,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     if (!h) return next();
     logger.info("处理请求:", id)
     const payload = await bodyParse(ctx.$.req);
-    logger.info("接到的数据",payload)
+    logger.info("接到的数据", payload)
     const data = payload.data
     /*--- session  ---*/
     let session = sessionStore.get(sessionId)
@@ -198,7 +199,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
         try {
           const r = await middleware(payload, session, name)
           if (typeof r === "boolean") {
-            if (!r) return resHandle(ctx.$.res, r,true);
+            if (!r) return resHandle(ctx.$.res, r, true);
             continue;
           }
           if (r.code < 300) continue
@@ -213,39 +214,44 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
           // 服务端错误
           return r
         } catch (e) {
-          return resHandle(ctx.$.res,{
+          return resHandle(ctx.$.res, {
             code: 500,
             message: (e as Error)?.message || "middlewares Error",
-            stacks: (e as Error)?.stack?.split("/n")||[]
-          },true)
+            stacks: (e as Error)?.stack?.split("/n") || []
+          }, true)
         }
       }
     }
     const context = {
       session
     }
-    
+
     // 用户处理逻辑
-    const result = await h.apply(context,data).catch(e => {
+    const result = await h.apply(context, data).then((res) => {
+      if (res) return res
+      return null
+    }).catch(e => {
       logger.error(e)
       return {
+        [errorSymbol]:true,
         code: 500,
         message: e?.message || "API Error",
-        stacks: (e as Error)?.stack?.split("/n")||[]
+        stacks: (e as Error)?.stack?.split("/n") || []
       }
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
-    resHandle(ctx.$.res, result,result.code&&result.code>=400);
+    // !!result && !!result.code && result.code >= 400
+    resHandle(ctx.$.res, result, !!result&&Reflect.get(result,errorSymbol));
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
-  const defineAPI = <Result,Handle extends (this:APIContext,...args:any[])=>Result >(
+  const defineAPI = <Result, Handle extends (this: APIContext, ...args: any[]) => Result>(
     handle: Handle,//ApiHandle<Payload, Result>,
     name?: string
   ) => {
     return _defineAPI(store, handle, idStore, name);
   };
   const plugin: Tvvins.Plugin<{
-    API?:Record<string,API>
+    API?: Record<string, API>
   }> = (appOptions) => {
     const _dirs = typeof dirs === "string" ? [dirs] : dirs;
     const apiDir = _dirs.map((dir) => resolve(appOptions.build.source, dir));

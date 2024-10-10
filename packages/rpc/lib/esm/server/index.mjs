@@ -20,6 +20,7 @@ var useRPC = (options = {}) => {
   const store = /* @__PURE__ */ new Map();
   const sessionStore = /* @__PURE__ */ new Map();
   const handle = async (ctx, next) => {
+    const errorSymbol = Symbol();
     if (!ctx.request.url.startsWith(base)) {
       return next();
     }
@@ -76,16 +77,21 @@ var useRPC = (options = {}) => {
     const context = {
       session
     };
-    const result = await h.apply(context, data).catch((e) => {
+    const result = await h.apply(context, data).then((res) => {
+      if (res)
+        return res;
+      return null;
+    }).catch((e) => {
       logger.error(e);
       return {
+        [errorSymbol]: true,
         code: 500,
         message: e?.message || "API Error",
         stacks: e?.stack?.split("/n") || []
       };
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
-    resHandle(ctx.$.res, result, result.code && result.code >= 400);
+    resHandle(ctx.$.res, result, !!result && Reflect.get(result, errorSymbol));
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
   const defineAPI = (handle2, name) => {
