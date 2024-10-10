@@ -241,7 +241,7 @@ export const useRPC = (options: Partial<RPCOptions> = {}) => {
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
     // !!result && !!result.code && result.code >= 400
-    resHandle(ctx.$.res, result, !!result&&Reflect.get(result,errorSymbol));
+    resHandle(ctx.$.res, result, result!==null&&typeof result==="object"&&Reflect.get(result,errorSymbol));
   };
   const middleware = defineMiddleWare(handle, "tvvins-rpc");
   const defineAPI = <Result, Handle extends (this: APIContext, ...args: any[]) => Result>(

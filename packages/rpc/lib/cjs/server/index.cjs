@@ -116,7 +116,7 @@ var useRPC = (options = {}) => {
       };
     });
     ctx.$.res.setHeader("x-tvvins-rpc-session-id", "sessionId");
-    (0, import_response.resHandle)(ctx.$.res, result, !!result && Reflect.get(result, errorSymbol));
+    (0, import_response.resHandle)(ctx.$.res, result, result !== null && typeof result === "object" && Reflect.get(result, errorSymbol));
   };
   const middleware = (0, import_core.defineMiddleWare)(handle, "tvvins-rpc");
   const defineAPI = (handle2, name) => {
