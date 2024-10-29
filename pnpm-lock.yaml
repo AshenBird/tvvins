@@ -11,8 +11,8 @@ importers:
   packages/cli:
     dependencies:
       '@mcswift/base-utils':
-        specifier: ^1.0.10
-        version: 1.0.10
+        specifier: ^1.0.15
+        version: 1.0.15
       '@mcswift/cli':
         specifier: ^1.0.10
         version: 1.0.10
@@ -23,8 +23,8 @@ importers:
         specifier: ^1.0.10
         version: 1.0.10
       '@mcswift/utils':
-        specifier: ^1.0.10
-        version: 1.0.10(esbuild@0.20.2)
+        specifier: ^1.0.16
+        version: 1.0.16(esbuild@0.20.2)
       chalk:
         specifier: ^5.2.0
         version: 5.3.0
@@ -63,11 +63,14 @@ importers:
   packages/core:
     dependencies:
       '@mcswift/base-utils':
-        specifier: ^1.0.12
-        version: 1.0.12
+        specifier: ^1.0.15
+        version: 1.0.15
       '@mcswift/bellman':
         specifier: ^0.0.8
         version: 0.0.8
+      '@mcswift/utils':
+        specifier: ^1.0.16
+        version: 1.0.16(esbuild@0.20.2)
       connect:
         specifier: ^3.7.0
         version: 3.7.0
@@ -330,8 +333,8 @@ importers:
   packages/rpc:
     dependencies:
       '@mcswift/base-utils':
-        specifier: ^1.0.11
-        version: 1.0.11
+        specifier: ^1.0.15
+        version: 1.0.15
       '@mcswift/bellman':
         specifier: ^0.0.8
         version: 0.0.8
@@ -347,6 +350,9 @@ importers:
       '@mcswift/types':
         specifier: ^1.0.10
         version: 1.0.10
+      '@mcswift/utils':
+        specifier: ^1.0.16
+        version: 1.0.16(esbuild@0.20.2)
       fs-extra:
         specifier: ^11.2.0
         version: 11.2.0
@@ -1789,63 +1795,15 @@ packages:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: true
 
-  /@json2csv/formatters@7.0.6:
-    resolution: {integrity: sha512-hjIk1H1TR4ydU5ntIENEPgoMGW+Q7mJ+537sDFDbsk+Y3EPl2i4NfFVjw0NJRgT+ihm8X30M67mA8AS6jPidSA==}
-    dev: false
-
-  /@json2csv/plainjs@7.0.6:
-    resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
-    dependencies:
-      '@json2csv/formatters': 7.0.6
-      '@streamparser/json': 0.0.20
-    dev: false
-
-  /@json2csv/whatwg@7.0.6:
-    resolution: {integrity: sha512-//7ROL1C4G0yYM45n4z1WkVlLSv/qss+huzdQ+3OEaRxuQE34A3tm/K52caOQ70P/M1kSeiV1DHwtqCJdOE7lA==}
-    dependencies:
-      '@json2csv/plainjs': 7.0.6
-    dev: false
-
   /@juggle/resize-observer@3.4.0:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: false
 
-  /@mcswift/base-utils@1.0.10:
-    resolution: {integrity: sha512-9/H5XWGVpwqCF3LjrIasJr/I6E1EnZGJhkZbDzBf6k6IF3fqeTu77pxhm+oACJhCFjBrtV6FC7WxD5h9Fcti+A==}
+  /@mcswift/base-utils@1.0.15:
+    resolution: {integrity: sha512-ilGJ3EYM0Zews33iYMI0ZWtwAAOGOiGrOw+Qgz6GuDBvvQ82FuG4oOCdBf5udSWCh8szT51gq/zTn0dWaZQjig==}
     dependencies:
-      '@json2csv/whatwg': 7.0.6
       '@mcswift/bellman': 0.0.7
-      '@mcswift/types': 1.0.10
-      chalk: 5.3.0
-      eslint: 8.57.0
-      nanoid: 5.0.7
-    optionalDependencies:
-      zod: 3.22.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@mcswift/base-utils@1.0.11:
-    resolution: {integrity: sha512-r6iOk7OWFwtg2SB6YY9DLuZH/D44k/qaFP03N1KdnAriEoF9NmFzXJBBkH94swP4PqNdNxvMWc29qY2OWqAxag==}
-    dependencies:
-      '@json2csv/whatwg': 7.0.6
-      '@mcswift/bellman': 0.0.7
-      '@mcswift/types': 1.0.10
-      chalk: 5.3.0
-      eslint: 8.57.0
-      nanoid: 5.0.7
-    optionalDependencies:
-      zod: 3.22.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@mcswift/base-utils@1.0.12:
-    resolution: {integrity: sha512-xZXUXg4whled9/Ydtzrk87NvcvLooGdII8gmE6VSSF6xAVzSRQXyq037Yiqf/8+P+3sITh1gBRYEwYaYgu+Dtw==}
-    dependencies:
-      '@json2csv/whatwg': 7.0.6
-      '@mcswift/bellman': 0.0.7
-      '@mcswift/types': 1.0.10
+      '@mcswift/types': 1.0.14
       chalk: 5.3.0
       eslint: 8.57.0
       nanoid: 5.0.7
@@ -1870,7 +1828,16 @@ packages:
   /@mcswift/cli@1.0.10:
     resolution: {integrity: sha512-n2AsHPn8nd5VIgMqelWmgcV/14U/9bShkXuN/k22zfNER1aJJceooZR1HqNpj/WLnRmQ1fC9r5M2LmJJogxuog==}
     dependencies:
-      '@mcswift/base-utils': 1.0.12
+      '@mcswift/base-utils': 1.0.15
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@mcswift/cli@1.0.14:
+    resolution: {integrity: sha512-u+UXtpMPTXNYboyJlLbdQiL36tOFBMmpBBXv1CswyDX2a1d62yb2aO5sRImquojrwy18CxieVmAvvZJiAp5tQg==}
+    dependencies:
+      '@mcswift/base-utils': 1.0.15
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
@@ -1887,6 +1854,18 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@mcswift/esbuild@1.0.14(esbuild@0.20.2):
+    resolution: {integrity: sha512-uO04hNOYTHIrdnH7RYI/aiqw5BWxP4x/TKdyuvJNhvobUZu2vmFu4/pHgeH/dtpGvUBoXofPFV9vixMKeMwgRw==}
+    peerDependencies:
+      esbuild: ^0.20.2
+    dependencies:
+      '@mcswift/types': 1.0.14
+      esbuild: 0.20.2
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/node@1.0.10:
     resolution: {integrity: sha512-cAYsVSizCrF9cSgo/GG8P4mZLZQOujDpaP7r77DFZ7x9m/KiRY4aZmtQEerBdSNBNfja7HpQRJ42XXzD22Xk4A==}
     dependencies:
@@ -1895,6 +1874,15 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@mcswift/node@1.0.14:
+    resolution: {integrity: sha512-xmUrefTjltqlISbZXJE3/wo7LJvya+XnYHmZiEDNTMwPjtevVXo0BcnzW+nGExBhuAd9aprJ9xrRVKQqxj6GnQ==}
+    dependencies:
+      '@mcswift/types': 1.0.14
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/npm@1.0.10:
     resolution: {integrity: sha512-62D6FFBYbflsTzoql/cYr8iqIulIIhm0KhRcKxB6gBs2R++gwpEPA7IUk42BBJ0JWIRHRJkjk/x2jYdi+mdKEw==}
     dependencies:
@@ -1902,6 +1890,17 @@ packages:
       '@mcswift/types': 1.0.10
       eslint: 8.57.0
       npm: 10.5.1
+      pnpm: 8.15.6
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@mcswift/npm@1.0.15:
+    resolution: {integrity: sha512-akmLD8HyiJaYC/Avdlw99Strh8hY+e+6RgOYiO1pJ0ugqHHtyuZiZCInNpgmRdsVReWNU1Zh2I2SFgeMkfJFdg==}
+    dependencies:
+      '@mcswift/node': 1.0.14
+      '@mcswift/types': 1.0.14
+      eslint: 8.57.0
       pnpm: 8.15.6
     transitivePeerDependencies:
       - supports-color
@@ -1917,6 +1916,16 @@ packages:
       - supports-color
     dev: false
 
+  /@mcswift/svn@1.0.14:
+    resolution: {integrity: sha512-e++YZVAC8w9ves3mP0hIJCJOG/T2ZIlvVHyY8hGRKuVkzCw8FRG1rq8pCjCfVMhKGB9YdniLC/I1lVbb2EKVcg==}
+    dependencies:
+      '@mcswift/node': 1.0.14
+      '@mcswift/types': 1.0.14
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/tsc@1.0.10:
     resolution: {integrity: sha512-RU0D3OK4thbMm9fAenAP1HI9YmQHcKzA7NgID3itFIJOdkM5dezcdbQ9JoHPt+p6Wt3q+zvLt/pEfSRrTekdqQ==}
     dependencies:
@@ -1926,6 +1935,16 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@mcswift/tsc@1.0.14:
+    resolution: {integrity: sha512-94e1bQrdNyHZUSWtQ4rIifGfKxTgcgulMadO6OEcXEQQCkWOf0+PDtF4iHmvKq7uCS+WdfGOr6rYkxjhP0mJaA==}
+    dependencies:
+      '@mcswift/node': 1.0.14
+      '@mcswift/types': 1.0.14
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/types@1.0.10:
     resolution: {integrity: sha512-+4GMiETcgQ8guwqVx8xAArifsfSj3j5ChGT89CIndhHDGLuEMKJvcxAfccfMXgZQnud8RjVYc40NJBUErKOxhA==}
     dependencies:
@@ -1933,10 +1952,18 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@mcswift/types@1.0.14:
+    resolution: {integrity: sha512-+StF1cVkwQUtRXYzpNbHFUGeJpdxHofBjxw9gGE1ysFLT/f3Z6U7i7uy7bR/OP3/edALHKnPrZoyVNNyrdyyZA==}
+    dependencies:
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@mcswift/utils@1.0.10(esbuild@0.20.2):
     resolution: {integrity: sha512-7zsiUCCa0wwo3oqmofdXAzHSxucQPnxuY5+v1H0h726BgzQU8uBRvzbHU9G4smidArO93lFUCdFr/dNvs/7PWg==}
     dependencies:
-      '@mcswift/base-utils': 1.0.12
+      '@mcswift/base-utils': 1.0.15
       '@mcswift/cli': 1.0.10
       '@mcswift/esbuild': 1.0.10(esbuild@0.20.2)
       '@mcswift/node': 1.0.10
@@ -1951,11 +1978,39 @@ packages:
       - supports-color
     dev: false
 
+  /@mcswift/utils@1.0.16(esbuild@0.20.2):
+    resolution: {integrity: sha512-dVwDrA0pE7SdjtbaSf/UOkPxxIRw9pOipUJGZG3mRv7MUbvlcV5LsYijQ8HIZVZz74KyJTRfre0fYQk7GjXsdw==}
+    dependencies:
+      '@mcswift/base-utils': 1.0.15
+      '@mcswift/cli': 1.0.14
+      '@mcswift/esbuild': 1.0.14(esbuild@0.20.2)
+      '@mcswift/node': 1.0.14
+      '@mcswift/npm': 1.0.15
+      '@mcswift/svn': 1.0.14
+      '@mcswift/tsc': 1.0.14
+      '@mcswift/types': 1.0.14
+      '@mcswift/windows': 1.0.14
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - esbuild
+      - supports-color
+    dev: false
+
   /@mcswift/windows@1.0.10:
     resolution: {integrity: sha512-W5twA5O1fwutADcXyhjqMEx8oWB2zyaUs2qN3CrAYTQCCJ298fRwkxlZTh2WeLc9LkI/DQAJdKgR9H7er+uRoA==}
     dependencies:
       '@mcswift/node': 1.0.10
       '@mcswift/types': 1.0.10
+      eslint: 8.57.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@mcswift/windows@1.0.14:
+    resolution: {integrity: sha512-7j61ChsoRHfPf7NiK1W1vIKG0s+/4+9KDVGPBMhQxa2T8NiKtEXweO41kfSbmwabdnYbzrvjn8cjPgaHRvldUQ==}
+    dependencies:
+      '@mcswift/node': 1.0.14
+      '@mcswift/types': 1.0.14
       eslint: 8.57.0
     transitivePeerDependencies:
       - supports-color
@@ -2155,10 +2210,6 @@ packages:
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
-
-  /@streamparser/json@0.0.20:
-    resolution: {integrity: sha512-VqAAkydywPpkw63WQhPVKCD3SdwXuihCUVZbbiY3SfSTGQyHmwRoq27y4dmJdZuJwd5JIlQoMPyGvMbUPY0RKQ==}
-    dev: false
 
   /@tsconfig/node18@18.2.4:
     resolution: {integrity: sha512-5xxU8vVs9/FNcvm3gE07fPbn9tl6tqGGWA9tSlwsUEkBxtRnTsNmwrV8gasZ9F/EobaSv9+nu8AxUKccw77JpQ==}

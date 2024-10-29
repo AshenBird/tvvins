@@ -1,6 +1,6 @@
 {
   "name": "@tvvins/core",
-  "version": "1.0.1-beta7",
+  "version": "1.0.1-beta8",
   "description": "",
   "scripts": {
     "build": "tsx scripts/build.ts"
@@ -30,8 +30,9 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@mcswift/base-utils": "^1.0.12",
+    "@mcswift/base-utils": "^1.0.15",
     "@mcswift/bellman": "^0.0.8",
+    "@mcswift/utils": "^1.0.16",
     "connect": "^3.7.0",
     "core-js": "^3.38.0",
     "koa": "^2.15.2",
