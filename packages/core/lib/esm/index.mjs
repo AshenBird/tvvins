@@ -92,9 +92,13 @@ import { env } from "node:process";
 import { App } from "./App.mjs";
 import { resolveOptions } from "./options.mjs";
 import { logger } from "./logger.mjs";
+import process from "node:process";
 export * from "./type.mjs";
 export * from "./Middleware.mjs";
 var useTvvins = (options) => {
+  process.on("uncaughtException", (err, origin) => {
+    logger.error(err);
+  });
   try {
     const mode = env["TVVINS_MODE"];
     const stage = env["TVVINS_STAGE"];

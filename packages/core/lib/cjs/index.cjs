@@ -120,9 +120,13 @@ var import_node_process2 = require("node:process");
 var import_App = require("./App.cjs");
 var import_options = require("./options.cjs");
 var import_logger = require("./logger.cjs");
+var import_node_process3 = __toESM(require("node:process"));
 __reExport(src_exports, require("./type.cjs"), module.exports);
 __reExport(src_exports, require("./Middleware.cjs"), module.exports);
 var useTvvins = (options) => {
+  import_node_process3.default.on("uncaughtException", (err, origin) => {
+    import_logger.logger.error(err);
+  });
   try {
     const mode = import_node_process2.env["TVVINS_MODE"];
     const stage = import_node_process2.env["TVVINS_STAGE"];
