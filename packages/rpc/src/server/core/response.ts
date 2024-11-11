@@ -32,7 +32,7 @@ export const resHandle = (res: ServerResponse, result: unknown,isError = false) 
   // 大部分情况
   if (typeof result === "string") {
     // 这个情况已经基本不存在了
-    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Type", "application/json");
     res.write(JSON.stringify(encode(result)));
   } else {
     // 大部分的值都用 json 返回

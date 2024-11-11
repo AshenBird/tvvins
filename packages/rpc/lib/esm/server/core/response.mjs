@@ -19,7 +19,7 @@ var resHandle = (res, result, isError = false) => {
     return;
   }
   if (typeof result === "string") {
-    res.setHeader("Content-Type", "text/plain");
+    res.setHeader("Content-Type", "application/json");
     res.write(JSON.stringify(encode(result)));
   } else {
     res.setHeader("Content-Type", "application/json");
