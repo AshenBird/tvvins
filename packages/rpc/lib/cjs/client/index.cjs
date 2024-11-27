@@ -119,7 +119,7 @@ var textDecode = async (body) => {
     if (frame.done)
       break;
   }
-  return result.join(" ");
+  return result.join("");
 };
 var getPayloadType = (val) => {
   if (val.some((arg) => arg instanceof FormData)) {
