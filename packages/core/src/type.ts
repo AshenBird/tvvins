@@ -28,7 +28,9 @@ export declare namespace Tvvins {
     hooks?:{
       beforeBuild?:((...age:any[])=>any)[]
       builded?:((...age:any[])=>any)[]
-    }
+    },
+    env?:Record<string,string>
+    envFile?:string
   };
   export type Mode = "build" | "server"
   export type Stage = "development" | "production" | "test"

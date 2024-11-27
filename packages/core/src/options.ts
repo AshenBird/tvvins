@@ -17,7 +17,9 @@ const DEFAULT_OPTION: Required<Tvvins.InitOptions> & {
   build: {
     source: "./src",
     output: "./dist",
-    hooks:{}
+    hooks:{},
+    env:{},
+    envFile:"./.env.production"
   },
   vite: {
     publicDir: resolve(cwd(), "./public")

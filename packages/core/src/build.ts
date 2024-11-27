@@ -29,7 +29,9 @@ export const build = async (options: Tvvins.ResolvedInitOptions) => {
   ensureDirSync(outdir);
   emptyDirSync(outdir);
   // 视图层构建
-  await viteBuild(options.vite)
+  await viteBuild({
+    ...options.vite,
+  })
   Logger.info("client build finish")
   // const buildTasks:Promise<unknown>[] = []
   // const buildFile = async (entryPath:string,outPath:string)=>{

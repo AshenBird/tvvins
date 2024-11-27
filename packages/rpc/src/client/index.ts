@@ -98,7 +98,7 @@ const textDecode = async (body:ReadableStream<Uint8Array>)=>{
     }
     if(frame.done)break;
   }
-  return result.join(" ")
+  return result.join("")
 }
 const getPayloadType = (val:unknown[])=>{
   if(val.some(arg=>arg instanceof FormData)){
