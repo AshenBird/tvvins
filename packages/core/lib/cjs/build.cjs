@@ -53,7 +53,9 @@ var build = async (options) => {
   }
   (0, import_fs_extra.ensureDirSync)(outdir);
   (0, import_fs_extra.emptyDirSync)(outdir);
-  await (0, import_vite.build)(options.vite);
+  await (0, import_vite.build)({
+    ...options.vite
+  });
   Logger.info("client build finish");
   await (0, import_esbuild.build)({
     entryPoints: [entryPath],

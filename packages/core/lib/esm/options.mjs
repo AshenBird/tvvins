@@ -13,7 +13,9 @@ var DEFAULT_OPTION = {
   build: {
     source: "./src",
     output: "./dist",
-    hooks: {}
+    hooks: {},
+    env: {},
+    envFile: "./.env.production"
   },
   vite: {
     publicDir: resolve(cwd(), "./public")

@@ -26,6 +26,8 @@ export declare namespace Tvvins {
             beforeBuild?: ((...age: any[]) => any)[];
             builded?: ((...age: any[]) => any)[];
         };
+        env?: Record<string, string>;
+        envFile?: string;
     };
     type Mode = "build" | "server";
     type Stage = "development" | "production" | "test";

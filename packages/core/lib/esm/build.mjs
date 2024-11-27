@@ -19,7 +19,9 @@ var build = async (options) => {
   }
   ensureDirSync(outdir);
   emptyDirSync(outdir);
-  await viteBuild(options.vite);
+  await viteBuild({
+    ...options.vite
+  });
   Logger.info("client build finish");
   await esbuild({
     entryPoints: [entryPath],
