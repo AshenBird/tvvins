@@ -26,8 +26,9 @@
     "@types/node": "^20.11.30",
     "esbuild": "^0.20.2",
     "fs-extra": "^11.2.0",
-    "tsx": "^4.7.2",
-    "typescript": "^5.4.3"
+    "tsx": "^4.19.3",
+    "typescript": "^5.4.3",
+    "vite": "^6.2.6"
   },
   "dependencies": {
     "@mcswift/base-utils": "^1.0.15",
@@ -35,13 +36,14 @@
     "@mcswift/utils": "^1.0.16",
     "connect": "^3.7.0",
     "core-js": "^3.38.0",
+    "express": "^5.1.0",
     "koa": "^2.15.2",
     "koa-compose": "^4.1.0",
     "koa-connect": "^2.1.0",
-    "log4js": "^6.9.1"
+    "log4js": "^6.9.1",
+    "nanoid": "^5.1.5"
   },
   "optionalDependencies": {
-    "@tvvins/cli": "workspace:^",
-    "vite": "^5.2.8"
+    "@tvvins/cli": "workspace:^"
   }
 }
