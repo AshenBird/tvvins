@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Tvvins"
-  text: "一体化Web开发框架"
+  text: "cross-end web application framework"
   tagline: My great project tagline
   actions:
     - theme: brand
@@ -23,3 +23,6 @@ features:
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
+## 鸣谢
+
+- [trpc](https://trpc.io/): 为 Tvvins 项目提供了灵感。

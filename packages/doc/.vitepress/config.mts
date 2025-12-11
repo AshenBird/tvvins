@@ -3,20 +3,31 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Tvvins",
-  description: "一体化Web开发框架",
+  description: "cross-end web application framework",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: '首页', link: '/' },
+      { text: '指南', link: '/handbook/quick-start' },
+      { text: 'API', link: '/api/plugin' },
     ],
 
     sidebar: [
       {
-        text: 'Examples',
+        text: '指南',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: '快速开始', link: '/handbook/quick-start' },
+          { text: '概念', link: '/handbook/concept' },
+          // { text: 'Runtime API Examples', link: '/api-examples' }
+        ]
+      },
+      {
+        text: 'API',
+        items: [
+          { text: '模块', link: '/api/module' },
+          { text: '服务', link: '/api/service' },
+          { text: '插件', link: '/api/plugin' },
+          { text: '命令行', link: '/api/cli' },
         ]
       }
     ],

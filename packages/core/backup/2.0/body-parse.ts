@@ -1,0 +1,84 @@
+import { IncomingMessage } from "http"
+import { createErrorResult } from "./error"
+import { Tvvins } from "./types"
+import { JSONValue } from "@mcswift/types"
+import { decode } from "./common/data"
+
+/**
+ * body 中接受的数据类型
+ * 1. application/json 进行解析，并返回解析后的数据
+ * 2. formdata
+ * 3. 
+ * 4. text/plain 解析为
+ */
+export const bodyParse = async (req:IncomingMessage)=>{
+  const type = req.headers['content-type']
+  if(!type)return {
+    error:false,
+    data:req
+  }
+  const parser = handleTypes[type]
+  if(!parser)return {
+    error:false,
+    data:req
+  }
+  return parser(req)
+}
+
+const jsonHandle = async (req:IncomingMessage):Promise<Tvvins.BodyParseResult<JSONValue>>=>{
+  const textResult = await textHandle(req)
+  if(textResult.error)return textResult
+  const { val,schema } = JSON.parse(textResult.data)
+  return {
+    error:false,
+    data:decode(val,schema)
+  }
+}
+const textHandle = (req:IncomingMessage):Promise<Tvvins.BodyParseResult<string>>=>{
+  const chunks:string[] = []
+  req.setEncoding("utf-8");
+  return new Promise<Tvvins.BodyParseResult<string>>((resolve)=>{
+    req.on('readable', () => {
+      let chunk;
+      while (null !== (chunk = req.read())) {
+        chunks.push(chunk);
+      }
+    });
+    req.on("error",(e)=>{
+      resolve({
+        error:true,
+        data:createErrorResult("request parse error",e)
+      })
+    })
+    req.on('end', () => {
+      const data = chunks.join('');
+      resolve({
+        error:false,
+        data
+      })
+    });
+})
+}
+
+const handleTypes:Record<string,(req:IncomingMessage)=>Promise<Tvvins.BodyParseResult>>= {
+  "application/json":jsonHandle,
+  "text/plain":textHandle
+}
+
+export const BodyParserManager = Object.freeze({
+  registry:(mime:string,parser:Tvvins.BodyParser)=>{
+    if(Reflect.has(handleTypes,mime)){
+      return false
+    }
+    Reflect.set(handleTypes,mime,parser)
+    return true
+  },
+  has:(mime:string)=>{
+    return Reflect.has(handleTypes,mime)
+  },
+  get:(mime:string)=>{
+    return Reflect.get(handleTypes,mime)
+  }
+})
+
+// "application/octet-stream",//通用二进制数据，不做处理直接交给
